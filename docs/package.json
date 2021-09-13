@@ -1,0 +1,23 @@
+{
+  "name": "RealVuepress",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "authors": {
+    "name": "",
+    "email": ""
+  },
+  "repository": "/RealVuepress",
+  "scripts": {
+    "dev": "vuepress dev src",
+    "build": "vuepress build src"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vuepress": "^1.5.3"
+  },
+  "dependencies": {
+    "http-server": "^13.0.1",
+    "vuepress-plugin-code-copy": "^1.0.6"
+  }
+}
