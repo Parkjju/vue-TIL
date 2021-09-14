@@ -49,14 +49,14 @@ module.exports = {
         sidebar: [
             '/introduction',
             {
-                title: 'guide',
-                collapsable: true,
-                children: ['/guide/new'],
-            },
-            {
                 title: 'TIL',
                 collapsable: true,
                 children: ['/TIL/2021-09-13'],
+            },
+            {
+                title: 'Node JS',
+                collapsable: true,
+                children: ['/nodeJS/youtube', '/nodeJS/express'],
             },
             {
                 title: 'Computer Science',
