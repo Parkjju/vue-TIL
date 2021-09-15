@@ -56,7 +56,11 @@ module.exports = {
             {
                 title: 'Node JS',
                 collapsable: true,
-                children: ['/nodeJS/youtube', '/nodeJS/express'],
+                children: [
+                    '/nodeJS/youtube',
+                    '/nodeJS/express',
+                    '/nodeJS/middleware',
+                ],
             },
             {
                 title: 'Computer Science',
