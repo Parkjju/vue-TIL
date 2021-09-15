@@ -28,3 +28,4 @@ npm run dev
 -   [ ] index.md 정리
 -   [ ] 뷰프레스 버전 업
 -   [ ] ESlint, Prettier 설정
+-   [ ] 테스트환경 구축
