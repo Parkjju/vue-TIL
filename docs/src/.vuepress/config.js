@@ -82,5 +82,9 @@ module.exports = {
                 staticIcon: false,
             },
         ],
+        '@vuepress/google-analytics',
+        {
+            ga: 'G-CWTQ8X81BJ',
+        },
     ],
 };
