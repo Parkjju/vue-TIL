@@ -67,6 +67,11 @@ module.exports = {
                 collapsable: true,
                 children: ['/os/Operating-System'],
             },
+            {
+                title: '성장일지',
+                collapsable: true,
+                children: ['/grow/openSource', '/grow/comento'],
+            },
         ],
     },
 
