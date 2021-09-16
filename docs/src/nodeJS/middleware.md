@@ -17,15 +17,15 @@ MVC모델에 따라 핸들러는 사실 컨트롤러(controller)로 표현해야
 ```js
 // express();
 const gossipMiddleware = (req, res, next) => {
-    console.log("I'm in the Middle!");
-    next();
+  console.log("I'm in the Middle!");
+  next();
 };
 
 const handleHome = (req, res) => {
-    return res.end();
+  return res.end();
 };
 
-app.get('/', gossipMiddleware, handleHome);
+app.get("/", gossipMiddleware, handleHome);
 
 //app.listen()..
 ```
@@ -42,20 +42,20 @@ app.get('/', gossipMiddleware, handleHome);
 
 ```js
 const privateMiddleware = (req, res, next) => {
-    const url = req.url;
-    if (url === '/protected') {
-        return res.send('<h1>Not Allowed</h1>');
-    }
-    console.log('Allowed, you may continue.');
-    next();
+  const url = req.url;
+  if (url === "/protected") {
+    return res.send("<h1>Not Allowed</h1>");
+  }
+  console.log("Allowed, you may continue.");
+  next();
 };
 
 const handleProtected = (req, res) => {
-    return res.send('Welcome to the private lounge.');
+  return res.send("Welcome to the private lounge.");
 };
 
 app.use(privateMiddleware);
-app.get('/protected', handleProtected);
+app.get("/protected", handleProtected);
 ```
 
 1. `use` 메서드에 미들웨어를 전달한다.
@@ -64,3 +64,52 @@ app.get('/protected', handleProtected);
 4. 해당되지 않으면 `next()`함수를 호출한다.
 
 정리하면, 미들웨어는 `get`메서드에서는 하나의 라우트에서만 작동하고 `use`메서드에서는 모든 라우트에서 작동한다.
+
+## morgan
+
+`npm i morgan`을 통해 `morgan` 미들웨어를 설치할 수 있다.
+
+```js
+import morgan from "morgan"; //morgan이라는 이름으로 모건 미들웨어 가져오기
+```
+
+모건 미들웨어를 불러온 후 활용하는 코드는 다음과 같다.
+
+```js
+import express from "express";
+import morgan from "morgan";
+
+const PORT = 4000;
+
+const app = express();
+const logger = morgan("dev"); //here!
+
+const home = (req, res) => {
+  return res.send("hello");
+};
+const login = (req, res) => {
+  return res.send("login");
+};
+
+app.use(logger);
+app.get("/", home);
+app.get("/login", login);
+
+const handleListening = () =>
+  console.log(`✅ Server listenting on port http://localhost:${PORT} 🚀`);
+
+app.listen(PORT, handleListening);
+```
+
+모건 미들웨어는 페이지 요청에 대한 응답의 로그를 보여주는 역할을 한다.
+
+```sh
+[nodemon] restarting due to changes...
+[nodemon] starting `babel-node server.js`
+✅ Server listenting on port http://localhost:4000 🚀
+GET / 200 14.400 ms - 5
+```
+
+모건 메서드의 5가지 옵션에 따라 로그 내용이 달라진다.
+
+모건 미들웨어 또한 **미들웨어이므로 next가 미들웨어의 인자로 전달된다.** (모건 소스코드 확인하기)
