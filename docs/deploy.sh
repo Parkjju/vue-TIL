@@ -9,6 +9,7 @@ yarn build
 # navigate into the build output directory
 cd src/.vuepress/dist
 
+git checkout gh-pages
 git init
 git add -A
 git commit -m 'deploy with vuepress script'
