@@ -68,6 +68,7 @@ module.exports = {
           "/nodeJS/router",
           "/nodeJS/export",
           "nodeJS/param",
+          "nodeJS/template",
         ],
       },
       {
