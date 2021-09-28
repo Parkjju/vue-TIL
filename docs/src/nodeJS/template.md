@@ -190,3 +190,80 @@ html(lang = "ko")
 export const trending = (req, res) => res.render("home", { PageTitle: "Home" });
 // ...
 ```
+
+변수 전달 방식의 두 번째 방법으로 다음과 같은 방법이 있다.
+
+```pug
+body
+    header
+        h1=pageTitle
+```
+
+`h1`태그에 pageTitle이라는 변수 값만 넣을 때에는 `=`를 이용할 수 있고 다른 문자열과 섞어 쓸 때 `#{..}` 형태를 사용한다.
+
+## pug 제어문
+
+퍼그의 조건문은 다음과 같다.
+
+```pug
+if user.loggedIn
+    small Hello #{user.username}
+else
+    a(href="/login") login
+```
+
+퍼그의 반복문은 다음과 같다.
+
+```pug
+each value in values
+    li=value
+
+each value in values
+    li #{value}
+```
+
+위 예시의 `values`는 컨트롤러로부터 전달받는 변수명과 동일해야한다. 퍼그의 반복문 형태는 다양하므로 도큐먼트를 참고해보아야 한다.
+
+## 퍼그 mixin
+
+믹싱은 `partial`인데, **데이터를 받는 partial**이다. partial의 예시로 footer 컴포넌트 재사용이 있었는데 믹싱도 동일한 아이디어에서 출발한다.
+
+반복문에 단순 데이터의 전달 뿐만 아니라 복잡한 객체에 대해서도 전달이 이루어지고 전체 변수에 대한 입출력이 이루어지므로 코드의 반복이 불가피하다. 이러한 문제점을 해결하기 위해 데이터를 받는 컴포넌트를 partial 처리 한 것이 믹싱이다.
+
+믹싱의 예시는 다음과 같다.
+
+```pug
+extends base.pug
+include mixins/video
+
+block content
+    h2 Welcome here you will see the trending videos.
+    each video in videos
+        +video(video)
+```
+
+```pug
+mixin video(video)
+    div
+        h4=video.title
+        ul
+            li #{video.rating}/5
+            li #{video.comments} comments,
+            li Posted #{video.createdAt},
+            li #{video.views} views.
+```
+
+1. views 디렉토리 하위에 믹싱 폴더 생성 및 믹싱 코드 작성
+2. 믹싱 가져올 파일에 include
+
+## URL
+
+퍼그 상에서 URL 지정시 상대경로 및 절대경로 중에 하나를 고를 수 있다.
+
+```pug
+// 절대경로 이용시 url 앞에 슬래시를 붙인다.
+a(href=`/${video.id}/edit`) Edit video &rarr;
+
+// 상대경로 이용시 슬래시를 붙이지 않으면 현재 속한 라우터의 url기준 상대경로로 지정한다.
+a(href=`${video.id}/edit`) Edit video &rarr;
+```
