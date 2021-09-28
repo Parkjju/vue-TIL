@@ -56,7 +56,12 @@ module.exports = {
       {
         title: "DailyTech",
         collapsable: true,
-        children: ["/daily/210918", "/daily/210921-http", "/daily/210921-rest"],
+        children: [
+          "/daily/210918",
+          "/daily/210921-http",
+          "/daily/210921-rest",
+          "/daily/210927-mongo",
+        ],
       },
       {
         title: "Node JS",
