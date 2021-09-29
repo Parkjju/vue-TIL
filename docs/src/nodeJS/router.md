@@ -52,3 +52,37 @@ videoRouter.get("/watch", handleWatchVideo);
 4. 예시에서는 `handleWatchVideo`라는 함수가 콜백으로 전달되었고 이는 HTML을 응답으로 보내준다.
 
 `videoRouter`의 `get`메서드를 통해 통해 `/video/watch`라는 URL로 접근하는 것이 아닌 `/watch`라는 간단한 URL로 접근할 수 있다.
+
+:::tip
+`Router.route("url");` 메서드.
+
+router.route(path)
+Returns an instance of a single route which you can then use to handle HTTP verbs with optional middleware. Use router.route() to avoid duplicate route naming and thus typing errors.
+
+Building on the router.param() example above, the following code shows how to use router.route() to specify various HTTP method handlers.
+
+router.route('/users/:user_id')
+.all(function (req, res, next) {
+// runs for all HTTP verbs first
+// think of it as route specific middleware!
+next()
+})
+.get(function (req, res, next) {
+res.json(req.user)
+})
+.put(function (req, res, next) {
+// just an example of maybe updating the user
+req.user.name = req.params.name
+// save user ... etc
+res.json(req.user)
+})
+.post(function (req, res, next) {
+next(new Error('not implemented'))
+})
+.delete(function (req, res, next) {
+next(new Error('not implemented'))
+})
+
+```
+
+```
