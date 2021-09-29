@@ -64,6 +64,17 @@ module.exports = {
         ],
       },
       {
+        title: "Vue",
+        collapsable: true,
+        children: [
+          "/vue/2021-07-10-mount",
+          "/vue/2021-07-10-vueData",
+          "/vue/2021-08-10-vueCaptain",
+          "/vue/210930-vueTodo",
+          "/vue/210930-directives",
+        ],
+      },
+      {
         title: "Node JS",
         collapsable: true,
         children: [
