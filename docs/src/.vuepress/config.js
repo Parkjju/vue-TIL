@@ -61,6 +61,8 @@ module.exports = {
           "/daily/210921-http",
           "/daily/210921-rest",
           "/daily/210927-mongo",
+          "/daily/210930-user",
+          "/daily/210930-cookie",
         ],
       },
       {
