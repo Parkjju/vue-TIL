@@ -51,3 +51,78 @@ export default {
 
 <style></style>
 ```
+
+### TodoList
+
+투두 리스트의 리스트 컴포넌트의 흐름을 정리하면 다음과 같다.
+
+1. 컴포넌트 라이프사이클 중 `created`에 해당하는 훅에 접근하여 리스트 컴포넌트가 생성되자 마자 로컬 스토리지에 접근하여 뷰 데이터 속성에 값들을 저장한다. 값 저장 시 `JSON.parse`메서드를 통해 JSON 형태의 데이터를 배열 형태로 저장한다.
+2. 인풋 컴포넌트에서 입력 후 로컬스토리지에 저장된 데이터를 `v-for` 디렉티브를 통해 불러온다.
+3. 불러온 리스트의 완료 여부는 리스트의 버튼 클릭 이벤트를 통해 구현한다. `v-on:click` 디렉티브를 통해 클릭 이벤트 리스닝이 가능하다. 삭제 기능 또한 `v-on:click`을 통해 구현한다.
+
+```vue
+<template>
+  <div>
+    <ul>
+      <li v-for="(item, index) in todoItems" :key="item.item" class="shadow">
+        <i
+          class="far fa-check-square checkBtn"
+          v-bind:class="{ checkBtnCompleted: item.completed }"
+          v-on:click="toggleComplete(item)"
+        ></i>
+        <span v-bind:class="{ textCompleted: item.completed }">
+          {{ item.item }}
+        </span>
+        <span class="removeBtn" v-on:click="removeTodo(item, index)">
+          <i class="fas fa-trash"></i>
+        </span>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+export default {
+  data: function() {
+    return {
+      todoItems: [],
+    };
+  },
+  created: function() {
+    if (localStorage.length > 0) {
+      for (var i = 0; i < localStorage.length; i++) {
+        if (localStorage.key(i) !== "loglevel:webpack-dev-server") {
+          this.todoItems.push(
+            JSON.parse(localStorage.getItem(localStorage.key(i)))
+          );
+        }
+      }
+    }
+    localStorage.getItem(this.todoItems);
+  },
+  methods: {
+    removeTodo: function(todoItem, index) {
+      localStorage.removeItem(todoItem);
+      this.todoItems.splice(index, 1);
+    },
+    toggleComplete: function(item) {
+      item.completed = !item.completed;
+      localStorage.removeItem(item.item);
+      localStorage.setItem(item.item, JSON.stringify(item));
+    },
+  },
+};
+</script>
+```
+
+### 문제점
+
+현재까지 정의한 컴포넌트는 총 4개로 `TodoHeader`, `TodoInput`, `TodoList`, `TodoFooter`가 있다. 인풋 컴포넌트에서 데이터를 입력하면 로컬 스토리지에 저장이 되고, 리스트 컴포넌트에서는 로컬 스토리지에서 저장된 데이터를 받아서 화면 단에 나열하고 데이터의 수정 작업을 처리한다. 풋터 컴포넌트는 전체 삭제 버튼을 통해 로컬스토리지 데이터를 비우는 작업을 한다.
+
+각 컴포넌트마다 기능이 구현되어 정상적으로 처리가 되지만 흐름 자체가 부드럽지는 않다. 데이터를 로컬 스토리지에 저장하였으면 이를 실시간으로 반영하여 리스트에 뿌려질 수 있도록 리스트 컴포넌트가 작동을 해야하는데 이러한 부분이 구현되어 있지 않다.
+
+프레젠터 컴포넌트간의 통신이 이루어지지 않는 것이 중심 문제점이므로 이를 어떻게 해결할 지가 관건이다.
+
+:::tip
+모든 컴포넌트를 모아서 전체적인 앱의 로직을 관리하는 컴포넌트를 **컨테이너 컴포넌트**, 컨테이너 컴포넌트를 통해 데이터를 주고받아 화면 단에 뿌리는 컴포넌트들을 **프레젠터 컴포넌트** 라고 한다.
+:::
