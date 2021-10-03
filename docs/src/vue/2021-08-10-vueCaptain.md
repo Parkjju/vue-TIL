@@ -2,6 +2,8 @@
 title: Vue js기초
 ---
 
+다음의 글은 [Do it! Vue.js - 장기효 저](http://www.yes24.com/Product/Goods/58206961)와 인프런의 [캡틴판교 - Vuejs 초급강의](https://www.inflearn.com/course/Age-of-Vuejs/dashboard)를 정리한 내용입니다.
+
 ## 1. Vue js 소개
 
 ### 1.1 MVVM 모델에서의 vue
