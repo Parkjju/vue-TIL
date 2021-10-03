@@ -131,6 +131,8 @@ export default {
 
 ## 2. 리팩토링
 
+### 프롭스
+
 현재까지는 각 컴포넌트에 정의된 데이터가 서로 다른 컴포넌트에 영향을 미쳐주고 있지 않았다. 첫 번째 리팩토링으로 **리스트 컴포넌트**에 데이터를 받는 작업을 `v-bind` 디렉티브의 **프롭스**를 적용해본다.
 
 먼저, 모든 컴포넌트를 관리하는 부모 컴포넌트 `App.vue`의 `TodoList` 컴포넌트에 프롭스를 적용한다.
@@ -152,3 +154,56 @@ export default {
   </ul>
 </template>
 ```
+
+### v-on
+
+브이온 디렉티브를 활용하면 프롭스와는 반대로 하위 컴포넌트에서 발생한 이벤트를 상위 컴포넌트로 전달하는 작업을 처리할 수 있다.
+
+**부모 컴포넌트**
+
+```vue
+<template>
+    <child v-on:"하위 컴포넌트에서 발생한 컴포넌트 이름"="현재 컴포넌트의 메서드 이름"></child>
+</template>
+
+<script>
+import child from ".."
+export default{
+
+    methods:{
+        현재 컴포넌트 메서드: function(인자1, 인자2 ...){
+            // ..scripts
+        }
+    }
+}
+</script>
+```
+
+**자식 컴포넌트**
+
+```vue
+<template>
+  <span v-on:click="myFunc"></span>
+</template>
+
+<script>
+method:{
+    myFunc(){
+        this.$emit("하위 컴포넌트에서 발생시킨 이벤트 이름", 인자1, 인자2, ...);
+    }
+}
+</script>
+```
+
+흐름을 간단히 정리해보면 다음과 같다.
+
+1. 상위 컴포넌트에서 임포트한 하위 컴포넌트 Virtual DOM(`<child></child>`)의 어트리뷰트로 v-on디렉티브와 이벤트를 받을 현재 컴포넌트의 메소드를 지정한다.
+2. 하위 컴포넌트에서 메소드를 정의한 뒤 메소드 내에 `this.$emit("event", param1,param2,,,..)`를 통해 이벤트 이름과 인자들을 전달한다.
+3. 상위 컴포넌트의 메소드에서 `param1, param2` 인자들을 받은 뒤 로직을 짠다.
+
+프레젠테이션 컴포넌트에서는 이벤트 발생을 정의하고, 로직은 컨테이너 컴포넌트에서 짠다! (중앙 집중식 컴포넌트)
+
+:::warning
+컴포넌트에서 데이터를 조작할 때 뷰의 **Anti pattern**이라는 것이 존재한다. 그 중 하나로 부모 컴포넌트에서 받은 데이터를 자식에서 받고, 해당 데이터를 다시 상위 컴포넌트로 보내는 형태를 말한다.
+[3 anti patterns to avoid in Vue.js](https://www.binarcode.com/blog/3-anti-patterns-to-avoid-in-vuejs/)
+:::
