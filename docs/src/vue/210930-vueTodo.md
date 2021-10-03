@@ -2,6 +2,8 @@
 title: Vue Todo앱 만들기
 ---
 
+다음의 글은 [Do it! Vue.js - 장기효 저](http://www.yes24.com/Product/Goods/58206961)와 인프런의 [캡틴판교 - Vuejs 중급강의](https://www.inflearn.com/course/vue-pwa-vue-js-%EC%A4%91%EA%B8%89/dashboard)를 정리한 내용입니다.
+
 ## 1. Todo App 구현
 
 ```vue
@@ -126,3 +128,27 @@ export default {
 :::tip
 모든 컴포넌트를 모아서 전체적인 앱의 로직을 관리하는 컴포넌트를 **컨테이너 컴포넌트**, 컨테이너 컴포넌트를 통해 데이터를 주고받아 화면 단에 뿌리는 컴포넌트들을 **프레젠터 컴포넌트** 라고 한다.
 :::
+
+## 2. 리팩토링
+
+현재까지는 각 컴포넌트에 정의된 데이터가 서로 다른 컴포넌트에 영향을 미쳐주고 있지 않았다. 첫 번째 리팩토링으로 **리스트 컴포넌트**에 데이터를 받는 작업을 `v-bind` 디렉티브의 **프롭스**를 적용해본다.
+
+먼저, 모든 컴포넌트를 관리하는 부모 컴포넌트 `App.vue`의 `TodoList` 컴포넌트에 프롭스를 적용한다.
+
+```vue
+<template>
+  <div id="app">
+    <TodoList v-bind:propsdata="todoItems"></TodoList>
+  </div>
+</template>
+```
+
+이후 `TodoList.vue` 컴포넌트에서 데이터를 받기 위해 `v-for` 디렉티브를 사용한다.
+
+```vue
+<template>
+  <ul>
+    <li v-for="(item, index) in propsdata"></li>
+  </ul>
+</template>
+```
