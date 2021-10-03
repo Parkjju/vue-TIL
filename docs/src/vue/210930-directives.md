@@ -63,7 +63,7 @@ export default {
 
 엘리먼트에 이벤트 리스너를 추가한다. 이벤트의 타입(클릭, 엔터 등)은 인자로 전달된다. 이벤트 감지 이후의 동작은 인라인으로 작성하거나, 작성한 메소드의 이름을 전달하거나, 모디파이어가 추가되면 생략될 수도 있다.
 
-일반적인 DOM 엘리먼트에 브이 온 디렉티브를 이용하면 **네이티브 돔 이벤트만 추가할 수 있다.** 커스텀 컴포넌트에 브이 온 디렉티브를 추가하면 자식 요소에서 발생한 이벤트를 수신한다. (? 이해 안됨.)
+일반적인 DOM 엘리먼트에 브이 온 디렉티브를 이용하면 **네이티브 돔 이벤트만 추가할 수 있다.** 커스텀 컴포넌트에 브이 온 디렉티브를 추가하면 자식 요소에서 발생한 이벤트를 수신한다. 커스텀 컴포넌트의 브이 온 디렉티브 파라미터는 자식 컴포넌트에서 전달할, 새롭게 정의한 이벤트의 이름이다.
 
 인라인 방식으로 메소드를 전달할 시 `$event` 프로퍼티를 통해 이벤트를 전달한다.
 
@@ -86,9 +86,49 @@ export default {
 <button v-on:click="methodName('some stuff', $event)"></button>
 ```
 
-:::warning
-인라인 방식 서치 후 정리하기
-:::
+커스텀 컴포넌트에 `v-on` 디렉티브를 적용하는 방법은 다음과 같다.
+
+**자식 컴포넌트(child.vue)**
+
+```vue
+<template>
+  <span v-on:click="add"></span>
+</template>
+
+<script>
+export default {
+    data: function(){
+        return {
+            myData: [],
+        }
+    }
+    methods: {
+        add: function(){
+            // scripts...
+            this.$emit("자식 컴포넌트에서 발생시킨 이벤트 이름!", this.myData);
+        }
+    }
+
+    }
+}
+</script>
+```
+
+**부모 컴포넌트(parent.vue)**
+
+```vue
+<template>
+    <child v-on:"자식 컴포넌트에서 발생시킨 이벤트 이름!"="현재 컴포넌트의 메소드 이름!"></child>
+</template>
+
+<script>
+    methods:{
+        현재 컴포넌트의 메소드 이름: function(){
+            return 0;
+        }
+    }
+</script>
+```
 
 ## v-for
 
@@ -126,9 +166,30 @@ export default {
 
 데이터 바인딩은 쉽게 말해 사용자와 제공자의 데이터가 동기화 되어 함께 움직이는 것을 말한다.
 
-**Usage**
+**1. Usage**
 `v-bind`는 지정한 어트리뷰트와 뷰 인스턴스에서 정의한 데이터를 바인딩해주는 디렉티브이다. [Vue document](https://vuejs.org/v2/guide/class-and-style.html)에 따르면 뷰에서 사용되는 데이터 바인딩은 일반적으로 클래스와 스타일 어트리뷰트를 조작하기 위해서 사용된다고 한다.
 
-**Modifiers**
+**2. Modifiers** (정리중)
 
-1. `.prop` - DOM 엘리먼트의 어트리뷰트와 데이터 바인딩을 하지 않고 객체 프로퍼티와 바인딩을 하는 옵션이다.
+- `.prop` - DOM 엘리먼트의 어트리뷰트와 데이터 바인딩을 하지 않고 객체 프로퍼티와 바인딩을 하는 옵션이다.
+
+**3. v-bind에 props 속성 활용하기**
+
+뷰 프롭스 속성은 자식 컴포넌트가 부모 컴포넌트로부터 데이터를 내려받을 때에 사용한다.
+
+**부모 컴포넌트** (parent.vue)
+
+```vue
+<template> <child v-bind:props="propsdata"></child> </template>>
+```
+
+**자식 컴포넌트** (child.vue)
+`v-for` 디렉티브에 프롭스 속성으로 받은 프롭스데이터를 전달하여 렌더링하고있다.
+
+```vue
+<template>
+  <ul>
+    <li v-for="(item, index) in propsdata"></li>
+  </ul>
+</template>
+```
