@@ -63,6 +63,7 @@ module.exports = {
           "/daily/210927-mongo",
           "/daily/210930-user",
           "/daily/210930-cookie",
+          "/daily/211004-antipattern",
         ],
       },
       {
