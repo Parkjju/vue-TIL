@@ -121,7 +121,7 @@ module.exports = {
     ],
     "@vuepress/google-analytics",
     {
-      ga: "G-CWTQ8X81BJ",
+      ga: "G-QP5LL1SE8Q",
     },
   ],
 };
