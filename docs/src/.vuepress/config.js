@@ -78,6 +78,8 @@ module.exports = {
           "/daily/210930-user",
           "/daily/210930-cookie",
           "/daily/211004-antipattern",
+          "/daily/211004-githubLogin",
+          "/daily/211004-Oauth",
         ],
       },
       {
