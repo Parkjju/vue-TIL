@@ -151,9 +151,47 @@ if ("access_token" in tokenRequest) {
         Authorization: `token ${access_token}`,
       },
     })
-  ).json();
+  ).json(); // json처리를 해야 깔끔하게 보임.
   console.log(emailData);
 } else {
   return res.redirect("/login");
+}
+```
+
+fetch를 통해 이메일데이터를 얻었으면 권한 승인을 한 유저의 깃헙 이메일 목록이 출력 될 것이다. 이메일 목록들 중 primary하고 verified된 이메일을 골라서 서비스에 가입시키기를 원한다면 해당 조건에 맞춰서 객체를 저장해주면 된다.
+
+```js
+const emailObj = emailData.find(
+  (email) => email.primary === false && email.verified === true // 내 계정의 경우 noreply로 메일 주소가 나와있어서 옵션을 다음과 같이 부여함.
+);
+
+if (!emailObj) {
+  return res.redirect("/login");
+}
+```
+
+이전에 유저가 서비스에 가입 시 깃헙 이메일로 가입한 적이 있다면 깃헙 로그인 API를 통해 로그인을 서비스에 시켜줄 것이고, 깃헙 이메일로 서비스에 가입하지 않았었다면 새로운 계정을 생성해준다. (패스워드 required이슈는 이후 해결할 듯)
+
+```js
+const existingUser = await User.findOne({ email: emailObj.email });
+
+if (existingUser) {
+  // 유저가 존재한다.
+  req.session.loggedIn = true;
+  req.session.user = existingUser;
+  return res.redirect("/");
+} else {
+  const user = await User.create({
+    //유저가 존재하지 않으면 계정을 하나 생성해준다.
+    name: userData.name,
+    username: userData.login,
+    email: emailObj.email,
+    password: "", //password required이슈
+    socialOnly: true, //social로그인으로 처리할 계정인지 여부 (userSchema에 디폴트 false로 추가해놓은 상태)
+    location: userData.location,
+  });
+  req.session.loggedIn = true;
+  req.session.user = user;
+  return res.redirect("/");
 }
 ```
