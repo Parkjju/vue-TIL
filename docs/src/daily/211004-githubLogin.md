@@ -46,3 +46,114 @@ URL 파라미터들을 각각 객체로 정리하여 나타내면 깔끔해진�
 :::
 
 모든 것이 정상적으로 처리되면 서버 가동 후 authorize버튼을 클릭할 수 있게 되는데, 클릭 후에 URL의 변화를 보면 OAuth앱 생성 시 작성했던 authorization URL의 주소로 변경되어 있다. `http://localhost:4000/users/github/callback?code=...` 뒤의 코드를 유저에게 보내주게 된다.
+
+:::warning
+코드의 유효기간은 10분밖에 되지 않으므로 이를 고려하자.
+:::
+
+`authorization code`는 URL파라미터에 있고, 클라이언트 아이디는 깃헙에서 발급 받았으므로 **클라이언트 시크릿만** 발급받으면 된다. 클라이언트 시크릿은 OAuth 세팅 화면에서 `Generate new secret`을 클릭하면 된다. **절대 노출이 되면 안되는 값이니 환경변수 처리를 꼭하자.**
+
+## 액세스 토큰 발급
+
+사용자로부터 권한 승인을 받게 되면 `authorization code`가 발급된다. 해당 코드를 가지고 깃헙에 클라이언트가 요청을 보내어 액세스 토큰을 발급받게 되는 것이다.
+
+액세스 토큰을 발급받기 위해서는 `POST https://github.com/login/oauth/access_token` 문서를 참조하여 제시된 메서드와 URL에 클라이언트 요청에 보내면 된다. POST 기능의 컨트롤러를 다룰 라우터를 먼저 정의한 뒤 컨트롤러를 정의하면, 다음과 같은 형태로 작성할 수 있다.
+
+```js
+export const finishGithubLogin = async (req, res) => {
+  const baseUrl = "https://github.com/login/oauth/access_token";
+  const config = {
+    client_id: process.env.GH_CLIENT,
+    client_secret: process.env.GH_SECRET,
+    code: req.query.code,
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  const data = await fetch(finalUrl, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+  const json = await data.json();
+  res.send(JSON.stringify(json));
+};
+```
+
+`config`객체를 정의하였고, 객체 내에는 깃헙에서 필요로 하는 변수명 (`client_id`, `client_secret`, `code`)들과 해당 값을 넣었고 `authorization code`의 경우 `req.query`를 통해 받아올 수 있다.
+
+:::tip req.query vs req.params
+다음과 같은 `http://localhost:4000/users/github/1/detail?code=...` 링크가 있다고 가정하자. 해당 링크의 req.query는 **?** 뒤로 쭉 이어지는 `code=...`와 같은 값들이고 req.params는 리퀘스트 URL의 파라미터들이다. 애초에 라우터 설계 시에 고려하였던 `:id`와 같은 값들인 것이다.
+:::
+
+위에서와 마찬가지로 `URLSearchParams`메서드를 통해 인코딩을 해주고 `fetch`를 통해 따로 페이지 리다이렉트 없이 API만 요청하고 json 객체를 반환받는다.
+
+:::warning
+fetch는 서버에 없고 브라우저에만 존재하기 때문에 모듈을 따로 설치해줘야한다.
+:::
+
+:::details fetch?
+[fetch API mdn](https://developer.mozilla.org/en-US/docs/Web/API/fetch)의 문서를 참조해보면 다음과 같이 fetch 메서드를 정의할 수 있다.
+
+```text
+The global fetch() method starts the process of fetching a resource from the network, returning a promise which is fulfilled once the response is available.
+
+fetch 메서드는 네트워크로부터 리소스를 가져오는 프로세스를 시작하여 프로미스를 반환합니다.
+```
+
+:::
+
+:::details response.json() 메서드
+컨트롤러에 정의한 config객체를 URL에 인코딩 후 담아서 해당 URL로 fetch를 보냈다. fetch는 프로미스를 반환하므로 어웨이트를 통해 변수에 리스폰스 객체를 담을 수 있고, 리스폰스 객체에는 `.json()` 메서드가 있으므로 사용 가능하며 `.json()` 메서드는 응답의 `body` 텍스트를 JSON 형태로 parsing한 뒤 완료 여부를 프로미스로 반환한다.
+:::
+
+최종적으로 POST메서드 요청에 대한 응답을 확인하기 위해 `res.send` 메서드로 JSON메서드를 찍어보면 액세스토큰이 발급되었음을 확인할 수 있게 된다.
+
+## API 액세스
+
+이제 발급받은 액세스 토큰을 가지고 API에 접근하여 유저 정보를 불러오면 된다. 액세스토큰을 발급받는 컨트롤러 함수 내에 다음의 코드를 추가한다.
+
+```js
+if ("access_token" in tokenRequest) {
+  const { access_token } = tokenRequest;
+  const userData = await (
+    await fetch("https://api.github.com/user", {
+      headers: {
+        Authorization: `token ${access_token}`,
+      },
+    })
+  ).json();
+  console.log(userData);
+} else {
+  return res.redirect("/login");
+}
+```
+
+반환받은 `response` 객체에 `access_token`이라는 변수가 존재할 때 API를 처리해주는 코드이다. [github Web application flow](https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#3-use-the-access-token-to-access-the-api) 문서에 따르면 `GET https://api.github.com/user` GET 메서드의 헤더에 `Authorization`과 토큰 값을 추가한 뒤 해당 URL에 요청을 보내면 유저 대신에 API를 요청할 수 있게 된다고 한다. 실제로 반환받은 객체를 찍어보면 각종 깃헙 유저 정보에 대한 것들이 출력된다.
+
+private한 정보들은 null로 처리되어 있으며 [github docs - REST API document/emails](https://docs.github.com/en/rest/reference/users)를 참조하여 퍼블릭한 이메일 정보를 얻을 수 있다. 처리 코드는 다음과 같다.
+
+```js
+if ("access_token" in tokenRequest) {
+  const { access_token } = tokenRequest;
+  const apiUrl = "https://api.github.com";
+  const userRequest = await (
+    await fetch(`${apiUrl}/user`, {
+      headers: {
+        Authorization: `token ${access_token}`,
+      },
+    })
+  ).json();
+
+  const emailData = await (
+    await fetch(`${apiUrl}/user/public_emails`, {
+      headers: {
+        Authorization: `token ${access_token}`,
+      },
+    })
+  ).json();
+  console.log(emailData);
+} else {
+  return res.redirect("/login");
+}
+```
