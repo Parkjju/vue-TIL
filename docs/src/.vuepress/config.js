@@ -76,6 +76,8 @@ module.exports = {
           "/daily/210921-rest",
           "/daily/210927-mongo",
           "/daily/210930-user",
+          "/daily/211006-edit",
+          "/daily/211006-upload",
           "/daily/210930-cookie",
           "/daily/211004-antipattern",
           "/daily/211004-githubLogin",
