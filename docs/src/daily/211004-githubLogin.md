@@ -187,7 +187,7 @@ if (existingUser) {
     username: userData.login,
     email: emailObj.email,
     password: "", //password required이슈
-    socialOnly: true, //social로그인으로 처리할 계정인지 여부 (userSchema에 디폴트 false로 추가해놓은 상태)
+    socialOnly: true, //social로그인으로만 처리할 계정인지 여부 (userSchema에 디폴트 false로 추가해놓은 상태) )패스워드가 필요가 없다.
     location: userData.location,
   });
   req.session.loggedIn = true;
