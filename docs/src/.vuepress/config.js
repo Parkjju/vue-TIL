@@ -83,6 +83,7 @@ module.exports = {
           "/daily/211004-githubLogin",
           "/daily/211004-Oauth",
           "/daily/211005-json",
+          "/daily/211018-network",
         ],
       },
       {
