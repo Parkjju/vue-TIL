@@ -36,8 +36,80 @@ n X n 행렬의 \[a,b\] 원소가 1이면 a-b 엣지가 존재하는 것이다.
 
 인접행렬은 n X n으로 표현해야하므로 정보가 없는 엣지를 표현할 때에 메모리의 낭비가 심해지는 문제가 존재한다.
 
+```python
+class Graph:
+    def __init__(self, size):
+        self.adjMatrix = [[0 for _ in range(size)] for _ in range(size)]
+        self.size = size
+
+    def insertEdge(self, v1, v2):
+        self.adjMatrix[v1][v2] = 1
+# in case of undirected graph
+        self.adjMatrix[v2][v1] = 1
+
+    def printGraph(self):
+        for i in range(self.size):
+            for j in self.adjMatrix[i]:
+                print(j, end = ' ')
+            print()
+```
+
 ## 인접성의 표현 2) 인접 리스트 (Adjacency list, 연결리스트)
 
 ![adjlist](../.vuepress/assets/algorithm/adj-list.jpeg)
 
 각 연결리스트에서 메모리의 낭비 없이 엣지를 표현할 수 있게 된다.
+
+`노드로 표현`
+
+```python
+class Node:
+    def __init__(self, vertex):
+        self.vertex = vertex
+        self.link = None
+
+class Graph:
+    def __init__(self, size):
+        self.adjList = [None]*size
+        self.size = size
+
+    def insertEdge(self, v1, v2):
+        newNode = Node(v2)
+        newNode.link = self.adjList[v1]
+        self.adjList[v1] = newNode
+  # in case of undirected graph
+
+        newNode = Node(v1)
+        newNode.link = self.adjList[v2]
+        self.adjList[v2] = newNode
+
+    def printGraph(self):
+        for v in range(self.size):
+            print(v, end = ': ')
+            current = self.adjList[v]
+            while current is not None:
+                print(current.vertex, end = ' ')
+                current = current.link
+            print()
+
+```
+
+`리스트 내의 리스트로 표현`
+
+```python
+class Graph:
+    def __init__(self, size):
+        self.adjList = [[] for _ in range(size)]
+        self.size = size
+
+    def insertEdge(self, v1, v2):
+        self.adjList[v1].append(v2)
+  # in case of undirected graph
+        self.adjList[v2].append(v1)
+    def printGraph(self):
+        for v in range(self.size):
+            print(v, end = ': ')
+            for x in self.adjList[v]:
+                print(x, end = ' ')
+            print()
+```
