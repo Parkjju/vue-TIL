@@ -120,7 +120,7 @@ module.exports = {
             {
                 title: 'Algorithm',
                 collapsable: true,
-                children: ['/algorithm/dp'],
+                children: ['/algorithm/dp', '/algorithm/greedy'],
             },
             {
                 title: '성장일지',
