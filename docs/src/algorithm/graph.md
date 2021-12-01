@@ -151,4 +151,17 @@ def DFS(v): # 노드 v를 방문중
     post[v] = current_time # v에 인접한 모든 w노드들을 모두 순회 완료한 시점의 시간
     current_time += 1
     # 함수 종료
+
+def DFSALL(G): # 주어진 G 데이터를 DFS search
+    for all nodes in G:
+        mark[v] = "unvisited"
+    for all nodes v:
+        if mark[v] != "visitied":
+            DFS[v]
 ```
+
+Parent 리스트에 저장한 데이터를 기반으로 트리를 구성하면 **DFS 트리가 된다.**
+
+:::tip
+`DFSALL`함수가 필요한 이유는 주어진 그래프 G가 별개의 컴포넌트로 쪼개져 있을 경우 DFS함수로만 순회를 진행하게 되면 함수가 리턴되며 모든 노드를 순회할 수 없게 되기 때문이다.
+:::
