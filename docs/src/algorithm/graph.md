@@ -27,7 +27,7 @@ title: 그래프 (graph)
 단 하나만 존재한다는 것을 의미한다.
 :::
 
-## 인접성의 표현 1) 인접행렬 (Adjacency matrix)
+## 인접성의 표현 1) 인접행렬
 
 ![graph](../.vuepress/assets/algorithm/adjacency-graph.jpg)
 
@@ -54,13 +54,13 @@ class Graph:
             print()
 ```
 
-## 인접성의 표현 2) 인접 리스트 (Adjacency list, 연결리스트)
+## 인접성의 표현 2) 인접 리스트
 
 ![adjlist](../.vuepress/assets/algorithm/adj-list.jpeg)
 
 각 연결리스트에서 메모리의 낭비 없이 엣지를 표현할 수 있게 된다.
 
-`노드로 표현`
+### 노드로 표현
 
 ```python
 class Node:
@@ -94,7 +94,7 @@ class Graph:
 
 ```
 
-`리스트 내의 리스트로 표현`
+### 리스트 내의 리스트로 표현
 
 ```python
 class Graph:
@@ -113,3 +113,11 @@ class Graph:
                 print(x, end = ' ')
             print()
 ```
+
+## 그래프 순회 (Graph Traversal)
+
+트리 자료구조에서 각 노드를 탐색하는 방법은(순회) 총 세가지로 `inorder, preorder, postorder`가 있다.
+
+그래프 자료구조도 트리 자료구조의 순회 방식과 유사하지만 엣지의 개수가 더 많아 사이클을 형성하는 경우가 많으므로 이러한 측면에서 순회 방식이 달라지게 된다. 바로 **DFS, BFS** 라는 방식으로 나뉜다.
+
+### DFS(Depth First Search)
