@@ -66,3 +66,78 @@ title: MST 최소신장트리
 <img src="../.vuepress/assets/algorithm/k8.jpg" height="80%" width="80%"/>
 <figcaption style="font-size:1rem; color:grey; font-weight:bold; margin-top:0.8rem; margin-bottom:1rem;">8</figcaption>
 </figure>
+
+## 프림 알고리즘
+
+컷 프로퍼티(Cut property) : 컷의 최소비용에지를 포함한 MST는 항상 존재한다.
+
+프림 알고리즘 구현을 위해 F는 임의의 노드 u, T는 공집합으로 시작한다.
+
+```python
+# pseudo code
+F = {u}
+T = ∅
+while len(T) < n-1:
+    find min edge(u,v) such that
+    u ∈ F and v ∈ V-F
+
+    T = T ∪ {(u,v)}
+    F = F ∪ {u}
+return T
+```
+
+:::tip 정리
+F에 속하는 u노드에서 뻗어 나가는 간선들 중, u의 인접한 노드 v의로의 가중치가 가장 작은 간선을 찾은 후 T에 간선 (u,v)를 추가하고 F에는 v를 추가한다.
+:::
+
+![prim](../.vuepress/assets/algorithm/prim.jpg)
+
+F와 V-F 사이에 컷에 해당하는 간선들 중 최소비용을 갖도록 간선을 구성한다. V-F에서 컷에 해당하는 노드를 제외한 나머지 노드의 가중치는 모두 무한대로 초기화해둔 상태이다.
+
+컷들 중 최소비용 간선에 해당하는 노드 둘 중 F에 속하는 노드가 E\[v\], V-F에 속하는 노드가 cost\[v\]로 정의된다.
+
+V-F에 속하는 cost리스트는 무한대로, F에 속하는 E리스트는 None으로 초기화해둔다. 최종적으로 cost값이 가장 작은 노드를 찾아내기 위해 최소 힙 자료구조를 이용한다.
+
+조건을 만족하여 T에 간선이 추가될때마다 기존에 V-F에 속했던 노드가 이제는 **F에 속하게 되므로** 컷에 해당하는 또 다른 간선을 만들기 위해 F에 추가된 새로운 노드로부터 V-F로의 간선 이동에서 **릴랙스 연산을 진행해야 한다.**
+
+```python
+# prim pseudo code with detail code
+for each node v:
+    cost[v] = math.inf
+    E[v] = None
+    F[v] = False
+
+T = []
+
+Q = Heap(V, cost) # cost가 키값
+while Q is not empty: # 초기에 Q는 모든 노드가 무한대인 상태이므로 무작위 노드가 삭제된다.
+    v = Q.delete_min()
+    F[v] = True
+    if E[v] != None:
+        T.appennd((E[v], v))
+    for each edge (v,w) incident to v:
+        if F[w] == False and cost(v,w) < cost[w]:
+            cost[w] = cost(v,w)
+            Q.decrease_key(w, cost[w])
+            E[w] = v
+return T
+
+```
+
+:::warning
+프림 알고리즘에서의 힙 자료구조는 우선순위 큐(Priority Queue)를 이용한다. 이에 해당하는 힙 자료구조로는 바이너리 힙(통상 알고있는 힙), 피보나치 힙 등이 있다.
+:::
+
+![prim](../.vuepress/assets/algorithm/p1.jpg)
+![prim](../.vuepress/assets/algorithm/p2.jpg)
+![prim](../.vuepress/assets/algorithm/p3.jpg)
+
+수행시간은 n을 노드 수 m을 간선 수라고 하였을 때
+
+1. 힙을 만드는 시간 O(n)
+2. 바깥 while 루프의 경우 O(n)
+3. while 내부의 for 루프 O(logn)
+4. decrease key O(logn)
+5. 최악의 경우 for루프 내의 decrease key가 간선 수만큼 (m)번 호출
+
+O(nlogn + mlogn) = O((m+n)logn)
