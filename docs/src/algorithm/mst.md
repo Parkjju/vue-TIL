@@ -141,3 +141,67 @@ return T
 5. 최악의 경우 for루프 내의 decrease key가 간선 수만큼 (m)번 호출
 
 O(nlogn + mlogn) = O((m+n)logn)
+
+## 크루스칼 알고리즘
+
+사이클 프로퍼티(Cycle property) : 임의 사이클의 최대비용 간선은 MST에 포함되지 않는다.
+
+크루스칼 알고리즘은 크게 다음과 같은 과정으로 진행된다.
+
+1. 간선을 비용의 오름차순으로 정렬한다.
+2. 최소 비용의 간선부터 MST를 만들어가되 **사이클이 형성되면 안된다.**
+3. 작은 트리들이 서로 연결되어 하나의 큰 MST를 형성하게 된다는 것에서 의미를 가져와 크루스칼 알고리즘의 부트리를 **Forest(A collection of tree)** 라고 칭한다.
+4. 모든 간선을 검사할 필요 없이 현재까지 포레스트에 쌓인 노드의 수가 전체 그래프의 노드 수와 동일해지면 연산을 종료하면 된다.
+
+2번과정에서 추가했던 간선이 트리의 사이클 형성 원인이 되었을 때 해당 간선의 비용을 보면 현재까지 만들어온 포레스트의 간선 비용 중 가장 큰 값을 가지게 된다. 사이클 프로퍼티에 따라 현재 발견된 최대비용 간선은 앞으로 MST에 포함될 일이 없으므로 제외하여 다음 연산을 시작하면 된다.
+
+포레스트의 사이클 여부 검사하는 데에 사용되는 자료구조는 **union-find** 자료구조가 사용되며 총 수행시간은 m개의 간선이 있을 때 O(mlogm)시간이 소요된다.
+
+### 코드구현
+
+크루스칼 연산 이전 자료의 초기 상태는 그래프의 각 노드를 모두 집합화 하는 것이다.
+![prim](../.vuepress/assets/algorithm/p1.jpg)
+
+{a}, {b}, {c} ... {h}, {i}
+
+```python
+def kruskal(V, E):
+    T = []
+    for each v ∈ V: # n*O(1) -> O(n)
+        make_set(v) # O(1)
+    sort E in 오름차순 of costs # merge sort or heap sort, O(mlogm) - merge sort
+    for each e = (u,v) in E: # m
+        if find(u) ≠ find(v): # u가 속한 집합, v가 속한 집합이 같은지 여부를 검사 O(logn)
+            T.append(e)
+            union(find(u), find(v)) # union-find의 연산
+    # O(mlogn)
+    return T
+
+    # 총 수행시간 O(mlogm)
+```
+
+```python
+# union-find
+# pseudo code
+class Node:
+    def __init__(self,key):
+        self.key = key
+        self.parent = self
+        self.rank = 0
+
+def makeset(x):
+    return Node(x)
+
+def find(x): # x의 루트노드 리턴
+    while x.parent != x: # x is not root
+        x = x.parent
+    return x
+
+def union(x, y):
+    v, w = find(x), find(y)
+    if v.rank > w.rank:
+        v, w = w, v # rank가 작은 쪽에서 rank가 큰 쪽으로 트리를 연결, swap의 필요성?
+    v.parent = w
+    if v.rank==w.rank:
+        w.rank+=1
+```
