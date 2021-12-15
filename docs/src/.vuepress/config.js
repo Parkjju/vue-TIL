@@ -108,8 +108,8 @@ module.exports = {
           "/nodeJS/middleware",
           "/nodeJS/router",
           "/nodeJS/export",
-          "nodeJS/param",
-          "nodeJS/template",
+          "/nodeJS/param",
+          "/nodeJS/template",
         ],
       },
       {
@@ -126,6 +126,7 @@ module.exports = {
           "/algorithm/graph",
           "/algorithm/graphAlgo",
           "/algorithm/mst",
+          "/algorithm/backtrack",
         ],
       },
       {
