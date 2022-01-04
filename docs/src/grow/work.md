@@ -39,4 +39,4 @@ console.log(...textArr);
 ![drop](../.vuepress/assets/grow/drop2.png)
 ![drop](../.vuepress/assets/grow/drop.png)
 
-수기로 작업하던 부분을 직접 자동화하여 귀찮은 작업을 단순화시켰다는 점에서 성장할 수 있었다.
+수기로 작업하던 부분을 직접 자동화하여 귀찮은 작업을 단순화시켰다는 점에서 성장할 수 있었다. (추출할 데이터가 부분적으로 나뉘어 총 1000라인 정도 됐었음.)
