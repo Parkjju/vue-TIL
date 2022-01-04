@@ -137,7 +137,7 @@ module.exports = {
       {
         title: "성장일지",
         collapsable: true,
-        children: ["/grow/openSource"],
+        children: ["/grow/openSource", "/grow/work"],
       },
     ],
   },
