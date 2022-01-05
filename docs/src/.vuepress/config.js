@@ -67,7 +67,12 @@ module.exports = {
       {
         title: "TIL",
         collapsable: true,
-        children: ["/TIL/2021-09-13", "/TIL/2021-10", "/TIL/2021-11"],
+        children: [
+          "/TIL/2021-09-13",
+          "/TIL/2021-10",
+          "/TIL/2021-11",
+          "/TIL/2022-01",
+        ],
       },
       {
         title: "DailyTech",
@@ -91,7 +96,7 @@ module.exports = {
       {
         title: "Javascript",
         collapsable: true,
-        children: ["/javascript/ecma.md", "/javascript/jsOperation"],
+        children: ["/javascript/ecma", "/javascript/jsOperation"],
       },
       {
         title: "Vue",
