@@ -96,7 +96,11 @@ module.exports = {
       {
         title: "Javascript",
         collapsable: true,
-        children: ["/javascript/ecma", "/javascript/jsOperation"],
+        children: [
+          "/javascript/ecma",
+          "/javascript/jsOperation",
+          "/javascript/prototype",
+        ],
       },
       {
         title: "Vue",
