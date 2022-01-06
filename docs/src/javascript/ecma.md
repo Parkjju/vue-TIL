@@ -1,5 +1,5 @@
 ---
-title: 모던 자바스립트
+title: 모던 자바스크립트
 ---
 
 ## ECMAScript
