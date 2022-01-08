@@ -5,7 +5,7 @@ module.exports = {
      * Ref：https://v1.vuepress.vuejs.org/config/#title
      */
     base: '/vue-TIL/',
-    title: "Parkjju's TIL",
+    title: 'Today I Learned',
     /**
      * Ref：https://v1.vuepress.vuejs.org/config/#description
      */
