@@ -98,9 +98,9 @@ module.exports = {
         collapsable: true,
         children: [
           "/javascript/ecma",
-          "/javascript/jsOperation",
           "/javascript/prototype",
           "/javascript/set",
+          "/javascript/symbol",
         ],
       },
       {
@@ -153,7 +153,7 @@ module.exports = {
       {
         title: "성장일지",
         collapsable: true,
-        children: ["/grow/openSource", "/grow/work"],
+        children: ["/grow/openSource", "/grow/work", "/grow/cleancode"],
       },
     ],
   },
