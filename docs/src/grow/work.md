@@ -9,8 +9,8 @@ title: 애드업 인턴일지
 애드업에서 진행중인 프로젝트 중 하나로 코맥스 사이트가 있다. 코맥스 cms(관리자) 사이트의 이전으로 인해 기획 단계부터 진행중인 프로젝트이다.
 
 1. 코맥스 IA와 코맥스 cms사이트의 게시판 관리 파트를 비교하여 xd파일 수정 작업을 진행하였음.
-    - IA 순서에 맞게끔 xd 기획서 전체 재배열 진행
-    - 각 기획서 페이지마다 사이드바 포커싱 이동 작업 진행
+   - IA 순서에 맞게끔 xd 기획서 전체 재배열 진행
+   - 각 기획서 페이지마다 사이드바 포커싱 이동 작업 진행
 2. [shutterstock에서](https://www.shutterstock.com/ko/explore/korea-stock-images-0814?kw=shutterstock&c3apidt=p67361398787&gclid=Cj0KCQiA_c-OBhDFARIsAIFg3exOJwj7iuXhlK0bzVqftdiKw4nXDo6VpJHzH2gAb7-v99gdFEyV9fwaAtC7EALw_wcB&gclsrc=aw.ds) 거래처의 기획 의도에 맞는 영상 소스 서치
 
 ![grow](../.vuepress/assets/grow/list1.png)
@@ -21,13 +21,13 @@ title: 애드업 인턴일지
 
 1. 코맥스 cms페이지 xd파일 수정 작업 진행
 2. cms페이지 드랍다운 데이터 마이그레이션을 위해 추출 및 액셀 저장
-    - 드랍다운 셀렉트 박스에서 데이터를 추출하기 위해 기존 cms에 정의된 DOM id값을 이용하였다.
+   - 드랍다운 셀렉트 박스에서 데이터를 추출하기 위해 기존 cms에 정의된 DOM id값을 이용하였다.
 
 ```js
-a = document.getElementById('ID값');
+a = document.getElementById("ID값");
 textArr = [];
 for (i = 0; i < a.childNodes[1].childElementCount; i++) {
-    textArr.push(a.childNodes[1].childNodes[2 * i + 1].text);
+  textArr.push(a.childNodes[1].childNodes[2 * i + 1].text);
 }
 
 console.log(...textArr);
@@ -60,7 +60,7 @@ console.log(...textArr);
 ## 220106
 
 1. xd계획서 사수님 요청에 맞춰 추가 수정
-    - cms 각 관리페이지마다 기존 상세페이지 수정을 위한 페이지 제작
+   - cms 각 관리페이지마다 기존 상세페이지 수정을 위한 페이지 제작
 
 ![work](../.vuepress/assets/grow/0106cms.png)
 
@@ -81,3 +81,11 @@ console.log(...textArr);
 :::tip 오늘의 씨앗
 할게 너무없다 - 할거 찾아서 하기, 개발 아티클 큐레이팅 하는 곳 꾸준히 찾아보기
 :::
+
+## 220110
+
+1. 개발 아티클 서치
+   - 디자인 시스템
+   - CSS 그리드 시스템
+   - 개발문화
+   - 클린코드 독서
