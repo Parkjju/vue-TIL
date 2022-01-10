@@ -1,5 +1,5 @@
 ---
-title: ES6 set 자료구조
+title: ES6 set
 ---
 
 ## set
