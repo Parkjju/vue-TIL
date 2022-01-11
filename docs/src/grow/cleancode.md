@@ -158,40 +158,42 @@ if(paycheck.isPosted()); // 명사 paycheck 클래스, 조건자 is메서드
 
 생성자 오버로딩 시에는 **정적 팩토리 메서드를 사용한다.**
 
-- 정적 팩토리 메서드란?
-  [정적 팩토리 메서드](https://devlog-wjdrbs96.tistory.com/256)
-  객체 인스턴스를 얻는 방법으로 `public` 생성자를 사용하는 방법도 있지만 정적 팩토리 메서드를 통해서도 얻을 수 있다.
+:::details 정적 팩토리 메서드란?
+[정적 팩토리 메서드](https://devlog-wjdrbs96.tistory.com/256)
+객체 인스턴스를 얻는 방법으로 `public` 생성자를 사용하는 방법도 있지만 정적 팩토리 메서드를 통해서도 얻을 수 있다.
 
-  ```java
-  // public 생성자를 이용하기
-  public class Test {
-  	private String name;
+```java
+// public 생성자를 이용하기
+public class Test {
+	private String name;
 
-  	public Test(String name){
-  		this.name = name;
-  	}
+	public Test(String name){
+		this.name = name;
+	}
 
-  	public static void main(String[] args){
-  		Test test = new Test("Park Gyeong Jun");
-  	}
-  }
+	public static void main(String[] args){
+		Test test = new Test("Park Gyeong Jun");
+	}
+}
 
-  // 정적 팩토리 메서드 이용하기
-  public class Test{
-  	private String name;
+// 정적 팩토리 메서드 이용하기
+public class Test{
+	private String name;
 
-  	public Test(String name) {
-  		this.name = name;
-  	}
+	public Test(String name) {
+		this.name = name;
+	}
 
-  	public static Test withName(String name){
-  		return new Test(name);
-  	}
+	public static Test withName(String name){
+		return new Test(name);
+	}
 
-  	public static void main(String[] args){
-  		Test test = Test.withName("Park Gyeong Jun");
-  }
-  ```
+	public static void main(String[] args){
+		Test test = Test.withName("Park Gyeong Jun");
+}
+```
+
+:::
 
 `Complex fulcrumPoint = Complex.FromRealNumber(23.0);` 코드가 퍼블릭 생성자를 이용하는 코드보다 좋은 코드이다. 클래스에 미리 정적 팩토리 메서드를 작성해두자. 또한 정적 팩토리 메서드의 이름은 **타입을 명시하는 형태로 명명하자.**
 

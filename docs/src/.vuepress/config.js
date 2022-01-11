@@ -101,9 +101,10 @@ module.exports = {
         collapsable: true,
         children: [
           "/javascript/ecma",
-          "/javascript/prototype",
           "/javascript/set",
           "/javascript/symbol",
+          "/javascript/prototype",
+          "/javascript/prototypeReal",
         ],
       },
       {
