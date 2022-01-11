@@ -6,6 +6,9 @@ module.exports = {
    */
   base: "/vue-TIL/",
   title: "Today I Learned",
+  markdown: {
+    lineNumbers: true,
+  },
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#description
    */
