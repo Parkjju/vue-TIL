@@ -169,10 +169,8 @@ module.exports = {
   /**
    * Apply plugins，ref：https://v1.vuepress.vuejs.org/zh/plugin/
    */
-  sitemap: {
-    hostname: "https://parkjju.github.io/vue-TIL/"
-  },
   plugins: [
+    ["sitemap", {hostname: "https://parkjju.github.io/vue-TIL/"}],
     "@vuepress/plugin-back-to-top",
     "@vuepress/plugin-medium-zoom",
     [
