@@ -475,4 +475,129 @@ public static String renderPageWithSetupsAndTeardowns(
 
 > 1번 코드에서 `getHtml()`은 추상화 수준이 아주 높다. 반면, `String pagePathName = PathParser.render(pagepath);`는 추상화 수준이 중간이다. 그리고 `.append(”\n”)`와 같은 코드는 추상화 수준이 아주 낮다.
 
-`getHtml()` 의 추상화 수준이 높은 이유는 `getHtml()`이전에 등장하는 갖가지 if, for루프 등 여러 동작을 하는 구문들로 인해 다양한 경우의 수가 발생할 수 있기 때문이다.
+:::details 추상화 예시 문장
+
+    김 아무개는 배가 고프면 김치찌개를 먹는다.
+    **사람은 배가 고프면 음식을 먹는다.** 김 아무개는 사람으로, 김치찌개는 음식으로 추상화된 문장이다.
+
+    개미집에는 일정한 비율로 놀고 있는 개미가 없으면, 긴급 사태에 대응할 수 없어서 전멸할 리스크가 높아진다.
+    **평상시의 업무량에 맞춰 처리 능력을 최적화해버리면 큰 환경 변화가 일어났을 때 대응할 수 없어서 조직은 멸망해버린다. (출처 -** [https://medium.com/@oowgnoj/clean-code를-읽고-2-893d73b86b37](https://medium.com/@oowgnoj/clean-code%EB%A5%BC-%EC%9D%BD%EA%B3%A0-2-893d73b86b37)) 개미집에 일정한 비율로 놀고 있는 개미가 없다는 것은 평상시 업무량에 맞춰 처리 능력을 최적화한 상태, 긴급 사태로 인한 전멸은 큰 환경변화에 대응하지 못하는 모습으로 추상화될 수 있다.
+
+    추상화된 문장이라는 것은 각기 다른 사건에 개별성을 낮추어 여러 상황에 적용될 수 있게 한다. **추상화를 거친 문장은 한 뜻을 내포하는 여러 문장을 만들 수 있게 된다.**
+
+:::
+
+> 1번 코드에서 `getHtml()`은 추상화 수준이 아주 높다. 반면, `String pagePathName = PathParser.render(pagepath);`는 추상화 수준이 중간이다. 그리고 `.append(”\n”)`와 같은 코드는 추상화 수준이 아주 낮다.
+
+`getHtml()` 의 추상화 수준이 높은 이유는 `getHtml()`이전에 등장하는 갖가지 if, for루프 등 여러 동작을 하는 구문들로 인해 다양한 경우의 수가 발생할 수 있기 때문이다. `getHtml()`이라는 한 가지의 뜻을 가지고 다양한 형태의 구문들을 만들어낼 수 있다.
+
+이에 비해 `String pagePathName = PathParser.render(pagepath);`은 `pagepath`데이터를 렌더링하는 정보를 `pagePathName`이라는 변수에 저장하는 뜻을 내포하지만 `pagepath`라는 변수로 인해 여러 형태의 구문을 만들 수 있게 된다. `getHtml()`에 비해서는 추상화 수준이 낮다.
+
+`.append("\n");` 동작을 더 쪼갤 수 있을까? 그렇지 않다. 빈 줄 하나를 추가한다는 뜻을 내포한 채 유사하지만 다른 동작을 할 가능성이 전혀 없다. 따라서 `.append(”\n”);`는 추상화 수준이 매우 낮다.
+
+근본이 되는 개념에 세부 사항을 섞은 코드, 즉 추상화 수준이 높은 코드를 작성하면 독자가 이해하기 어려울 뿐더러 이후 **함수에 세부사항을 점점 더 추가하게된다.**
+
+> 위에서 아래로 코드 읽기 : 내려가기 규칙 위에서 아래로 프로그램을 읽으면 **함수 추상화 수준이 한 번에 한 단계씩 낮아지는 것을 말한다.** 쉽게 말해 각 함수는 다른 함수를 같은 `Depth`에서 소개를 하고, 소개된 함수는 또 다른 함수를 소개하는 방식으로 이루어지는 것이다.
+
+```text
+Depth1---Depth2---Depth3
+  A--------B--------X------.....
+  |        |--------Y....
+  |
+  |--------C--------L
+           |--------M
+```
+
+### Switch 문
+
+**Switch문은 줄이기 어렵다.** 본질적으로 N가지 방향의 일을 처리하기 위해 만들어진 문법이기 때문이다. 다형성(Polymorphism)을 이용하여 반복하지 않는 방법은 존재한다. (여러 분기를 한번에 처리하기 위한 if-else 구문도 포함)
+
+```java
+public Money calculatePay(Employee e)
+throws InvalidEmployeeType {
+	switch(e.type){
+		case COMISSIONED:
+			return calculateCommisionedPay(e);
+		case HOURLY:
+			return calculateHourlyPay(e);
+		case SALARIED:
+			return calculateSalariedPay(e);
+		default:
+			throw new InvalidEmployeeType(e.type);
+	}
+}
+```
+
+위 함수가 갖는 문제점을 정리하면 함수가 길고, 한 가지 작업만 하지 않고, SRP를 위반하며, OCP또한 위반한다.
+
+:::details SRP, OCP?
+
+1. SRP(Single Responsibility Principle) : SRP는 OOP에서 단일 책임 원칙을 말한다. 모든 클래스는 하나의 책임만 갖고 그 책임을 **완전히 캡슐화 해야한다는 원칙이다.** 여기서 책임이란 코드를 변경하려는 이유를 뜻한다.
+
+2. OCP(Open Closed Principle) : OCP는 개방-폐쇄원칙을 말한다. **확장에 대해서는 개방, 수정에 대해서는 폐쇄되어 있어야 한다는 것이다.**
+
+:::
+
+SRP, OCP를 알아보았으니 문제에 대한 실제 근거를 분석해보자.
+
+1. 함수가 길다 - 함수 내에서 다양한 일들이 벌어지게 된다.
+2. 한 가지 작업만 하지 않는다 - `e.type` 데이터에 따라 서로 다른 동작을 하게 된다.
+3. SRP를 위반한다 - 코드 변경에 대한 이유가 다양하다. `case` 추가, 내부 동작의 수정이 이루어지는 등.
+4. OCP를 위반한다 - 일례로 직원 유형이 새롭게 추가되면(switch문의 case추가) **수정에 대한 폐쇄 원칙이 깨진다.**
+
+`switch` 문을 깨끗하게 작성하면 다음과 같은 코드로 작성해볼 수 있겠다.
+
+```java
+public abstract class Employee {
+	public abstract boolean isPayday();
+	public abstract Money calculatePay();
+	public abstract void deliverPay(Money pay);
+}
+
+public interface EmployeeFactory {
+	public Employee makeEmployee(EmployeeRecord r) throws InvalidEmployeeType;
+}
+
+public class EmployeeFactoryImpl implements EmployeeFacory {
+	public Employee makeEmployee(EmployeeRecord r) throws InvalidEmployeeType {
+		switch (r.type) {
+			case COMISSSIONED:
+				return new CommissionedEmployee(r);
+			case HOURLY:
+				return new HourlyEmployee(r);
+			case SALARIED:
+				return new SalariedEmployee(r);
+			default:
+				throw new InvalidEmployeeType(r.type);
+		}
+	}
+}
+```
+
+위 코드를 자바 문법에 따라 해석해보면 다음과 같다
+
+1. 직원에 대한 추상 클래스를 선언한다. (`public abstract class Employee`)
+2. 직원 생성을 위한 인터페이스를 선언한다. (`public interface EmployeeFactory`), 이 인터페이스 내에는 `makeEmployee`라는 메서드가 선언되어 있고 이 인터페이스를 구현하는 클래스에서 이 메서드를 구현해놓게 된다.
+3. 직원 생성 인터페이스를 구현하는 구현클래스를 선언한다. (`EmployeeFactoryImpl`), 이 클래스에서 `makeEmployee` 메서드를 구현하게 된다. 구현클래스 내부에서 역시 `switch`문을 사용하게 되지만 기존에 함수 내에서 사용한 `switch`문과 다른 점이 있다.
+
+기존 함수 내의 `switch`문에서 개선된 점은 바로 **코드가 클래스 내에 숨겨졌다는 것이다.** 이에 따라 SRP, 책임에 대한 원칙이 지켜졌다. 나머지 한계점에서 개선된 것이 있느냐 하면 사실 그렇지는 않아보인다. 저자도 다형적 객체를 생성하는 코드 내에서는 `switch`문을 한 번만 참아준다고 한다.
+
+### 함수 인수
+
+함수에서 이상적인 인수(파라미터)의 개수는 0개이다. (무항 함수) 인수의 개수가 늘어나는 것은 권장되지 않으며 네개 이상의 인수를 갖는 함수부터는 특별한 이유가 필요하게 될 정도이다.
+
+함수 인수는 **인스턴스 변수를 통해 다루는 것이 좋다.** 인수 삽입으로 인해 독자가 굳이 알지 않아도 될 인수 타입까지 직접 찾아봐야 한다는 번거로움이 존재한다. 다양한 함수의 인수에 따른 유형을 나누어 확인해보자.
+
+1.  단항 함수
+    1. 인수에 질문을 던지는 경우 - `boolean fileExists("myFile");` 이 함수는 `myFile`이라는 파일이 존재하는 지를 묻는 함수이다.
+    2. 인수를 다른 하나로 변환 후 결과를 반환하는 경우 - `InputStream fileOpen("myFile");`이 함수는 String타입의 파일명을 InputStream으로 변환하는 동작을 한다고 한다.
+    3. 이벤트 처리를 하는 경우 - 함수 호출과 함께 이벤트가 함수의 입력 인수로 변환되어 들어간다. 출력 인수는 없다. **이벤트 함수는 이벤트라는 사실이 코드에 명확히 드러나야 한다.** `EventListener` 라는 식으로 작명에 이벤트를 꼭 표시하자. `EventListener`라는 단어가 꼭 아니더라도 이벤트 행위 자체를 표현하면 된다. `passwordAttemptFailedNtimes(int attempts)` - 패스워드가 N번 실패한 이벤트를 감지하는 함수이다.
+
+:::details 입력인수와 출력인수란?
+
+입력 인수는 **함수에게 작업 대상을 지정하기 위해 전달된다.** 우리가 익히 아는 인수를 생각하면 된다. `plusOne(i)`에서 i라는 작업 대상을 지정하기 위해 입력인수로 이용하는 것이다.
+
+출력 인수는 **함수가 작업한 결과를 돌려 받기 위해 사용된다.** `scanf` 함수를 생각해보면 `scanf("%d, &i);`에 전달되는 변수 i는 `scanf`함수에서 초기화될 필요도 없고 함수 내의 동작을 처리하기 위해 사용되는 것이 아니다. 온전히 `scanf`의 결과로 반환되는 값을 저장하기 위해 사용되는 변수이다.
+
+:::
+위와 같은 경우가 아니라면 단항 함수는 피하자.
