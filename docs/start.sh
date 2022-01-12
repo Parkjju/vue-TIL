@@ -1,2 +1,2 @@
-npm run docs:build
+npm run build
 npm run dev
