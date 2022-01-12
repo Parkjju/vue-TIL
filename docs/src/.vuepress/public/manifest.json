@@ -1,7 +1,7 @@
 {
-    "name": "Parkjju",
-    "short_name": "Jun",
-    "start_url": "/?utm_source=homescreen",
+    "name": "Parkjju's TIL",
+    "short_name": "Parkjju's TIL",
+    "start_url": "/vue-TIL/",
     "icons": [
         {
             "src": "images/logo.png",
@@ -9,8 +9,7 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#000000",
-    "background_color": "#FFFFFF",
-    "display": "fullscreen",
-    "orientation": "portrait"
+    "theme_color": "#3eaf7c",
+    "background_color": "#fcfefe",
+    "display": "standalone"
 }
