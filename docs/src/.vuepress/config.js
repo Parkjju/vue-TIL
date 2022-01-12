@@ -178,15 +178,20 @@ module.exports = {
         staticIcon: false,
       },
     ],
-    "@vuepress/google-analytics",
-    {
-      ga: "G-QP5LL1SE8Q",
-    },
+    [
+      "@vuepress/google-analytics",
+      {
+        ga: "G-QP5LL1SE8Q",
+      },
+    ],
     [
       "@vuepress/pwa",
       {
         serviceWorker: true,
-        updatePopup: true,
+        updatePopup: {
+          message: "새 컨텐츠가 등록되었습니다. 새로고침 버튼을 눌러주세요😀",
+          buttonText: "새로고침",
+        },
       },
     ],
   ],
