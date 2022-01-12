@@ -35,7 +35,7 @@ console.log(fruit); // [[prototype]]: Object라는 것이 함께 출력된다. _
 const fruit2 = {
   name: "apple",
   expiration: "20241231",
-  hasOwnProperty: function() {
+  hasOwnProperty: function () {
     console.log("Hello");
   },
 };
@@ -95,7 +95,7 @@ console.log(lion.__proto__); // {constructor: f} > f Animal()
 
 ```js
 function Animal() {}
-Animal.prototype.Run = function() {
+Animal.prototype.Run = function () {
   return "후다닥";
 };
 
@@ -110,7 +110,7 @@ tiger 객체를 예시로 들어, tiger객체가 프로토타입 객체로부터
 tiger, lion 객체 내에 메서드를 직접 정의하려면 다음과 같이 한다.
 
 ```js
-tiger.Run = function() {
+tiger.Run = function () {
   return "타이거 후다닥";
 };
 
@@ -155,7 +155,7 @@ console.log(lion.Leg); // 2
 function Calculate(first, last) {
   this.first = first;
   this.last = last;
-  this.Plus = function() {
+  this.Plus = function () {
     return this.first + this.last;
   };
 }
@@ -180,7 +180,7 @@ function Calculate(a, b) {
   this.b = b;
 }
 
-Calculate.prototype.Plus = function() {
+Calculate.prototype.Plus = function () {
   return this.a + this.b;
 };
 
@@ -190,3 +190,136 @@ console.log(Calculator.Plus()); // 3
 ```
 
 이 역시 `Plus`메서드를 `prototype` 프로퍼티를 이용하여 `Calculate` 프로토타입 객체의 멤버로 추가시키는 방식을 활용한다.
+
+## 프로토타입 상속 (1)
+
+상속이 필요한 가장 큰 이유는 **재사용에 있다.** 이미 부모쪽에서 정의된 프로퍼티와 메서드를 그대로 물려받아 재사용할 수 있고, 새로운 기능을 추가하여 기존의 기능에서 더 확장할 수도 있다.
+
+프로토타입 체인을 **상속 관점에서 다시 정의해보자.** `__proto__`는 상속을 해준 부모(프로토타입)을 가리킨다.(참조한다.) 이 말은 자식 객체가 `__proto__`가 가리키는 부모 객체의 멤버(프로퍼티, 메서드)를 사용할 수 있다. 이 말은 **자식 객체가 부모 객체로부터 멤버를 상속받았다는 것을 의미한다.**
+
+프로토타입 상속과 관련된 예제로 다음의 상황을 생각해보자. `object1`과 `object2`라는 이름의 객체가 각각 존재한다. 서로 연관이 없는 채로 `__proto__` 속성을 확인해보면 각각 객체는 `Object` 프로토타입을 가리킨다. 그렇다면 각 객체의 부모를, 프로토타입을 바꿀 수 있는가? 답은 **바꿀 수 있다.**
+
+```js
+let object1 = {
+  name: "홍길동",
+  age: 20,
+  sayHi: function () {
+    console.log("Hi~" + this.name);
+  },
+};
+
+let object2 = {
+  name: "이순신",
+};
+
+console.log(object2.__proto__); // Object 프로토타입에 대한 정보들 표시
+```
+
+`object2`의 프로토타입을 변경해본 뒤 출력 결과를 관찰해보자.
+
+```js
+object2.__proto__ = object1;
+
+object2.sayHi(); // Hi~이순신
+```
+
+`object2`가 `object1`으로부터 `sayHi`메서드를 상속 받은 뒤 출력하는 결과는 `this`로 인해 **이순신으로 출력되는 것을 확인할 수 있다.**
+
+프로토타입 철학에 대한 글에서 보았듯 **자바스크립트 this의 맥락이 object1에서 sayHi의 실행주체인 object2로 변경된 것이다.**
+
+## 프로토타입 상속 (2)
+
+빈 객체 생성 후에 객체를 상속해보자.
+
+```js
+let object1 = {
+  name: "홍길동",
+  age: 20,
+  sayHi: function () {
+    console.log("Hi~" + this.name);
+  },
+};
+
+let EmptyObject = {};
+EmptyObject.__proto__ = object1;
+EmptyObject.sayHi(); // 뭐가 출력될까? 예상해보자. 힌트 : 프로토타입 체인
+```
+
+:::tip 정리
+자바스크립트는 자신에게 없는 특성(속성, 메서드)을 **proto**가 가리키는 프로토타입(부모)에서 가져온다. 이때, 맨 하위 자식 객체에서부터 순차적으로 연결되어 있는 원형을 찾아간다. --> 프로토타입 체인
+
+`__proto__` 속성이 가리키는 프로토타입이 자신에게 상속을 해준 부모이다.
+
+이와 같이 자바스크립트는 프로토타입 체인을 이용하여 객체 특성을 다른 객체로 전파한다. --> 프로토타입 상속
+
+**프로토타입 상속으로 구현하는 객체지향 언어를** 프로토타입 기반의 객체지향 언어라고 한다.
+:::
+
+## 객체의 프로토타입 출력
+
+객체의 프로토타입을 얻는 방법은 `__proto__`를 통해 얻거나, `Object.getPrototypeOf(객체)` 메서드를 통해 얻을 수 있다. `__proto__` 프로퍼티는 구식 브라우저 버전에는 지원하지 않는 경우가 가끔 있으니 유의하자. `Object`는 객체를 추상화하여 표현한 것이 아니라 문자 그대로 `Object` 프로토타입을 의미한다.
+
+```js
+function emptyFunction() {}
+
+let object = new emptyFunction();
+
+console.log(object.__proto__); // f, emptyFunction
+Object.getPrototypeOf(object); // f, emptyFunction
+```
+
+## new 연산자의 내부 동작
+
+`new`연산자는 내부적으로 **빈 객체를 생성한 뒤**, **같은 이름의 프로토타입 객체를 새로운 객체의 프로토타입으로 설정한다.**
+
+코드를 살펴보기 전에 글로써 정리를 해보면 다음과 같은 과정으로 정리해볼 수 있겠다.
+
+1. `Animal` 함수가 존재한다. `Animal`함수는 생성과 동시에 `prototype`이라는 프로퍼티에서 확인할 수 있듯 같은 이름의 `Animal`프로토타입 객체를 하나 생성하게 된다.
+2. `new Animal()` 을 통해 객체를 생성하고 할당하면 해당 변수는 `Animal`함수 생성 시 함께 생성되었던 `Animal` 프로토타입 객체를 원형으로 삼고 참조하게 된다.
+
+```js
+function A() {}
+console.log(A.prototype); // 함수 A와 이름이 동일한 프로토타입 객체가 하나 생성된다.
+
+let object = new A();
+console.log(object.__proto__); // {constructor: ƒ}, f A()
+console.log(A.prototype); // {constructor: ƒ}, f A()
+```
+
+```js
+function Calculator(a, b) {
+  this.a = a;
+  this.b = b;
+}
+
+Calculator.prototype.plus = function () {
+  return this.a + this.b;
+};
+
+let plusResult = new Calculator(1, 2);
+plusResult.plus(); // 3
+```
+
+위 코드의 동작을 요약해보자.
+
+1. `Calculator` 함수를 선언한다. 선언과 동시에 `Calculator` 프로토타입 객체가 생성된다.
+2. `Calculator.prototype.plus`를 통해 `Calculator` 프로토타입 객체에 `plus` 메서드를 새로 정의한다.
+3. `plusResult` 객체 선언 후 `new` 연자를 통해 `Calculator` 객체를 생성 및 할당한다.
+4. `plusResult` 객체를 출력해보면 `a,b`라는 프로퍼티에 1,2값이 저장되어 있음을 확인할 수 있다. 이에 대한 동작을 더 자세히 들여다보자.
+   - plusResult는 빈 객체로 생성된 이후에 `Calculator` 프로토타입 객체를 가리키게 된다. 이때 생성된 `Calculator` 프로토타입 객체에는 a,b라는 이름의 프로퍼티가 각각 1과 2라는 값으로 초기화 되어있는 상태이다. 헷갈리면, 변수에 객체 할당없이 `new Calculator(1,2)`만 찍어보자. 이후 `plusResult` 객체는 각각 1,2로 초기화된 프로퍼티 a,b를 갖는 `Calculator`프로토타입 객체를 `__proto__`를 통해 가리키게 된다.
+
+```js
+let plusResult = new Calculator(1, 2);
+console.log(plusResult.__proto__); // {plus: ƒ, constructor: ƒ}
+console.log(Calculator.prototype); // {plus: ƒ, constructor: ƒ}
+```
+
+new 연산자와 `Calculator`의 내부 동작을 다른 코드로 분석해보자.
+
+```js
+const TestingObjectWithPrototype = {};
+TestingObjectWithPrototype.__proto__ = Calculator.prototype; // Calculator 프로토타입 객체가 TestingObjectWithPrototype의 프로토타입이 된다.
+
+const TestingObjectWithNew = {};
+TestingObjectWithNew = new Calculator(1, 2); // Calculator(1,2)의 프로토타입 객체가 TesitngObjectWithNew의 프로토타입이 된다.
+```
