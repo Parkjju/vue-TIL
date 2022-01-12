@@ -53,14 +53,14 @@ module.exports = {
     repo: "Parkjju/vue-TIL",
     docsrepo: "Parkjju/vue-TIL",
     docsDir: "docs",
-    editLinks: true,
-    editLinkText: "",
+    // editLinks: true,
+    // editLinkText: "",
     lastUpdated: false,
     nav: [
-      {
-        text: "Github",
-        link: "https://github.com/Parkjju",
-      },
+      // {
+      //   text: "Github",
+      //   link: "https://github.com/Parkjju",
+      // },
       {
         text: "VuePress",
         link: "https://v1.vuepress.vuejs.org",
