@@ -1,5 +1,5 @@
 {
-  "name": "RealVuepress",
+  "name": "vue-TIL",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,7 @@
     "name": "",
     "email": ""
   },
-  "repository": "/RealVuepress",
+  "repository": "/vue-TIL",
   "scripts": {
     "dev": "vuepress dev src",
     "docs:build": "vuepress build src"
