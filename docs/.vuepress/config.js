@@ -195,5 +195,8 @@ module.exports = {
         },
       },
     ],
+    [
+      ["sitemap", { hostname: "https://parkjju.github.io/vue-TIL/"}]
+    ]
   ],
 };
