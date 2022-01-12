@@ -9,6 +9,9 @@ module.exports = {
   markdown: {
     lineNumbers: true,
   },
+  locales: {
+    '/': {lang: 'ko-KR'}
+  },
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#description
    */
