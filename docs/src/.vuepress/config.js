@@ -50,9 +50,10 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/theme/default-theme-config.html
    */
   themeConfig: {
-    repo: "",
-    editLinks: false,
-    docsDir: "",
+    repo: "Parkjju/vue-TIL",
+    docsrepo: "Parkjju/vue-TIL",
+    docsDir: "docs",
+    editLinks: true,
     editLinkText: "",
     lastUpdated: false,
     nav: [
