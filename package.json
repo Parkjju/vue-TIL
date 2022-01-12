@@ -1,0 +1,26 @@
+{
+  "name": "RealVuepress",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "authors": {
+    "name": "",
+    "email": ""
+  },
+  "repository": "/RealVuepress",
+  "scripts": {
+    "dev": "vuepress dev src",
+    "build": "vuepress build src"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@vuepress/plugin-google-analytics": "^1.8.2",
+    "@vuepress/plugin-pwa": "^1.8.2",
+    "vuepress": "^1.8.2"
+  },
+  "dependencies": {
+    "http-server": "^13.0.1",
+    "pug": "^3.0.2",
+    "vuepress-plugin-code-copy": "^1.0.6"
+  }
+}
