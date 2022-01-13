@@ -10,7 +10,7 @@ module.exports = {
     lineNumbers: true,
   },
   locales: {
-    '/': {lang: 'ko-KR'}
+    "/": { lang: "ko-KR" },
   },
   /**
    * Ref：https://v1.vuepress.vuejs.org/config/#description
@@ -162,6 +162,7 @@ module.exports = {
         title: "성장일지",
         collapsable: true,
         children: ["/grow/openSource", "/grow/work", "/grow/cleancode"],
+        sidebarDepth: 2,
       },
     ],
   },
@@ -170,7 +171,7 @@ module.exports = {
    * Apply plugins，ref：https://v1.vuepress.vuejs.org/zh/plugin/
    */
   plugins: [
-    ["sitemap", {hostname: "https://parkjju.github.io/vue-TIL/"}],
+    ["sitemap", { hostname: "https://parkjju.github.io/vue-TIL/" }],
     "@vuepress/plugin-back-to-top",
     "@vuepress/plugin-medium-zoom",
     [
