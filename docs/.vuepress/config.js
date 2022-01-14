@@ -155,7 +155,7 @@ module.exports = {
       {
         title: "Git",
         collapsable: true,
-        children: ["/git/gitSubmodule", "/git/open"],
+        children: ["/git/gitSubmodule", "/git/open", "/git/GA"],
       },
 
       {
