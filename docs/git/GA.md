@@ -39,19 +39,19 @@ title: Github Action 활용하기
 name: Build and Deploy
 on: [push]
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@master
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@master
 
-      - name: vuepress-deploy
-        uses: jenkey2011/vuepress-deploy@master
-        env:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          TARGET_BRANCH: gh-pages
-          BUILD_SCRIPT: yarn && yarn build
-          BUILD_DIR: docs/.vuepress/dist
+            - name: vuepress-deploy
+              uses: jenkey2011/vuepress-deploy@master
+              env:
+                  ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+                  TARGET_BRANCH: gh-pages
+                  BUILD_SCRIPT: yarn && yarn build
+                  BUILD_DIR: docs/.vuepress/dist
 ```
 
 :::details yml 문법 몇가지
@@ -75,3 +75,17 @@ jobs:
 8. `env` : `steps`에서 이용가능한 환경변수들을 담는 기능을 합니다. 뷰프레스 자동화 배포를 위해서는 [jenkey2011](https://github.com/jenkey2011/vuepress-deploy/) 레포를 참조하여 필요한 환경변수를 세팅해야합니다. `ACCESS_TOKEN`을 환경변수로 등록하는 방법은 이후 설명합니다.
 
 :::
+
+## 2. Github에 환경변수 세팅
+
+[jenkey2011](https://github.com/jenkey2011/vuepress-deploy/) 레포지토리의 리드미 파일을 보면 환경변수로 등록해야할 워크플로우 변수들 목록이 작성되어 있습니다. 저는 뷰프레스 자동배포를 위해 해당 레포를 깃헙 액션 어플리케이션으로 이용하는 것이지, 깃헙 액션을 활용해 구현하는 모든 어플리케이션에 위 레포지토리를 이용하는 것은 아닙니다.
+
+`BUILD_SCRIPT`, `BUILD_DIR`, `TARGET_BRANCH` 세 가지는 리드미 파일을 보고 워크플로우 환경변수로 등록하면 되며, 저희는 깃헙 레포지토리에 액세스 토큰을 등록하는 방법을 알아보겠습니다.
+
+액세스토큰을 발급받기 위해서는 **본인의 계정 메뉴 - settings - Developer setting - Personal access tokens**로 들어가서 발급받으시면 됩니다. 발급 시 액세스 토큰을 활용할 스코프를 선택하게 되는데 워크플로우와 깃헙 액션을 통해 구현하고자 하는 어플리케이션 특성에 맞춰 선택해주시면 됩니다.
+
+토큰을 발급받았으면 배포를 진행하실 레포지토리에 들어갑니다. 레포지토리 세팅에 `secrets`메뉴가 있고 **new repository secret**으로 시크릿을 생성해주시면 됩니다. **시크릿의 이름은** `ACCESS_TOKEN`으로 해주시고, `Value`에는 발급받은 토큰을 집어넣으시면 됩니다.
+
+## 기타 이슈
+
+뷰프레스 배포 자동화를 위해 기본적으로 진행하는 절차는 모두 알아보았습니다. 지금부터는 제가 배포 자동화를 시도하며 겪었던 자잘한 이슈나 실수들을 공유해드리려고 합니다.
