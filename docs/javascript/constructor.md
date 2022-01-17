@@ -117,3 +117,37 @@ console.log(A.prototype.__proto__);
 ```
 
 함수 A의 `prototype` 프로퍼티는 자신과 이름이 동일한 프로토타입 객체를 가리킨다. 이 프로토타입 객체의 `__proto__` 프로퍼티, 원형은 최상위 오브젝트인 `Object`를 가리킨다.
+
+:::tip instanceof 연산자
+`instanceof`는 특정 인스턴스가 생성자 함수 A로부터 생성되었는지 확인하는 연산자이다. 사용하는 방법은 `객체명 instanceof 생성자 함수명`으로 사용한다. 객체와 생성자 두개가 필요하므로 이항 연산자이다.
+:::
+
+```js
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
+const personObject = new Person("홍길동", 20);
+const literalObject = {
+  name: "홍길동",
+  age: 20,
+};
+
+console.log(personObject instanceof Person); // true
+console.log(literalObject instanceof Person); // false
+```
+
+`literalObject`는 Person 생성자 함수로부터 생성된 인스턴스가 아니므로 `instanceof` 연산자의 결과가 false이다. 하지만 `literalObject`의 `__proto__` 프로퍼티를 통해 객체 원형이 `Person` 생성자 함수와 동일한 이름의 프로토타입 객체를 가리키도록 한다면 결과는 달라진다.
+
+```js
+literalObject.__proto__ = Person.prototype;
+console.log(literalObject instanceof Person); // true
+```
+
+또한 리터럴 객체이더라도 `Object` 원형을 상속하므로 `literalObject instanceof Object`의 결과는 `true`가 된다. `instanceof` 연산자 이외에도 `isPrototypeOf()` 메서드도 있다.
+
+```js
+let p = new Person("Park", 20);
+Person.prototype.isPrototypeOf(p); // true
+```

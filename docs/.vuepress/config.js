@@ -109,7 +109,7 @@ module.exports = {
           "/javascript/symbol",
           "/javascript/prototype",
           "/javascript/prototypeReal",
-          "/javascript/contructor",
+          "/javascript/constructor",
         ],
       },
       {
