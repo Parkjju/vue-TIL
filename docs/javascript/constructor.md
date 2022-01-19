@@ -186,7 +186,7 @@ const oneroom = {
 };
 ```
 
-:::detail 해설
+:::details 해설
 위의 세 객체는 **건물이라는** 범주 안에 포함된다. 이를 `house`라고 정의했을 때 공통된 프로퍼티를 빼 내어 상속관계를 확립하면 된다.
 
 객체들 중 `toilet`프로퍼티와 `turnon()` 메서드는 동일한 상황이므로 `house`라는 객체로 일단 묶는다.
@@ -249,7 +249,7 @@ console.log(riverView.rooms); // 4
 
 `for..in` 반복문에 대한 설명은 [다음의 링크를 참조하자.](https://parkjju.github.io/vue-TIL/javascript/set.html#set%E1%84%80%E1%85%AA-%E1%84%87%E1%85%A1%E1%86%AB%E1%84%87%E1%85%A9%E1%86%A8%E1%84%86%E1%85%AE%E1%86%AB)
 
-:::detail 해설
+:::details 해설
 객체를 `for...in` 반복문에 순회시킨다는 것이 무엇을 의미하는지 생각해보자.
 
 ```js
@@ -269,7 +269,7 @@ for (let i in riverView) {
 
 위 코드를 생성자 함수와 new 연산자를 사용하는 예제로 바꿔보자. 즉, `house` 생성자 함수를 바탕으로 `apt`, `villa` 등 객체를 생성하면 된다.
 
-:::detail 해설
+:::details 해설
 
 ```js
 const makeHouse = function (name, color, rooms) {
