@@ -150,4 +150,165 @@ console.log(literalObject instanceof Person); // true
 ```js
 let p = new Person("Park", 20);
 Person.prototype.isPrototypeOf(p); // true
+// Person.prototype - Person 생성자 함수의 프로토타입 객체
+```
+
+## 프로토타입 예제 (1)
+
+아래 코드를 프로토타입 체인을 통해 상속이 구현되도록 바꿔보자. 또, 각 객체로부터 파생되는 다양한 객체들을 프로토타입 상속을 이용하여 생성해보자.
+
+```js
+const apt = {
+  color: "red",
+  rooms: 4,
+  toilet: 1,
+  turnon() {
+    console.log("turn on...");
+  },
+};
+
+const villa = {
+  color: "black",
+  rooms: 3,
+  toilet: 1,
+  turnon() {
+    console.log("turn on...");
+  },
+};
+
+const oneroom = {
+  color: "blue",
+  rooms: 1,
+  toilet: 1,
+  turnon() {
+    console.log("turn on...");
+  },
+};
+```
+
+:::detail 해설
+위의 세 객체는 **건물이라는** 범주 안에 포함된다. 이를 `house`라고 정의했을 때 공통된 프로퍼티를 빼 내어 상속관계를 확립하면 된다.
+
+객체들 중 `toilet`프로퍼티와 `turnon()` 메서드는 동일한 상황이므로 `house`라는 객체로 일단 묶는다.
+
+```js
+const apt = {
+  color: "red",
+  rooms: 4,
+};
+
+const villa = {
+  color: "black",
+  rooms: 3,
+};
+
+const oneroom = {
+  color: "blue",
+  rooms: 1,
+};
+const house = {
+  toilet: 1,
+  turnon() {
+    console.log("turn on...");
+  },
+};
+```
+
+`apt`, `oneroom`, `villa`는 모두 `house` 객체로부터 `toilet`, `turnon`을 상속받는다. 세 객체가 갖는 `__proto__` 속성을 `house`객체로 할당시키면 상속 구현이 완료된다.
+
+```js
+apt.__proto__ = house;
+console.log(apt.toilet); // 1
+apt.turnon(); // turn on...
+
+oneroom.__proto__ = house;
+// ....
+```
+
+또 `apt`, `villa`, `oneroom` 객체를 상속받는 객체를 생성해보자.
+
+```js
+const riverView = {
+  name: "한강뷰 아파트",
+  price: "10억",
+};
+
+riverView.__proto__ = apt;
+
+console.log(riverView.name); // 한강뷰 아파트
+console.log(riverView.rooms); // 4
+```
+
+`apt`객체는 toilet과 turnon을 가지고 있지 않았음에도 프로토타입 체인으로 인해 `riverView`객체에서도 apt의 원형 프로퍼티와 메서드에 접근할 수 있다.
+
+:::
+
+## 프로토타입 예제 (2)
+
+위 코드에서 이어질때 `riverView` 객체를 `for .. in` 반복문에 순회시킬 때의 결과를 예측해보자.
+
+`for..in` 반복문에 대한 설명은 [다음의 링크를 참조하자.](https://parkjju.github.io/vue-TIL/javascript/set.html#set%E1%84%80%E1%85%AA-%E1%84%87%E1%85%A1%E1%86%AB%E1%84%87%E1%85%A9%E1%86%A8%E1%84%86%E1%85%AE%E1%86%AB)
+
+:::detail 해설
+객체를 `for...in` 반복문에 순회시킨다는 것이 무엇을 의미하는지 생각해보자.
+
+```js
+for (let i in riverView) {
+  console.log(i);
+}
+// 부모 프로퍼티까지 모두 순회한다.
+```
+
+**프로토타입 체인이 연결되어 있는 프로토타입의 멤버(프로퍼티, 메서드)들이 모두 출력된다.**
+
+참고로, `Object.keys(riverView)`와 `Object.values(riverView)` 메서드는 `for-of`문으로 출력해야 하며 (not Enumerable) 프로토타입 체인으로 연결된 부모 객체 **프로퍼티는 출력하지 않는다.**
+
+:::
+
+## 프로토타입 예제 (3)
+
+위 코드를 생성자 함수와 new 연산자를 사용하는 예제로 바꿔보자. 즉, `house` 생성자 함수를 바탕으로 `apt`, `villa` 등 객체를 생성하면 된다.
+
+:::detail 해설
+
+```js
+const makeHouse = function (name, color, rooms) {
+  this.name = name;
+  this.color = color;
+  this.rooms = rooms;
+}; // name, color, rooms는 모두 객체마다 다른 값을 가진다.
+makeHouse.prototype.toilet = 1; // toilet은 공통 속성
+makeHouse.prototype.turnon = function () {
+  // turnon은 공통속성
+  console.log("turn on...");
+};
+
+const apt = new makeHouse("riverView", "white", 4);
+```
+
+new 연산자가 붙은 뒤에 빈 객체를 생성, `toilet`과 `turnon`과 같은 공통 프로퍼티를 먼저 할당하고 `makeHouse`내에 전달된 값들을 할당한다.
+
+:::
+
+## 프로토타입 예제 (4)
+
+생성자 함수 내의 속성값을 외부에서 수정하지 못하도록 변경하자. `생성자함수.prototype.property`로 접근하여 값을 바꿀 수 있는데 이를 금지시켜야 상속의 의미가 명확해진다.
+
+이를 금지하는 방법은 다음과 같다.
+
+1. 생성자 함수 내에서 `const`로 멤버를 선언한다.
+2. 해당 값을 외부에서 접근하는 getter 메서드를 정의한다. (const 선언만으로는 공개된 프로퍼티로써 접근할 수 없게 되기 때문이다.)
+
+코드를 보자.
+
+```js
+const makeHouse = function (inputName, color, rooms) {
+  const name = inputName;
+  this.getName = () => console.log(name);
+  this.color = color;
+  this.rooms = rooms;
+};
+
+apt = new makeHouse("riverView", "white", 3);
+apt.getName(); // riverView
 ```
