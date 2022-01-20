@@ -110,6 +110,7 @@ module.exports = {
           "/javascript/prototype",
           "/javascript/prototypeReal",
           "/javascript/constructor",
+          "/javascript/generator",
         ],
       },
       {
