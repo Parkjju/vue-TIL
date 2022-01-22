@@ -161,9 +161,14 @@ module.exports = {
       },
 
       {
-        title: "성장일지",
+        title: "etc",
         collapsable: true,
-        children: ["/grow/openSource", "/grow/work", "/grow/cleancode"],
+        children: [
+          "/grow/openSource",
+          "/grow/work",
+          "/grow/cleancode",
+          "/grow/Missing",
+        ],
         sidebarDepth: 2,
       },
     ],
