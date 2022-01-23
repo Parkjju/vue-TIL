@@ -111,6 +111,7 @@ module.exports = {
           "/javascript/prototypeReal",
           "/javascript/constructor",
           "/javascript/generator",
+          "/javascript/settime",
         ],
       },
       {

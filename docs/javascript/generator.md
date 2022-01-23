@@ -16,10 +16,10 @@ title: ES6 제너레이터
 
 ```js
 function* testGenerator() {
-    yield 1;
-    yield 2;
-    yield 3;
-    return 4;
+  yield 1;
+  yield 2;
+  yield 3;
+  return 4;
 }
 ```
 
@@ -48,10 +48,10 @@ iteratorObject.next();
 
 ```js
 function* testGenerator() {
-    const a = yield 1;
-    const b = yield a * 1;
-    const c = yield b + 2;
-    return a * b * c;
+  const a = yield 1;
+  const b = yield a * 1;
+  const c = yield b + 2;
+  return a * b * c;
 }
 ```
 
@@ -94,5 +94,5 @@ return a * b * c;
 console.log(iteratorObject.next(2)); //
 ```
 
-즉 a에는 100, b에는 48,
+즉 a에는 100, b에는 48, c에는 2가 전달된다.
 :::
