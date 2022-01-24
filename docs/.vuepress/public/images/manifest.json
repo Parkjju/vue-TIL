@@ -1,0 +1,65 @@
+{
+  "name": "Parkjju's TIL",
+  "short_name": "Parkjju's TIL",
+  "start_url": "/vue-TIL/",
+  "icons": [
+    {
+      "src": "images/72x.png",
+      "type": "image/png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "images/96x.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "images/120x.png",
+      "type": "image/png",
+      "sizes": "120x120"
+    },
+    {
+      "src": "images/128x.png",
+      "type": "image/png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "images/144x.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    },
+    {
+      "src": "images/152x.png",
+      "type": "image/png",
+      "sizes": "152x152"
+    },
+    {
+      "src": "images/167x.png",
+      "type": "image/png",
+      "sizes": "167x167"
+    },
+    {
+      "src": "images/180x.png",
+      "type": "image/png",
+      "sizes": "180x180"
+    },
+    {
+      "src": "images/192x.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "images/384x.png",
+      "type": "image/png",
+      "sizes": "384x384"
+    },
+    {
+      "src": "images/512x.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "theme_color": "#3eaf7c",
+  "background_color": "#fcfefe",
+  "display": "standalone"
+}
