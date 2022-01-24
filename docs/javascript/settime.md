@@ -53,3 +53,78 @@ console.log(secondTimerID);
 
 clearTimeout(firstTimerID);
 ```
+
+주기적으로 함수를 실행하기 위해서는 `setInterval()` 함수를 사용하면 된다. 또한 이 함수를 중단하기 위해서는 `clearInterval(타이머식별자 값)`을 실행하면 된다.
+
+```js
+const intervalTimerID = setInterval(() => console.log("Hello!"), 1000);
+
+// ... 1초마다 Hello 출력
+
+clearInterval(intervalTimerID); // 출력 중지
+```
+
+`setTimeout`과 `setInterval`을 혼용한 예시를 보자.
+
+```js
+const timerID = setInterval(() => console.log("Hello"), 1000);
+
+const stopInterval = (tid) => {
+  clearInterval(tid);
+};
+
+setTimeout(stopInterval, 9000, timerID);
+```
+
+:::warning
+`setTimeout()`과 `setInterval()`의 파라미터로 전달되는 함수는 **function** 객체여야 한다.
+
+[function 객체 mdn](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Function)
+:::
+
+`setInterval` 함수에 값을 전달하여 증가시키다가 중단하는 예제를 보자.
+:::details 해설
+
+```js
+let count = 0;
+
+let timerID = setInterval(() => {
+  console.log(timerID);
+  count += 1;
+  if (count == 10) {
+    clearInterval(timerID);
+  }
+}, 1000);
+```
+
+:::
+2초 단위로 흘러가는 시계를 출력해보자.
+:::details 해설
+
+```js
+setInterval(() => {
+  time = new Date();
+  hour = time.getHours();
+  minute = time.getMinutes();
+  second = time.getSeconds();
+
+  console.log(`${hour}:${minute}:${second}`);
+}, 2000);
+```
+
+위 코드는 단순 출력에 대한 코드이고, HTML상에 DOM 접근을 통해 시간을 출력하기 위해서는
+
+```js
+function myClock() {
+  let clock = document.getElementById("clock");
+  let d = new Date();
+
+  clock.innerText = ``; //...출력형태 백틱과 함께 지정
+  // d.getHours() 등 이용
+  setTimeout(myClock, 2000); // 재귀적 실행
+}
+
+window.onload = () => myClock(); // HTML로딩 완료 후 함수 호출
+```
+
+:::
