@@ -120,6 +120,7 @@ module.exports = {
           "/javascript/constructor",
           "/javascript/generator",
           "/javascript/settime",
+          "/javascript/promise",
         ],
       },
       {
@@ -132,6 +133,11 @@ module.exports = {
           "/vue/210930-vueTodo",
           "/vue/210930-directives",
         ],
+      },
+      {
+        title: "Vuepress",
+        collapsable: true,
+        children: ["/vuepress/seo.md"],
       },
       {
         title: "Node JS",
