@@ -26,8 +26,31 @@ module.exports = {
     ["link", { rel: "shortcut icon", href: "./favicon.ico" }],
     ["meta", { name: "theme-color", content: "#3eaf7c" }],
     ["meta", { name: "apple-mobile-web-app-capable", content: "yes" }],
-    ["link", { rel: "icon", href: "./public/logo.png" }],
     ["link", { rel: "manifest", href: "./manifest.json" }],
+    [
+      "link",
+      {
+        rel: "apple-touch-icon",
+        size: "152x152",
+        href: "./public/images/152x.png",
+      },
+    ],
+    [
+      "link",
+      {
+        rel: "apple-touch-icon",
+        size: "167x167",
+        href: "./public/images/167x.png",
+      },
+    ],
+    [
+      "link",
+      {
+        rel: "apple-touch-icon",
+        size: "180x180",
+        href: "./public/images/180x.png",
+      },
+    ],
     [
       "meta",
       { name: "apple-mobile-web-app-status-bar-style", content: "black" },
