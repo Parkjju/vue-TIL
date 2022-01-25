@@ -34,10 +34,13 @@ plugins: [
 플러그인 등록이 완료되었으면 먼저 사이트맵이 제대로 생성되었는지 확인해야합니다. 플러그인으로 등록한 링크에 `sitemap.xml`을 추가하여 접속합니다. `https://Username.github.io/TIL/sitemap.xml`의 형식을 띠게 됩니다.
 
 <figure>
+
 ![sitemap](../.vuepress/assets/vuepress/sitemap.png)
+
 <figcaption>
 위와 같은 형태로 xml 페이지가 나타나게 됩니다.
 </figcaption>
+
 </figure>
 
 `xml`형식의 페이지가 정상적으로 나왔다면 플러그인 등록은 정상적으로 완료된 것입니다.
