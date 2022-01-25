@@ -209,7 +209,7 @@ public class Test{
 
 ### 말장난을 하지 마라
 
-**한 개념에 한 단어를 사용하라는** 규칙을 오해하여 **맥락이 전혀 다른 동작을 하는데에도 같은 단어를 사용해서도 안된다.** 기존의 `add` 가 두 수를 더하여 반환하는 동작을 한다고 가정했을 때 \*\*배열에 새로운 원소를 추가하는 것도 `add` 메서드로 정의할 것인가? `insert` 나 `append` 로 새롭게 정의하는 것이 맞다.
+**한 개념에 한 단어를 사용하라는** 규칙을 오해하여 **맥락이 전혀 다른 동작을 하는데에도 같은 단어를 사용해서도 안된다.** 기존의 `add` 가 두 수를 더하여 반환하는 동작을 한다고 가정했을 때 배열에 새로운 원소를 추가하는 것도 `add` 메서드로 정의할 것인가? `insert` 나 `append` 로 새롭게 정의하는 것이 맞다.
 
 ### 의미 있는 맥락을 추가하라
 
@@ -341,7 +341,7 @@ GSD내에 고객의 주소에 대한 클래스를 정의할 때 `accountAddress`
 
 ```java
 // HtmlUtil.java (20070619)
-
+// 1번 코드
 public static String testableHtml(
 	PageData pageData,
 	boolean includeSuiteSetup
@@ -413,6 +413,7 @@ public static String testableHtml(
 위 코드를 리팩터링한 다음 코드를 살펴보고 나의 이해를 간략히 적어보겠다.
 
 ```java
+// 2번 코드
 public static String renderPageWithSetupsAndTeardowns(
 	PageData pageData, boolean isSuite
 ) throws Exception {
@@ -443,6 +444,7 @@ public static String renderPageWithSetupsAndTeardowns(
 첫 복잡한 코드를 리팩토링 했음에도 더 작은 크기로 함수를 줄일 수 있다.
 
 ```java
+// 3번 코드
 public static String renderPageWithSetupsAndTeardowns(
 	PageData pageData, boolean isSuite) throws Exception {
 	if (isTestPage(pageData))
@@ -473,17 +475,18 @@ public static String renderPageWithSetupsAndTeardowns(
 
 [추상화 수준에 대한 글](https://medium.com/@oowgnoj/clean-code%EB%A5%BC-%EC%9D%BD%EA%B3%A0-2-893d73b86b37)
 
-> 1번 코드에서 `getHtml()`은 추상화 수준이 아주 높다. 반면, `String pagePathName = PathParser.render(pagepath);`는 추상화 수준이 중간이다. 그리고 `.append(”\n”)`와 같은 코드는 추상화 수준이 아주 낮다.
-
 :::details 추상화 예시 문장
 
-    김 아무개는 배가 고프면 김치찌개를 먹는다.
-    **사람은 배가 고프면 음식을 먹는다.** 김 아무개는 사람으로, 김치찌개는 음식으로 추상화된 문장이다.
+김 아무개는 배가 고프면 김치찌개를 먹는다.
+**사람은 배가 고프면 음식을 먹는다.** 김 아무개는 사람으로, 김치찌개는 음식으로 추상화된 문장이다.
 
-    개미집에는 일정한 비율로 놀고 있는 개미가 없으면, 긴급 사태에 대응할 수 없어서 전멸할 리스크가 높아진다.
-    **평상시의 업무량에 맞춰 처리 능력을 최적화해버리면 큰 환경 변화가 일어났을 때 대응할 수 없어서 조직은 멸망해버린다. (출처 -** [https://medium.com/@oowgnoj/clean-code를-읽고-2-893d73b86b37](https://medium.com/@oowgnoj/clean-code%EB%A5%BC-%EC%9D%BD%EA%B3%A0-2-893d73b86b37)) 개미집에 일정한 비율로 놀고 있는 개미가 없다는 것은 평상시 업무량에 맞춰 처리 능력을 최적화한 상태, 긴급 사태로 인한 전멸은 큰 환경변화에 대응하지 못하는 모습으로 추상화될 수 있다.
+개미집에는 일정한 비율로 놀고 있는 개미가 없으면, 긴급 사태에 대응할 수 없어서 전멸할 리스크가 높아진다.
+**평상시의 업무량에 맞춰 처리 능력을 최적화해버리면 큰 환경 변화가 일어났을 때 대응할 수 없어서 조직은 멸망해버린다.**
+(출처 - [https://medium.com/@oowgnoj/clean-code를-읽고-2-893d73b86b37](https://medium.com/@oowgnoj/clean-code%EB%A5%BC-%EC%9D%BD%EA%B3%A0-2-893d73b86b37)
 
-    추상화된 문장이라는 것은 각기 다른 사건에 개별성을 낮추어 여러 상황에 적용될 수 있게 한다. **추상화를 거친 문장은 한 뜻을 내포하는 여러 문장을 만들 수 있게 된다.**
+개미집에 일정한 비율로 놀고 있는 개미가 없다는 것은 평상시 업무량에 맞춰 처리 능력을 최적화한 상태, 긴급 사태로 인한 전멸은 큰 환경변화에 대응하지 못하는 모습으로 추상화될 수 있다.
+
+추상화된 문장이라는 것은 각기 다른 사건에 개별성을 낮추어 여러 상황에 적용될 수 있게 한다. **추상화를 거친 문장은 한 뜻을 내포하는 여러 문장을 만들 수 있게 된다.**
 
 :::
 
