@@ -27,7 +27,14 @@ module.exports = {
     ["meta", { name: "theme-color", content: "#3eaf7c" }],
     ["meta", { name: "apple-mobile-web-app-capable", content: "yes" }],
     ["link", { rel: "manifest", href: "./manifest.json" }],
-    ["link", { rel: "apple-touch-icon", href: "./public/images/192x.png" }],
+    [
+      "link",
+      {
+        rel: "apple-touch-icon",
+        sizes: "192x192",
+        href: "./public/images/192x.png",
+      },
+    ],
     [
       "meta",
       { name: "apple-mobile-web-app-status-bar-style", content: "black" },
