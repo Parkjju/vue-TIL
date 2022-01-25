@@ -4,62 +4,62 @@
   "start_url": "/vue-TIL/",
   "icons": [
     {
-      "src": "./public/favicon.ico",
+      "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "./public/images/72x.png",
+      "src": "images/72x.png",
       "type": "image/png",
       "sizes": "72x72"
     },
     {
-      "src": "./public/images/96x.png",
+      "src": "images/96x.png",
       "type": "image/png",
       "sizes": "96x96"
     },
     {
-      "src": "./public/images/120x.png",
+      "src": "images/120x.png",
       "type": "image/png",
       "sizes": "120x120"
     },
     {
-      "src": "./public/images/128x.png",
+      "src": "images/128x.png",
       "type": "image/png",
       "sizes": "128x128"
     },
     {
-      "src": "./public/images/144x.png",
+      "src": "images/144x.png",
       "type": "image/png",
       "sizes": "144x144"
     },
     {
-      "src": "./public/images/152x.png",
+      "src": "images/152x.png",
       "type": "image/png",
       "sizes": "152x152"
     },
     {
-      "src": "./public/images/167x.png",
+      "src": "images/167x.png",
       "type": "image/png",
       "sizes": "167x167"
     },
     {
-      "src": "./public/images/180x.png",
+      "src": "images/180x.png",
       "type": "image/png",
       "sizes": "180x180"
     },
     {
-      "src": "./public/images/192x.png",
+      "src": "images/192x.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "./public/images/384x.png",
+      "src": "images/384x.png",
       "type": "image/png",
       "sizes": "384x384"
     },
     {
-      "src": "./public/images/512x.png",
+      "src": "images/512x.png",
       "type": "image/png",
       "sizes": "512x512"
     }

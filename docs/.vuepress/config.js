@@ -32,7 +32,7 @@ module.exports = {
       {
         rel: "apple-touch-icon",
         sizes: "192x192",
-        href: "./public/images/192x.png",
+        href: "images/192x.png",
       },
     ],
     [
