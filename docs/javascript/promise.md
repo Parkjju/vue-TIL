@@ -98,9 +98,54 @@ new Promise((resolve, reject) => {
 
 ## 3. 제너레이터
 
+위의 예시들처럼 값을 순차적으로 받아 곱셈 처리를 제너레이터로 구현하려면 어떻게 해야할까?
+
+1. `calculator`함수는 단순 곱셈만 처리하지 않는다. (next메서드를 통해 제너레이터 함수를 재호출해야한다.)
+2. 제너레이터 함수 외부로부터 내부로 데이터를 전달할 때에는 명시적인 값으로 전달해야 한다. `next(10)...`
+
+`calculator` 구현 전에 다음의 코드를 보고 콘솔상에 출력되는 결과를 예측해보자.
+
 ```js
-function calculator(a, b) {
-  return a * b;
+function* testGenerator() {
+  const a = yield 1;
+  console.log(a);
 }
-// 제너레이터부터 다시 시작
+
+const iter = testGenerator();
+iter.next();
+iter.next();
+```
+
+:::details 해설
+
+첫 번째 `iter.next()`는 제너레이터 함수를 처음 호출하여 함수 처음부터 코드를 쭉 읽는다. 읽어 가다가 첫 `yield`를 만나 함수 외부로 제어권을 양도한다. 따라서 이후의 코드는 무시된다.
+
+두 번째 `iter.next()`는 `next()`메서드의 인자로 값이 전달되지 않았으므로 제너레이터 내부의 `a` 변수에는 어떠한 값도 저장되지 않는 `undefined` 상태가 된다. 이후 `console.log`를 만나 `undefined`를 출력하게 된다.
+
+:::
+
+이제 제너레이터로 위의 순차적 곱을 구현해보자. **외부 데이터인 calculator함수 결과를 next메서드에 명시적으로 전달해줘야 하는 것이 중요하다.**
+
+```js
+const iter = testGenerator(); // global 스코프
+
+function calculator(a, b) {
+  setTimeout(() => {
+    iter.next(a * b);
+  }, 1000);
+}
+
+function* testGenerator() {
+  const a = yield calculator(1, 10);
+  console.log(a);
+
+  const b = yield calculator(a, 20);
+  console.log(b);
+
+  const c = yield calculator(b, 30);
+  console.log(c);
+}
+
+// 출력 시작
+iter.next(); //호출시 나머지 값들은 자동 실행
 ```
