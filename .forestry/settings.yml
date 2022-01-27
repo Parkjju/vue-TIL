@@ -11,6 +11,77 @@ sections:
     match: "*.md"
     templates:
       - post
+  - type: directory
+    path: docs/algorithm
+    label: Algorithm
+    create: documents
+    match: "*.md"
+    templates:
+      - post
+  - type: directory
+    path: docs/daily
+    label: Daily
+    create: documents
+    match: "*.md"
+    templates:
+      - post
+  - type: directory
+    path: docs/git
+    label: Git
+    create: documents
+    match: "*.md"
+    templates:
+      - post
+  - type: directory
+    path: docs/grow
+    label: ETC
+    create: documents
+    match: "*.md"
+    templates:
+      - post
+  - type: directory
+    path: docs/javascript
+    label: Javascript
+    create: documents
+    match: "*.md"
+    templates:
+      - post
+  - type: directory
+    path: docs/nodeJS
+    label: NodeJS
+    create: documents
+    match: "*.md"
+    templates:
+      - post
+  - type: directory
+    path: docs/os
+    label: OS
+    create: documents
+    match: "*.md"
+    templates:
+      - post
+  - type: directory
+    path: docs/python
+    label: Python
+    create: documents
+    match: "*.md"
+    templates:
+      - post
+  - type: directory
+    path: docs/vue
+    label: Vue
+    create: documents
+    match: "*.md"
+    templates:
+      - post
+  - type: directory
+    path: docs/vuepress
+    label: Vuepress
+    create: documents
+    match: "*.md"
+    templates:
+      - post
+
 upload_dir: uploads
 public_path: "/uploads"
 front_matter_path: ""
