@@ -34,4 +34,8 @@ npm run dev
 - [ ] index.md 정리
 - [ ] 뷰프레스 버전 업
 - [ ] ESlint, Prettier 설정
-- [ ] [Vuepress CMS](https://midstride.com/vuepress-netlify-cms-integration/) 서치
+- [x] [Vuepress CMS](https://midstride.com/vuepress-netlify-cms-integration/) 서치
+
+[forestry.io 사이트 - git 기반 CMS 페이지 제공](https://forestry.io/)
+
+![forestry](docs/.vuepress/assets/vuepress/forestry.png)
