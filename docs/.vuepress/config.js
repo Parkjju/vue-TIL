@@ -73,8 +73,8 @@ module.exports = {
       //   link: "https://github.com/Parkjju",
       // },
       {
-        text: "Admin",
-        link: "/admin/#/",
+        text: "VuePress",
+        link: "https://v1.vuepress.vuejs.org",
       },
     ],
     sidebar: [
