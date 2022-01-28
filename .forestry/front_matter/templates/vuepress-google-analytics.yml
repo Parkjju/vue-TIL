@@ -1,0 +1,7 @@
+---
+label: Vuepress Google Analytics
+hide_body: false
+fields:
+- type: text
+  name: title
+  label: title
