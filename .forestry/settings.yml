@@ -82,7 +82,7 @@ sections:
   templates:
   - post
 upload_dir: docs/.vuepress/assets
-public_path: "/assets"
+public_path: docs/.vuepress/assets
 front_matter_path: ''
 use_front_matter_path: false
 file_template: ":filename:"
