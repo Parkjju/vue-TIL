@@ -21,3 +21,12 @@ CMS 페이지 하나를 예시로 보여드리겠습니다.
 
 ![cmsAPI](../.vuepress/assets/vuepress/cmsAPI.png)
 
+현재 제가 배포중인 뷰프레스 사이트에 실제 적용중인 CMS 페이지입니다. [forestry.io](https://forestry.io/)라는 사이트에서 확인하실 수 있으며 `git`을 기반으로 하는 서비스입니다.
+
+레거시 CMS와 다른 점이라고 하면 **CMS상에 뷰가 표시되지 않는다는 것입니다.** 헤드리스 CMS의 가장 큰 특징은 API를 통해 컨텐츠를 관리하는 것입니다.
+
+> A headless CMS has no presentation layer and makes content available through APIs. With a headless CMS, the task of the content presentation is performed by an external client consuming APIs exposed by headless CMS.
+>
+> 출처 -[ WebriQ, WTF is Headless CMS?](https://www.webriq.com/monolithic-cms-versus-headless-cms)
+
+위와 같은 특징으로 인해 헤드리스 CMS는 **API-first** 라고도 불립니다. 가끔  **Content Infratstructure**, **Content Hubs**, **Content as a Service** 와 같은 명칭으로도 불리는 경우가 있지만 실상은 컨텐츠 중심이 아닌 컨텐츠 접근 API를 중심으로 사이트가 구현되기 때문에 올바른 표현은 아니라고 할 수 있습니다.
