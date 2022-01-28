@@ -15,11 +15,13 @@ PWA에 대한 자세한 내용은 [MDN](https://developer.mozilla.org/ko/docs/We
 1. 모바일 환경, 웹 환경 모두에서 설치가 가능해집니다. (오프라인 환경에서 실행이 가능해집니다.)
 2. 모바일 환경의 API를 통해 페이지를 더 우아하게 만들 수 있습니다.
 
-![](/assets/download.png)
-
 PWA 적용 시 주소창에 웹 앱으로 설치할 수 있는 아이콘이 추가됩니다.
 
-![](/assets/service.png)
+![](docs/.vuepress/assets/download.png)
+
+컨텐츠 업데이트 감지 시 팝업을 띄워주기도 합니다.
+
+![](docs/.vuepress/assets/service.png)
 
 ## PWA 설치 및 적용
 
@@ -34,7 +36,8 @@ PWA의 핵심은 **서비스워커(service-worker) 매니페스트(Manifest)** �
 5. `display` - 미리 정의된 `standalone`, `fullscreen`, `minimal-ui`, `browser` 속성을 적용합니다. 앱 상에서 페이지가 어떻게 보여질지 설정합니다.
 6. `background_color` - 모바일 앱 아이콘의 배경색을 지정합니다.
 7. `theme_color` - 앱 환경의 시스템 바 (URL 입력창과 같이 각 환경에서 기본적으로 제공되는 UI, 사진의 상단 바 확인)  
-   ![](/assets/bar.jpg)
+     
+   ![](docs/.vuepress/assets/bar.jpg)
 
 플러그인 설치 코드는 다음과 같습니다.
 
@@ -177,4 +180,4 @@ head: [
 
 PWA 적용 뒤 모바일 환경에서 실행하는 모습입니다.
 
-![](/assets/pwa.gif)
+![](docs/.vuepress/assets/pwa.gif)
