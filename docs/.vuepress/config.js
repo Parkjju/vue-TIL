@@ -137,7 +137,7 @@ module.exports = {
       {
         title: "Vuepress",
         collapsable: true,
-        children: ["/vuepress/seo.md"],
+        children: ["/vuepress/seo.md", "/vuepress/pwa.md", "/vuepress/cms.md"],
       },
       {
         title: "Node JS",
