@@ -30,3 +30,5 @@ CMS 페이지 하나를 예시로 보여드리겠습니다.
 > 출처 -[ WebriQ, WTF is Headless CMS?](https://www.webriq.com/monolithic-cms-versus-headless-cms)
 
 위와 같은 특징으로 인해 헤드리스 CMS는 **API-first** 라고도 불립니다. 가끔  **Content Infratstructure**, **Content Hubs**, **Content as a Service** 와 같은 명칭으로도 불리는 경우가 있지만 실상은 컨텐츠 중심이 아닌 컨텐츠 접근 API를 중심으로 사이트가 구현되기 때문에 올바른 표현은 아니라고 할 수 있습니다.
+
+## API란?
