@@ -35,4 +35,4 @@ CMS 페이지 하나를 예시로 보여드리겠습니다.
 
 > API stands for Application Programming Interface, which means that you get content in a way that is easier to integrate with existing or new software solutions.
 
-API는 소프트웨어와 쉽게 소통할 수 있도록 컨텐츠를 얻는 방식을 말합니다. 
+API는 소프트웨어와 쉽게 소통할 수 있도록 컨텐츠를 얻는 **방식**을 말합니다.
