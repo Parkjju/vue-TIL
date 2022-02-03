@@ -37,7 +37,7 @@ CMS 페이지 하나를 예시로 보여드리겠습니다.
 
 API는 소프트웨어와 쉽게 소통할 수 있도록 **컨텐츠를 얻는** **방식**을 말합니다.
 
-네트워크 상에서 컨텐츠를 주고 받을 때에는 네트워크 요청과 응답에 의해 이루어집니다. 특정 웹 페이지 방문을 예시로 해당 페이지의 컨텐츠를 요청한다고 할 때에 사용자는 **"**[**https://mydomain.com/api/posts/**](https://mydomain.com/api/posts/ "https://mydomain.com/api/posts/")**"**와 같은 주소로 네트워크 요청을 보냅니다. 사용자들은 요청에 대한 응답으로 위 페이지에 대한 컨텐츠를 받게 되지만 개발자들은 **위 페이지를 구성하는 요소들에 대한 리스트를 얻습니다.** 이 컨텐츠에 대한 구성요소 리스트가 바로 **API**입니다.
+네트워크 상에서 컨텐츠를 주고 받을 때에는 네트워크 요청과 응답에 의해 이루어집니다. 특정 웹 페이지 방문을 예시로 해당 페이지의 컨텐츠를 요청한다고 할 때에 사용자는 **"**[**https://mydomain.com/api/posts/**](https://mydomain.com/api/posts/ "https://mydomain.com/api/posts/")" 와 같은 주소로 네트워크 요청을 보냅니다. 사용자들은 요청에 대한 응답으로 위 페이지에 대한 컨텐츠를 받게 되지만 개발자들은 **위 페이지를 구성하는 요소들에 대한 리스트를 얻습니다.** 이 컨텐츠에 대한 구성요소 리스트가 바로 **API**입니다.
 
 :::
 
@@ -96,8 +96,8 @@ build:
 
 각 속성에 대해서는 [forestry.io sidebar configuration Docs](https://forestry.io/docs/settings/content-sections/)를 참조해주세요.
 
-1. forestry에 들어와 Settings에서 Previews 탭에 들어가 각각 디펜던시(package.json 패키지목록) 저장 명령어, 빌드 명령어, 빌드 결과물 출력 디렉토리 경로를 설정해준 뒤 서버를 가동해줍니다. ![server](../.vuepress/assets/vuepress/server.png)
-2. forestry를 새로고침하면 기존에 연결해둔 원격 레포지토리의 settings.yml을 감지하여 각종 문서들을 불러온 상태가 됩니다. (자동으로 진행됩니다.)
+7. forestry에 들어와 Settings에서 Previews 탭에 들어가 각각 디펜던시(package.json 패키지목록) 저장 명령어, 빌드 명령어, 빌드 결과물 출력 디렉토리 경로를 설정해준 뒤 서버를 가동해줍니다. ![server](../.vuepress/assets/vuepress/server.png)
+8. forestry를 새로고침하면 기존에 연결해둔 원격 레포지토리의 settings.yml을 감지하여 각종 문서들을 불러온 상태가 됩니다. (자동으로 진행됩니다.)
 
 코드블럭을 코드에 따라 다르게 하이라이팅 하고 싶다면 forestry 에디터가 아닌 raw 에디터로 전환하여 진행하면 됩니다. 문서 수정 페이지의 우측 상단 수정버튼을 클릭하면 됩니다.
 
