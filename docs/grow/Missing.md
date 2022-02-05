@@ -8,9 +8,45 @@ title: Mac 개발환경 세팅
 
 1. [MAC 개발환경 세팅 velog](https://velog.io/@haje/macOS-%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0)
 
-## MacOS 개발환경 세팅
+## 시스템 설정
 
-### Homebrew 설치
+1. 파인더 설정
+   파인더 최초 실행 시 버벅임을 줄이기 위해 루트 폴더 설정을 자신의 이름으로 된 유저 폴더로 지정합니다.
+   ![finder](../.vuepress/assets/grow/finder.png)
+
+2. 원화 대신 백틱 입력하기
+   [ss64 페이지 참조](https://ss64.com/osx/syntax-keybindings.html)
+
+> If they are not already in place - just create the file & directory.
+
+`~/Library/KeyBindings/DefaultKeyBinding.dict` 위치에 해당 파일을 생성합니다. 만약 라이브러리 폴더에 `KeyBindings` 폴더가 없거나 파일이 존재하지 않으면 새로 생성하면 됩니다.
+
+:::tip
+맥은 우클릭으로 빈 파일 생성하는 기능이 없기 때문에 텍스트 편집기를 통해 빈 파일 생성 후 확장자를 변경하던 터미널을 통해 생성하던 해야합니다.
+:::
+
+파일 생성 뒤 해당 파일에 다음 코드를 삽입합니다.
+
+```text
+{
+    "₩" = ("insertText:", "`");
+}
+```
+
+저장 후 재부팅하면 한글 상태에서도 백틱이 입력됩니다.
+
+:::tip
+모든 과정을 자동화 해둔 쉘 스크립트가 있습니다. [링크](https://gist.github.com/redism/43bc51cab62269fa97a220a7bb5e1103)
+
+```sh
+curl -sSL https://gist.githubusercontent.com/redism/43bc51cab62269fa97a220a7bb5e1103/raw/0d55b37b60e0e0bd3d0d7f53995de0a722f9820c/kr_won_to_backquote.sh | sh
+```
+
+다음 코드를 실행하면 자동으로 모든 과정이 진행되고 재부팅 시 한글 상태에서도 백틱 입력이 됩니다.
+
+:::
+
+## Homebrew 설치
 
 홈브루(Homebrew)는 맥 OS의 패키지 매니저입니다. 윈도우에서 깃, 파이썬, mySQL등 여러 프로그래밍 언어나 어플리케이션을 설치할 때 수동으로 설치하는 경우가 대부분이지만 맥에서 홈브루 패키지 매니저를 사용하면 터미널 상에서 편리하게 설치할 수가 있게 됩니다. 오픈소스에 대한 접근까지도 쉽게 이루어집니다.
 
@@ -30,7 +66,21 @@ title: Mac 개발환경 세팅
 
 이후 여러 소프트웨어 설치 시 홈브루 매니저를 이용하기 위해서는 `brew` 키워드를 붙여 사용하면 됩니다.
 
-### Cask 설치
+## git 설치
+
+버전관리 시스템인 git을 설치합니다.
+
+```sh
+brew install git git-lfs
+
+git config --global user.name "Your name"
+git config --global user.email "you@your.com"
+```
+
+`git-lfs`는 깃헙에서 다루지 못하는 대용량 파일을 다룰 수 있게 해주는 오픈소스 소프트웨어입니다.
+사용법은 [다음의 링크](https://wellbell.tistory.com/247)를 참조해주세요.
+
+## Cask 설치
 
 cask는 홈브루 확장입니다. 비주얼 스튜디오 코드 익스텐션과 비슷한 개념이라고 생각하시면 될 것 같습니다. 기존 홈브루에서는 없는 기능인 Mac전용 GUI 프로그램 설치를 지원합니다.
 
@@ -52,7 +102,7 @@ brew install --cask 설치할 프로그램명
 
 정상적으로 구동되는 모습을 볼 수 있습니다.
 
-### ITerm2 설치
+## ITerm2 설치
 
 우아한 개발환경 구축을 위해 필수적이라고 할 수 있는 ITerm2를 설치합니다.
 
@@ -86,7 +136,7 @@ ITerm2의 인기있는 테마로는 [snazzy](https://github.com/sindresorhus/ite
 
 ![snazzy](../.vuepress/assets/grow/snazzy.png)
 
-### oh-my-zsh 설치
+## oh-my-zsh 설치
 
 oh-my-zsh 설치에 앞서서 zsh 설치를 진행합니다.
 
