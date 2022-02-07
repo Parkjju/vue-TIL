@@ -87,6 +87,7 @@ module.exports = {
           "/TIL/2021-10",
           "/TIL/2021-11",
           "/TIL/2022-01",
+          "/TIL/2022-02",
         ],
       },
       {
@@ -188,6 +189,7 @@ module.exports = {
           "/grow/work",
           "/grow/cleancode",
           "/grow/Missing",
+          "/grow/windows-zsh",
         ],
         sidebarDepth: 2,
       },
