@@ -107,6 +107,8 @@ module.exports = {
           "/daily/211004-Oauth",
           "/daily/211005-json",
           "/daily/211018-network",
+          "/daily/220208-browser",
+          "/daily/220208-DOM",
         ],
       },
       {
