@@ -112,7 +112,12 @@ module.exports = {
         ],
       },
       {
-        title: 'Javascript',
+        title: 'Javascript Fundamental',
+        collapsable: true,
+        children: ['/js/scope'],
+      },
+      {
+        title: 'ES6+',
         collapsable: true,
         children: [
           '/javascript/ecma',
