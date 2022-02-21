@@ -114,7 +114,7 @@ module.exports = {
       {
         title: 'Javascript Fundamental',
         collapsable: true,
-        children: ['/js/scope'],
+        children: ['/js/scope', '/js/execution', '/js/this'],
       },
       {
         title: 'ES6+',
