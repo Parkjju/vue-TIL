@@ -125,6 +125,7 @@ module.exports = {
           '/javascript/settime',
           '/javascript/promise',
           '/javascript/class',
+          '/javascript/hoisting',
         ],
       },
       {
