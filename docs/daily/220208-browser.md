@@ -129,14 +129,82 @@ Intel article Software rasterization부터 정리
 
 브라우저 엔진 중 웹킷(Webkit) 엔진은 애플 사의 사파리 브라우저 엔진이며 크롬의 디폴트 브라우저 엔진이다. 크로미움(Chromium) 브라우저에서는 블링크(Blink) 브라우저 엔진이 사용된다. 브라우저에 따른 브라우저 엔진 리스트는 [다음 링크를](https://stackoverflow.com/questions/3468154/what-is-webkit-and-how-is-it-related-to-css/3468311#3468311) 참조하자.
 
+## 브라우저 렌더링 프로세스
+
+자바스크립트는 웹 개발 역사와 함께 살아 숨쉰다. 그만큼 웹과 뗄레야 뗄 수 없는 존재이고 따라서 웹앱 개발 전체를 놓고 봤을 때 일관된 경험을 모두에게 제공한다.
+
+하지만 이러한 자바스크립트도 브라우저 엔진에서는 한 수 무르게 된다. 왜냐, 브라우저는 표준화되지 않았기 때문이다. 역사적으로 브라우저의 발전은 하나의 공통된 명세를 통해 개발되온 것이 아닌 서로의 인터페이스를 모방하며 개발되면서도 각자의 철학을 가지고 있었기 때문에 미묘한 곳에서 항상 차이가 존재한다.
+
+HTML5 명세가 등장하면서 렌더링 프로세스에 대한 표준화 노력이 주입되었다. 이론적 방향성은 제시했지만 실제로 적용하는 것은 전적으로 각 브라우저에 달려있다.
+
+> The HTML5 specification has made some **effort to standardize how rendering should work** in theory but **how browsers adhere to this standard is totally up to them.**
+
+## 다양한 브라우저 렌더링 프로세스
+
+이 내용부터는 [browser-rendering-test](https://github.com/course-one/browser-rendering-test/tree/master/html) 프로젝트를 실제로 돌려보면서 이해하면 좋습니다.
+
+### 1. Parsing and External Resources
+
+파싱(Parsing)은 HTML콘텐츠를 읽고 DOM트리를 구축하는 일련의 과정을 말한다. 이러한 과정을 진행하기 때문에 **돔 파싱(DOM Parsing)** 이라고도 불리우며 돔 파싱을 하는 프로그램을 **돔 파서(DOM Parser)** 라고 한다.
+
+대다수의 브라우저는 돔 파서를 (`DOMParser`) 웹 API로 제공한다. 돔 파서 프로토타입의 인스턴스는 `parseFromString`메서드를 상속받아 사용할 수 있게 된다. 이는 HTML 문서를 DOM트리 형태로 변환해주는 역할을 한다.
+
+```javascript
+var parseObject = new DOMParser();
+var parsedResult = parseObject.parseFromString("<div><p>Hello!</p></div>", 'text/html');
+
+console.log(parsedResult); // #document ......
+```
+파싱은 **점진적으로(incrementally), 한 번에 한 노드씩 이루어진다.**
+
+첨부한 브라우저 렌더링 테스트프로젝트의 `incremental.html` 파일로 접근해보자. 브라우저 환경 테스트를 위해 개발자 도구에 세팅해야할 것들이 몇가지 있다. 
+
+1. 프로젝트 클론 후 해당 폴더에서 `node server.js` 명령어를 실행한다.
+2. 크롬 개발자 도구의 네트워크 탭에 들어가서 `Disable cache`를 체크한다.
+3. 쓰로틀링 임의 설정을 통해 인터넷 속도 설정을 지정한다. 본인 환경의 경우 커스텀하여 다운로드 속도를 **10kbps로** 지정하였다.
+4. `incremental.html`파일이 있는 URL로 이동하여 점진적 파싱 현상을 두 눈으로 목격해본다.
+
+인터넷 속도를 느리게 설정해놓다 보니 서버로부터 파일을 다운받는 속도가 느리다. 하지만 그럼에도 Apple문구가 적정 숫자까지 미리 출력되고 있음을 확인할 수 있다. 1000개의 사과가 출력될때까지 기다리는 것이 아니라 부분적으로 다운로드 및 파싱이 된 부분은 미리 렌더링을 진행하는 것이다.
+
+:::tip 개발자 도구 이미지
+<img src="../.vuepress/assets/daily/cache.png"/>
+<img src="../.vuepress/assets/daily/throt.png"/>
+<img src="../.vuepress/assets/daily/throttling.png"/>
+<img src="../.vuepress/assets/daily/custom.png"/>
+:::
+성능 개선과 관련된 지표는 [다음 링크를](https://web.dev/user-centric-performance-metrics/#important-metrics-to-measure) 참조하자.
+세팅을 마치고 새로고침 후 스크롤을 빠르게 내리다 보면 파싱이 덜 된 페이지 모습을 확인할 수 있다. 
+
+개발자 도구를 쭉 뒤져보다 보면 `Performance` 탭에서 각종 이벤트들이 발생한 것을 볼 수 있다. 이 이벤트들은 **성능 메트릭이라고** 불리는 것들이다. 이 메트릭들이 서로 붙어있으면 붙어있을 수록, 일찍 발생하면 발생할수록 더 좋은 UX 제공하는 페이지라고 할 수 있다.
+
+몇 가지 메트릭을 소개하자면, 
+1. `FP(First Paint)`는 브라우저가 처음으로 스크린에 파싱 결과물을 붙이기 시작하기까지의 시간이다. (바디 태그의 백그라운드에 1픽셀 찍기 시작한 시점)
+2. `FCP(First Contentful Paint)`는 **텍스트나 이미지 콘텐츠가** 처음으로 파싱된 결과물로써 붙여지기 시작한 시점까지의 시간이다.
+3. `LCP(Largest Contentful Paint)`는 가장 큰 텍스트 또는 이미지 요소가 렌더링 될때까지의 시간이다.
+
+브라우저는 외부 소스(스크립트 태그의 `src` 어트리뷰트, `img`태그의 `src` 어트리뷰트, CSS의 `href` 등)를 만날 때마다 백그라운드에서 파일 다운로드를 진행한다. 
+
+가장 기억해야할 것은 돔 파싱이 보통 **메인 스레드에서 이루어진다는 것이다.** 자바스크립트의 메인 실행 스레드가 `busy` 상태이면 돔 파싱은 스레드가 `free`상태가 될 때 까지 진행되지 않는다. `script`태그는 **파서 블로킹(parser-blocking)** 이라는 특징을 갖기 때문에 위의 사실을 꼭 기억해야한다. 
+
+좋은 UX 제공을 위해서는 각종 스크립트 태그나 외부 리소스를 끌어오는 코드로 인해 DOM 파서를 막아서는 안된다.
+
+
+### 2. Parser-Blocking Scripts
+
+
 ## Reference
 
-1. [재그지그 - 브라우저 렌더링 과정](https://wormwlrm.github.io/2021/03/27/How-browsers-work.html)
-2. [Naver D2 - 브라우저는 어떻게 동작하는가?](https://d2.naver.com/helloworld/59361)
-3. [How the browser renders a web page?](https://medium.com/jspoint/how-the-browser-renders-a-web-page-dom-cssom-and-rendering-df10531c9969)
-4. [세줄코딩 - 스트림이란](https://uxicode.tistory.com/entry/%EC%8A%A4%ED%8A%B8%EB%A6%BC-stream-%EC%9D%B4%EB%9E%80)
-5. [Estrella's Fronted Info](https://estrella-kim.github.io/frontend_performance_optimization)
-6. [Accelerated Rendering in Chrome](https://www.html5rocks.com/en/tutorials/speed/layers/)
-7. [Intel article](https://www.intel.com/content/www/us/en/developer/articles/technical/software-vs-gpu-rasterization-in-chromium.html)
-8. [Scrolling Performance](https://www.html5rocks.com/en/tutorials/speed/scrolling/)
-9. [Web Textures: How to Add an Extra Dimension to Your Website](https://blog.hubspot.com/website/web-textures)
+ 1. [재그지그 - 브라우저 렌더링 과정](https://wormwlrm.github.io/2021/03/27/How-browsers-work.html)
+ 2. [Naver D2 - 브라우저는 어떻게 동작하는가?](https://d2.naver.com/helloworld/59361)
+ 3. [How the browser renders a web page?](https://medium.com/jspoint/how-the-browser-renders-a-web-page-dom-cssom-and-rendering-df10531c9969)
+ 4. [세줄코딩 - 스트림이란](https://uxicode.tistory.com/entry/%EC%8A%A4%ED%8A%B8%EB%A6%BC-stream-%EC%9D%B4%EB%9E%80)
+ 5. [Estrella's Fronted Info](https://estrella-kim.github.io/frontend_performance_optimization)
+ 6. [Accelerated Rendering in Chrome](https://www.html5rocks.com/en/tutorials/speed/layers/)
+ 7. [Intel article](https://www.intel.com/content/www/us/en/developer/articles/technical/software-vs-gpu-rasterization-in-chromium.html)
+ 8. [Scrolling Performance](https://www.html5rocks.com/en/tutorials/speed/scrolling/)
+ 9. [Web Textures: How to Add an Extra Dimension to Your Website](https://blog.hubspot.com/website/web-textures)
+10. [github - browser-rendering-test](https://github.com/course-one/browser-rendering-test/tree/master/html)
+
+## Additional
+1. [성능 - 메트릭](https://web.dev/user-centric-performance-metrics/#important-metrics-to-measure)
+2. 자바스크립트 쓰레드에 대한 개념
