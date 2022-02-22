@@ -304,6 +304,6 @@ console.log(globalObject);
 
 ## Reference
 
-[Poimeweb - 스코프](https://poiemaweb.com/js-scope)
-[cracking vue.js - Scope](https://joshua1988.github.io/vue-camp/js/scope.html)
-[doondoony.log - 자바스크립트의 IIFE](https://velog.io/@doondoony/javascript-iife)
+1. [Poimeweb - 스코프](https://poiemaweb.com/js-scope)
+2. [cracking vue.js - Scope](https://joshua1988.github.io/vue-camp/js/scope.html)
+3. [doondoony.log - 자바스크립트의 IIFE](https://velog.io/@doondoony/javascript-iife)
