@@ -55,9 +55,8 @@ CSSOM에서는 브라우저에서 기본적으로 제공하는 `user-agent style
 렌더 트리 역시 CSSOM처럼 눈에 보이지 않는 요소에 대해 노드를 갖고 있지 않다. (엄밀한 의미에서 스크린에 픽셀 영역을 차지하지 않으면 렌더 트리의 노드로 등록되지 않는다고 할 수 있다.) CSS속성인 `display: none`이 적용된 요소는 0px * 0px사이즈이다. 따라서 해당 요소는 렌더 트리에 등록되지 않는다.
 
 <figure>
-![render tree](../.vuepress/assets/daily/render.png)
-<figcaption>Render Tree (출처 - https://url.kr/bfvyk4)</figcaption>
-</figure>
+<img src="../.vuepress/assets/daily/render.png"/>
+<figcaption>Render Tree (출처 - https://url.kr/bfvyk4)</figcaption> </figure>
 
 렌더 트리에 등록되는 기준이 눈에 보이는지 여부라면 그건 잘못되었다. 엄밀한 의미에서는 픽셀상에 공간을 차지하느냐 여부로 판단해야한다. `visibility:hidden`은 콘텐츠 표시만 숨기고 빈 공간을 차지하도록 한다.
 
@@ -155,9 +154,10 @@ var parsedResult = parseObject.parseFromString("<div><p>Hello!</p></div>", 'text
 
 console.log(parsedResult); // #document ......
 ```
+
 파싱은 **점진적으로(incrementally), 한 번에 한 노드씩 이루어진다.**
 
-첨부한 브라우저 렌더링 테스트프로젝트의 `incremental.html` 파일로 접근해보자. 브라우저 환경 테스트를 위해 개발자 도구에 세팅해야할 것들이 몇가지 있다. 
+첨부한 브라우저 렌더링 테스트프로젝트의 `incremental.html` 파일로 접근해보자. 브라우저 환경 테스트를 위해 개발자 도구에 세팅해야할 것들이 몇가지 있다.
 
 1. 프로젝트 클론 후 해당 폴더에서 `node server.js` 명령어를 실행한다.
 2. 크롬 개발자 도구의 네트워크 탭에 들어가서 `Disable cache`를 체크한다.
@@ -167,30 +167,30 @@ console.log(parsedResult); // #document ......
 인터넷 속도를 느리게 설정해놓다 보니 서버로부터 파일을 다운받는 속도가 느리다. 하지만 그럼에도 Apple문구가 적정 숫자까지 미리 출력되고 있음을 확인할 수 있다. 1000개의 사과가 출력될때까지 기다리는 것이 아니라 부분적으로 다운로드 및 파싱이 된 부분은 미리 렌더링을 진행하는 것이다.
 
 :::tip 개발자 도구 이미지
-<img src="../.vuepress/assets/daily/cache.png"/>
-<img src="../.vuepress/assets/daily/throt.png"/>
-<img src="../.vuepress/assets/daily/throttling.png"/>
-<img src="../.vuepress/assets/daily/custom.png"/>
-:::
+
+<img src="../.vuepress/assets/daily/cache.png"/> 
+<img src="../.vuepress/assets/daily/throt.png"/> 
+<img src="../.vuepress/assets/daily/throttling.png"/> 
+<img src="../.vuepress/assets/daily/custom.png"/> :::
+
 성능 개선과 관련된 지표는 [다음 링크를](https://web.dev/user-centric-performance-metrics/#important-metrics-to-measure) 참조하자.
-세팅을 마치고 새로고침 후 스크롤을 빠르게 내리다 보면 파싱이 덜 된 페이지 모습을 확인할 수 있다. 
+세팅을 마치고 새로고침 후 스크롤을 빠르게 내리다 보면 파싱이 덜 된 페이지 모습을 확인할 수 있다.
 
 개발자 도구를 쭉 뒤져보다 보면 `Performance` 탭에서 각종 이벤트들이 발생한 것을 볼 수 있다. 이 이벤트들은 **성능 메트릭이라고** 불리는 것들이다. 이 메트릭들이 서로 붙어있으면 붙어있을 수록, 일찍 발생하면 발생할수록 더 좋은 UX 제공하는 페이지라고 할 수 있다.
 
-몇 가지 메트릭을 소개하자면, 
+몇 가지 메트릭을 소개하자면,
+
 1. `FP(First Paint)`는 브라우저가 처음으로 스크린에 파싱 결과물을 붙이기 시작하기까지의 시간이다. (바디 태그의 백그라운드에 1픽셀 찍기 시작한 시점)
 2. `FCP(First Contentful Paint)`는 **텍스트나 이미지 콘텐츠가** 처음으로 파싱된 결과물로써 붙여지기 시작한 시점까지의 시간이다.
 3. `LCP(Largest Contentful Paint)`는 가장 큰 텍스트 또는 이미지 요소가 렌더링 될때까지의 시간이다.
 
-브라우저는 외부 소스(스크립트 태그의 `src` 어트리뷰트, `img`태그의 `src` 어트리뷰트, CSS의 `href` 등)를 만날 때마다 백그라운드에서 파일 다운로드를 진행한다. 
+브라우저는 외부 소스(스크립트 태그의 `src` 어트리뷰트, `img`태그의 `src` 어트리뷰트, CSS의 `href` 등)를 만날 때마다 백그라운드에서 파일 다운로드를 진행한다.
 
-가장 기억해야할 것은 돔 파싱이 보통 **메인 스레드에서 이루어진다는 것이다.** 자바스크립트의 메인 실행 스레드가 `busy` 상태이면 돔 파싱은 스레드가 `free`상태가 될 때 까지 진행되지 않는다. `script`태그는 **파서 블로킹(parser-blocking)** 이라는 특징을 갖기 때문에 위의 사실을 꼭 기억해야한다. 
+가장 기억해야할 것은 돔 파싱이 보통 **메인 스레드에서 이루어진다는 것이다.** 자바스크립트의 메인 실행 스레드가 `busy` 상태이면 돔 파싱은 스레드가 `free`상태가 될 때 까지 진행되지 않는다. `script`태그는 **파서 블로킹(parser-blocking)** 이라는 특징을 갖기 때문에 위의 사실을 꼭 기억해야한다.
 
 좋은 UX 제공을 위해서는 각종 스크립트 태그나 외부 리소스를 끌어오는 코드로 인해 DOM 파서를 막아서는 안된다.
 
-
 ### 2. Parser-Blocking Scripts
-
 
 ## Reference
 
@@ -206,5 +206,6 @@ console.log(parsedResult); // #document ......
 10. [github - browser-rendering-test](https://github.com/course-one/browser-rendering-test/tree/master/html)
 
 ## Additional
+
 1. [성능 - 메트릭](https://web.dev/user-centric-performance-metrics/#important-metrics-to-measure)
 2. 자바스크립트 쓰레드에 대한 개념
