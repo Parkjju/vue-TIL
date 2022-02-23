@@ -16,4 +16,4 @@ DOM은 HTML로 파싱된 객체를 동적으로 조작하기 위해서 존재한
 
 1. [Medium - What is Virtual DOM?](https://tonyfreed.medium.com/what-is-virtual-dom-c0ec6d6a925c)
 2. [Medium - The Inner Workings Of Virutal DOM](https://medium.com/@rajaraodv/the-inner-workings-of-virtual-dom-666ee7ad47cf)
-3. [What exactly is the DOM?](https://bitsofco.de/what-exactly-is-the-dom/?utm_source=CSS-Weekly&utm_campaign=Issue-341&utm_medium=email)
+3. [What is the Shadow DOM?](https://bitsofco.de/what-is-the-shadow-dom/?utm_source=CSS-Weekly&utm_campaign=Issue-344&)
