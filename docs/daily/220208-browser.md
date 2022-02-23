@@ -171,7 +171,9 @@ console.log(parsedResult); // #document ......
 <img src="../.vuepress/assets/daily/cache.png"/> 
 <img src="../.vuepress/assets/daily/throt.png"/> 
 <img src="../.vuepress/assets/daily/throttling.png"/> 
-<img src="../.vuepress/assets/daily/custom.png"/> :::
+<img src="../.vuepress/assets/daily/custom.png"/> 
+
+:::
 
 성능 개선과 관련된 지표는 [다음 링크를](https://web.dev/user-centric-performance-metrics/#important-metrics-to-measure) 참조하자.
 세팅을 마치고 새로고침 후 스크롤을 빠르게 내리다 보면 파싱이 덜 된 페이지 모습을 확인할 수 있다.
