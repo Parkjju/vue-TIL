@@ -211,7 +211,9 @@ module.exports = {
    */
   plugins: [
     ["sitemap", { hostname: "https://parkjju.github.io/vue-TIL/" }],
+    "reading-progress",
     "@vuepress/plugin-back-to-top",
+    "vuepress-plugin-smooth-scroll",
     "@vuepress/plugin-medium-zoom",
     [
       "vuepress-plugin-code-copy",
