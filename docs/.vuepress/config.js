@@ -109,6 +109,7 @@ module.exports = {
           "/daily/211018-network",
           "/daily/220208-DOM",
           "/daily/220208-browser",
+          "/daily/220224-shadow",
           "/daily/220223-virtualDom",
         ],
       },
