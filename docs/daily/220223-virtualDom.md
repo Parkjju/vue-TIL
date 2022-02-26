@@ -6,7 +6,7 @@ title: DailyTech - Virtul DOM이란
 
 DOM에 대한 이야기는 [이전에 문서로](https://parkjju.github.io/vue-TIL/daily/220208-DOM.html#dom%E1%84%8B%E1%85%B5%E1%84%85%E1%85%A1%E1%86%AB) 정리해두었으니 참고하면 가상 돔 이야기를 이야기하는 데에 도움이 많이 될 것 같습니다.
 
-간단히 정리해보자면 DOM은 크로스 플랫폼, 언어 독립적(language-independent)한 웹 API입니다. 구축 과정 및 상세 내용에 대해서는 문서 및 각종 자료를 참조해주시면 좋습니다. (이하 평어체로 작성)
+간단히 정리해보자면 DOM은 크로스 플랫폼, 언어 독립적(language-independent)한 웹 API입니다. 구축 과정 및  상세 내용에 대해서는 문서 및 각종 자료를 참조해주시면 좋습니다. (이하 평어체로 작성)
 
 DOM은 HTML로 파싱된 객체를 동적으로 조작하기 위해서 존재한다. 동적이라는 단어가 포함되기 때문에 DOM의 근본적인 문제가 발생한다. 바로 **성능 문제이다.** 개발자 도구를 통해 눈에 보이는 요소만 간략히 처리하는 것으로는 성능의 문제를 체감하기 어렵다. 더 극단적인 예시를 생각해보면 모던 웹의 가장 대표적인 주자로 Facebook, Instagram 등 각종 SNS가 있다. 이들 앱 내에서 게시물을 이루는 UI 요소 10000개를 왼쪽으로 1픽셀 옮긴다고 가정해보자. DOM 구조 재구축은 고사하고 각 요소가 실제로 옮겨질 수 있게끔  하는 브라우저 렌더링 단에서도 큰 오버헤드가 발생할 것이다.
 
@@ -45,6 +45,7 @@ DOM은 HTML로 파싱된 객체를 동적으로 조작하기 위해서 존재한
 > As you understand it’s not an easy thing and implementation of it can be tough.
 
 ## Virtual DOM 동작
+
 > But before we proceed, have you thought why we don’t render directly the changes on the DOM? - (출처:[medium - how virtual dom and diffing works in react](https://medium.com/@gethylgeorge/how-virtual-dom-and-diffing-works-in-react-6fc805f9f84e))
 
 DOM 변화를 직접 렌더링 하지 않는 이유가 무엇일까? 돔 트리 구축 자체는 자료구조가 트리이기 때문에 빠른 시간 안에 이루어지지만 그 안을 이루는 요소(데이터, 프로퍼티 값들)들을 수정할 때 **레이아웃의 조정 및 레이어 래스터 작업과 같은 로직을 거쳐야 하기 때문에 브라우저 입장에서 많은 오버헤드가 발생하는 것이다.** (최종적으로 리페인팅까지 진행해야한다.)
@@ -53,16 +54,15 @@ DOM 변화를 직접 렌더링 하지 않는 이유가 무엇일까? 돔 트리 
 
 <img src="../.vuepress/assets/daily/react-calculator.png"/>
 
-위의 이미지처럼 인풋 값 둘을 입력한 뒤 Add 또는 Subtract 버튼을 클릭하면 계산을 해준다. Add 버튼을 클릭하면 `setState`라는 이름의 메서드를 출력하면서 계산 결과값을 전달한다. 
+위의 이미지처럼 인풋 값 둘을 입력한 뒤 Add 또는 Subtract 버튼을 클릭하면 계산을 해준다. Add 버튼을 클릭하면 `setState`라는 이름의 메서드를 출력하면서 계산 결과값을 전달한다.
 
 리-렌더링 트리거 조건 첫 번째로 `dirty check`가 있었다. 컴포넌트를 어떻게 `dirty`상태라고 표시할 수 있을까?
 
-
----
+***
 
 this, Execution Context, Closure 학습 이후 다시 정리
 
----
+***
 
 ## Reference
 
