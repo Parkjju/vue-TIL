@@ -68,4 +68,4 @@ this, Execution Context, Closure 학습 이후 다시 정리
 
 1. [Medium - What is Virtual DOM?](https://tonyfreed.medium.com/what-is-virtual-dom-c0ec6d6a925c)
 2. [Medium - How Virtual DOM and diffing works in React](https://medium.com/@gethylgeorge/how-virtual-dom-and-diffing-works-in-react-6fc805f9f84e)
-3. [What is the Shadow DOM?](https://bitsofco.de/what-is-the-shadow-dom/?utm_source=CSS-Weekly&utm_campaign=Issue-344&)
+3. [What is the Shadow DOM?](https://bitsofco.de/what-is-the-shadow-dom/?utm_source=CSS-Weekly&utm_campaign=Issue-344&) 
