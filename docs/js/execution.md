@@ -10,6 +10,7 @@ title: Execution Context
 
 > ECMAScript 스펙에 따르면 실행 컨텍스트를 실행 가능한 코드를 형상화하고 구분하는 추상적인 개념이라고 정의한다. 좀 더 쉽게 말하자면 실행 컨텍스트는 실행 가능한 코드가 실행되기 위해 필요한 환경 이라고 말할 수 있겠다. - 출처: [Poimeweb - Execution Context](https://poiemaweb.com/js-execution-context)
 
+
 우선 이론적인 부분을 쭉 알아보자. 실행 컨텍스트의 타입은 세 가지로 나눠진다.
 
 1. 전역 실행 컨텍스트
@@ -320,7 +321,7 @@ dFuncExecutionContextObj = {
 
 ```javascript
 dFuncExecutionContextObj = {
-  activation: {
+  activationObj: {
     argumentObject: {
       length: 0
     },
@@ -331,11 +332,30 @@ dFuncExecutionContextObj = {
 }
 ```
 
+위의 과정을 정리하면 다음과 같다. (반드시 다음의 순서를 따른다.)
+1. VO의 인자 프로퍼티 목록을 `argumentObject` 프로퍼티로 추가한다. 
+2. 함수명을 VO의 프로퍼티로, 함수 정의부에 대한 힙 메모리 포인터값을 해당 프로퍼티 값으로 추가한다. (함수 호이스팅)
+3. 실행중인 컨텍스트 내의 변수들을 VO프로퍼티로 추가하고 `undefined`로 초기화한다. (변수 호이스팅)
+
+변수 호이스팅과 다르게 함수 호이스팅은 프로퍼티 등록과 함께 함수에 대한 정보를 VO에 모두 한번에 저장하기 때문에 **함수 선언부 이전에 호출이 가능하다.** 이것이 바로 함수 호이스팅이다.
+
+```javascript
+foo(); // Hello!
+
+function foo(){
+  console.log("Hello!");
+}
+```
+
 ## Scope chain 프로퍼티
 
 > Scope chain also consists of the current function execution object.
 
 스코프 체인은 현재의 함수 실행 컨텍스트의 VO로 이루어진다. 작업중인 함수 실행 컨텍스트 기준으로 생각해보자. 현재 함수 실행 컨텍스트가 생성단계에 있을 때에 만들어진 스코프 체인은 **중첩된 내부 함수를 아직 호출하지 않았기 때문에 새로운 함수 실행 컨텍스트를 스택에 쌓지 않은 상태이다.** 따라서 스코프 체인은 현재 실행 컨텍스트, 자신을 호출한 호출자 함수 실행컨텍스트, 이후 쭉 거슬러 올라가 글로벌 실행 컨텍스트까지 도달하게 되는 것이다.
+
+:::warning
+위에 서술했듯, 스코프 체인은 VO 즉 변수에 대해서만 적용되는 메커니즘이다. 프로퍼티 검색을 위해서는 **프로토타입 체인** 메커니즘을 활용하게 된다.
+:::
 
 ```javascript
 a = 1;
@@ -367,6 +387,18 @@ scopeChain = [cFunc execution context VO, global execution context VO]
 자바스크립트 엔진은 변수 접근 시 스코프 체인을 확인하여 변수를 찾게 된다. 글로벌 스코프의 `b` 변수를 `dFunc`함수 내에서 출력하기 위해 스코프 체인을 참고하여 `dFunc exectution context VO`, `cFunc execution context VO`, `global execution context VO`를 차례로 순회한다.
 
 `cFunc`함수 실행 컨텍스트 기준으로 스코프체인은 `cFunc execution context VO`, `global exeuction VO`밖에 없기 때문에 `dFunc`함수 내의 변수에는 접근할 수 없게 되는 것이다.
+
+:::tip
+스코프 체인 프로퍼티를 보고싶으면 함수 생성 후 `console.dir(func)`를 통해 확인하면 된다. `console.dir`은 출력대상 객체를 JSON 트리 형태로 출력해주는 함수이다. 
+
+출력한 뒤 `[[Scope]]` 프로퍼티를 보면 된다.
+:::
+
+## 정리
+> 자바스크립트 엔진은 코드를 실행하기 위하여 실행에 필요한 여러가지 정보를 알고 있어야 한다. (변수, 함수 선언, 변수 스코프, this) 이와 같이 실행에 필요한 정보를 형상화하고 구분하기 위해 자바스크립트 엔진은 실행 컨텍스트를 물리적 객체의 형태로 관리한다. - ([Poimeweb - Execution Context](https://poiemaweb.com/js-execution-context))
+
+자바스크립트 엔진이 코드를 읽고 실행하기 위한 정보들을 객체 형태로 저장하며, 이를 **실행 컨텍스트라고 부르는 것이다.** 실행 컨텍스트의 프로퍼티들로 코드에 대한 정보들을 저장한다. 
+
 
 ## Reference
 
