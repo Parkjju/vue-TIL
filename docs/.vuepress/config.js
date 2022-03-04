@@ -116,7 +116,12 @@ module.exports = {
       {
         title: 'Javascript Fundamental',
         collapsable: true,
-        children: ['/js/scope', '/js/this', '/js/execution'],
+        children: [
+          '/js/scope',
+          '/js/this',
+          '/js/execution',
+          '/javascript/hoisting',
+        ],
       },
       {
         title: 'ES6+',
@@ -132,7 +137,6 @@ module.exports = {
           '/javascript/settime',
           '/javascript/promise',
           '/javascript/class',
-          '/javascript/hoisting',
         ],
       },
       {
