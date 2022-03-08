@@ -102,7 +102,7 @@ module.exports = {
           '/daily/211006-edit',
           '/daily/211006-upload',
           '/daily/210930-cookie',
-          '/daily/211004-antipattern',
+          //   '/daily/211004-antipattern',
           '/daily/211004-githubLogin',
           '/daily/211004-Oauth',
           '/daily/211005-json',
@@ -116,7 +116,13 @@ module.exports = {
       {
         title: 'Javascript Fundamental',
         collapsable: true,
-        children: ['/js/scope', '/js/this', '/js/execution', '/js/closure'],
+        children: [
+          '/js/scope',
+          '/js/this',
+          '/js/execution',
+          '/javascript/hoisting',
+          '/js/closure',
+        ],
       },
       {
         title: 'ES6+',
@@ -168,11 +174,11 @@ module.exports = {
           '/nodeJS/template',
         ],
       },
-      {
-        title: 'Computer Science',
-        collapsable: true,
-        children: ['/os/Operating-System'],
-      },
+      //   {
+      //     title: 'Computer Science',
+      //     collapsable: true,
+      //     children: ['/os/Operating-System'],
+      //   },
       {
         title: 'Algorithm',
         collapsable: true,
