@@ -141,6 +141,11 @@ module.exports = {
         ],
       },
       {
+        title: 'React',
+        collapsable: true,
+        children: [],
+      },
+      {
         title: 'Vue',
         collapsable: true,
         children: [
