@@ -139,4 +139,10 @@ for(let i in myCar){
   console.log(i); //  name, speed
 }
 ```
+
+`Object.keys(Object.getPrototypeOf(인스턴스))` 코드를 통해서도 클래스 기반 객체 인스턴스 메서드는 출력되지 않는다. `Object.keys` 메서드가 열거형 속성을 갖는 데이터에 대해서만 취급하기 때문이다.
+
+비-열거형 속성을 갖는 데이터에 대해 접근하려면 `Object.getOwnPropertyNames()` 메서드를 사용하면 된다. 
+
+`Object.getOwnPropertyNames(Object.getPropertyOf(클래스 객체 인스턴스))`
 :::
