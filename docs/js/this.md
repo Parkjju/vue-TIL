@@ -16,7 +16,7 @@ public class Person{
 }
 ```
 
-자바에서의 `this`는 객체 인스턴스 자신을 가리킨다.
+ 자바에서의 `this`는 객체 인스턴스 자신을 가리킨다.
 
 ## 자바스크립트 this
 
@@ -245,7 +245,7 @@ foo(1,2,3);
 
 ### 1. apply 메서드
 
-`apply` 메서드는 함수의 프로토타입 객체의 메서드이다. `Function.prototype.apply`이다. 
+`apply` 메서드는 함수의 프로토타입 객체의 메서드이다. `Function.prototype.apply`이다.
 
 ```javascript
 //기본 사용법
@@ -293,9 +293,9 @@ function args(){
 }
 ```
 
-위 코드는 `Array` 객체들이 상속받는 내부 메서드를 `prototype`으로 접근하여 그 중 `slice` 메서드를 호출한다. `slice` 호출과 동시에 `this`를 `arguments`와 바인딩하게 된다. 
+위 코드는 `Array` 객체들이 상속받는 내부 메서드를 `prototype`으로 접근하여 그 중 `slice` 메서드를 호출한다. `slice` 호출과 동시에 `this`를 `arguments`와 바인딩하게 된다.
 
-간단히 정리하면 **호출자 함수를 apply에 전달된 객체의 메서드인것 처럼 작동하게 되는 것이다.**  `arguments`의 경우 유사 배열이기 때문에 호출하지 못하는 `slice`메서드를 `arguments.slice()` 메서드처럼 사용할 수 있게 된 것이다. 
+간단히 정리하면 **호출자 함수를 apply에 전달된 객체의 메서드인것 처럼 작동하게 되는 것이다.**  `arguments`의 경우 유사 배열이기 때문에 호출하지 못하는 `slice`메서드를 `arguments.slice()` 메서드처럼 사용할 수 있게 된 것이다.
 
 `call` 메서드의 경우에는 `apply`에 전달되는 파라미터를 콤마로 각각 분리하여 전달한다고 보면 된다. 배열로 전달하게 되면 배열 자체가 파라미터로 전달된다. 자세한 구분은 [What is the difference between call and apply?](https://stackoverflow.com/questions/1986896/what-is-the-difference-between-call-and-apply)를 참조하자.
 
@@ -315,7 +315,7 @@ thisTestFunction.call(thisTestFunction, 'GyeongJun', 'Park');
 
 call 메서드는 콜백 함수에서의 this를 바인딩하는 데에도 사용된다. 렉시컬 스코프가 기본인 자바스크립트에서는 선언부의 위치가 더 중요하기 때문에 `this`를 사용하는 콜백함수를 글로벌 스코프에서 선언할 경우 `window` 객체가 나타나게 된다.
 
-콜백함수에 대한 설명은 [다음의 문서](https://developer.mozilla.org/en-US/docs/Glossary/Callback_function)를 참조하자. 콜백 함수는 **다른 함수의 인자로 전달되는 함수라고 이해하면 된다.** 
+콜백함수에 대한 설명은 [다음의 문서](https://developer.mozilla.org/en-US/docs/Glossary/Callback_function)를 참조하자. 콜백 함수는 **다른 함수의 인자로 전달되는 함수라고 이해하면 된다.**
 
 생성자 함수의 프로토타입 객체 메서드에서 콜백함수를 호출하는 코드를 살펴보자. 콜백에서 `this`를 사용하면, 호출 결과로 객체가 나타나게 될까?
 
@@ -341,7 +341,7 @@ jun.printName(bar); // 출력 결과는?
 1. `bar`를 콜백으로 호출한 호출자 함수 `printName`를 메서드로 갖는 `jun`객체의 `name` 프로퍼티에 접근, 최종적으로 Jun을 출력하게 된다.
 2. `bar`를 콜백으로 호출하였음에도, 렉시컬 스코프에 의해 `bar` 내의 `this`는 `window`를 가리키게 된다. 따라서, undefined가 출력된다.
 
-정답은 2번이다. 콜백 함수 호출 시 `this`를 정확하게 이용하려면 값 바인딩을 직접 처리해야한다. 
+정답은 2번이다. 콜백 함수 호출 시 `this`를 정확하게 이용하려면 값 바인딩을 직접 처리해야한다.
 
 ```javascript
 function Person(name){
@@ -359,11 +359,13 @@ function bar(){
 var jun = new Person("Jun");
 jun.printName(bar); // 출력 결과는?
 ```
+
 `printName` 메서드 정의 시 `this`를 콜백함수 `foo`와 바인딩하였다. 이때의 `this`는 호출자 함수 `printName` 스코프 기준이다. 따라서 `printName` 메서드를 갖는 `Person` 객체를 가리키고 있다. 정리하면, `Person`객체를 `foo` 콜백함수와 바인딩하여 `Person.foo()` 형태로 호출하게 되는 것이다.
 
 이후 `jun.printName(bar)`를 호출하면 `bar` 콜백이 호출되며 `bar` 함수의 `this`는 이미 객체와 바인딩되어 있는 상태이기 때문에 객체의 `name` 프로퍼티에 접근하여 최종적으로 `Jun`을 호출한다.
 
 ## bind
+
 `bind` 메서드는 `apply`, `call` 과는 다르게 `this`가 바인딩된 객체를 리턴하는 것이 아니라, `this`가 바인딩된 **함수를 리턴한다.**
 
 ```javascript
@@ -382,12 +384,12 @@ console.log(boundResultWithApply); // 42
 const boundResultWithBind = unboundResult.bind(thisObject);
 console.log(boundResultWithBind); // function{...}
 ```
+
 `unboundResult`는 선언부에서 현재 `this`가 바인딩되어 있지 않기 때문에 그 결과를 출력해도 함수를 실행하여도 `thisObject`의 프로퍼티 `x`값인 42가 출력되지 않고, `undefined`가 출력된다.
 
 `apply` 메서드는 위에서 언급했듯, **본질이 함수 호출에 있다.** 따라서 `apply` 메서드의 반환은 **함수 호출 반환값이 된다.** `thisObject`와 `unboundResult`를 바인딩한 뒤 `unboundResult`를 호출하게 되며, `this`는 `thisObject`를 가리키게 되므로 프로퍼티 x의 값인 42가 출력된다.
 
 반면, `bind` 메서드는 **함수값을 반환하지 않고, 바인딩된 함수 자체를 반환한다.** `boundResultWithBind`를 호출하면 함수 객체 자체가 호출되는 것을 볼 수 있다. 확장성 면에서 `bind` 메서드가 더 좋다고 할 수 있다. `bind`메서드를 적용한 함수를 호출하려면 `boundResultWithBind()`, `boundResultWithBind(parameters)`의 형태로 일반 함수처럼 호출하면 된다.
-
 
 ## Reference
 
