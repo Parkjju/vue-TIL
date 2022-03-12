@@ -1,5 +1,6 @@
 ---
-title: 바닐라 JS로 인터랙션 구현하기
+title: React 기초 - 인터랙션 구현해보기
+
 ---
 
 ## React
@@ -9,7 +10,6 @@ title: 바닐라 JS로 인터랙션 구현하기
 ```html
 <!DOCTYPE html>
 <html lang="en">
-  <head> </head>
   <body>
     <span
       >Total clicks:
@@ -33,3 +33,56 @@ title: 바닐라 JS로 인터랙션 구현하기
   </body>
 </html>
 ```
+
+위 코드에 리액트 라이브러리를 적용하면 어떻게될까? 우선 라이브러리를 HTML파일 상에 임포트해주자.`react`와 `react-dom`을 가져오면 된다. 리액트 라이브러리를 불러온 후 브라우저 로딩이 되었으면 개발자 도구의 콘솔에 `React`를 입력해보자. 관련된 데이터들이 출력된다.
+
+**리액트는 HTML을 직접 작성하지 않는 것을 원칙으로 한다.**
+
+## 리액트 객체 생성
+리액트 라이브러리 사용을 위해 불러오는 패키지 및 라이브러리는 `React`와 `React-dom`이 있다. 
+
+`React`는 어플리케이션이 인터랙티브하게 작동될 수 있도록 만들어주는 라이브러리이고, `React-dom`은 리액트 요소들을 HTML `body`에 붙여준다.
+
+`ReactDOM`의 `render`메서드를 통해 html body에 요소를 붙일 수 있는데, 이때 이 메서드의 파라미터는 다음과 같다.
+1. 리액트 요소를 담은 변수
+2. 리액트 요소를 붙일 위치
+
+리액트 요소를 붙일 위치는 일반적으로 `root`라는 아이디를 갖는 `div`태그에 붙인다. 스크립트 태그를 통해 루트 태그를 불러온 뒤 붙여주는 작업을 하면 된다.
+
+```html
+<!-- html태그들 ... -->
+<body>
+  <div id="root"></div>
+</body>
+<script>
+  const root = document.getElementById("root");
+  
+  const 리액트_객체를_담을_변수명 = React.createElement("HTML_태그명");
+  ReactDOM.render(리액트_객체를_담은_변수명, root);
+</script>
+```
+
+`React`의 `createElement` 메서드 활용 시 html태그만 인자로 전달할 수 있는 것은 아니다. 다음의 인자들이 메서드 인자로 들어갈 수 있다.
+1. html 태그명
+2. 해당 태그의 프로퍼티, 객체 형태로 전달한다. `const span = React.createElement("span", {id: "mySpan"});`
+3. 태그 내부의 컨텐츠 내용. ``const span = React.createElement("span", {id: "mySpan"}, "Hello World!");
+
+위 코드는 리액트의 전체적인 흐름을 설명해주는 코드이다. 기존 자바스크립트 코드와 어떤 차이점이 있을까?
+
+기존 자바스크립트 코드는 다음과 같은 흐름으로 진행된다.
+1. html을 먼저 생성한다.
+2. `querySelector`등의 메서드로 html 요소를 가져온다.
+3. 여러가지 내부 메서드를 통해 html을 수정한다.
+
+반면 리액트 기반의 코드는 다음과 같은 흐름으로 진행된다.
+1. 리액트 요소를 붙일 위치를 자바스크립트로 받아놓는다.
+2. html에 요소를 붙일때까지 모든 작업을 자바스크립트로 처리하게 된다.
+
+브라우저 렌더링 과정을 보면, DOM API를 조작함에 있어 레이아웃 조정과 래스터라이징 등 여러가지 성능 저하를 일으킬 잠재 요인들이 존재한다. 이벤트 감지나 트리거가 있으면 매번 이를 처리하게 된다는 것이 문제인 것이다.
+
+반면 리액트의 경우 특별한 [비교 알고리즘(diffing algorithm)](https://ko.reactjs.org/docs/reconciliation.html#the-diffing-algorithm)을 통해 HTML을 꼭 업데이트 해야만할 때 업데이트 하기 때문에 더 성능적으로 좋은 것이다.
+
+## 리액트 이벤트
+
+## Reference 
+1. [nomad coders - React로 영화 웹 서비스 만들기](https://nomadcoders.co/react-for-beginners/lobby)
