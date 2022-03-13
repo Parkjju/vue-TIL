@@ -128,12 +128,22 @@ funcA();
 
 <button class="btn">Click me!</button>
 <script>
-  const btn = document.querySelector(".btn");
+  const btn = document.querySelector(`.btn`);
   btn.onclick = function(e){
     alert(this);
   } 
 </script>
 
+### addEventListener 이벤트 핸들러
+`addEventListener` 메서드는 다음의 형태를 갖는다.
+```javascript
+EventTarget.addEventListener('이벤트 타입', 콜백함수,[,useCapture]); 
+```
+콜백 함수는 인라인 형식으로 작성해도 된다. 캡쳐링 및 버블링을 지원하며 이에 대해서는 후술한다.
+
+`addEventListener` 메서드에서의 `this`는 이벤트 리스너에 바인딩된 요소를 가리킨다.
+```javascript
+```
 
 
 
