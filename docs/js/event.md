@@ -128,7 +128,7 @@ funcA();
 
 <button class="btn">Click me!</button>
 <script>
-  const btn = document.querySelector(`.btn`);
+  const btn = document.querySelector(\".btn\");
   btn.onclick = function(e){
     alert(this);
   } 
