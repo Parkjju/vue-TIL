@@ -144,7 +144,7 @@ module.exports = {
             {
                 title: 'React',
                 collapsable: true,
-                children: ['react/start'],
+                children: ['react/start', 'react/jsx'],
             },
             {
                 title: 'Vue',
