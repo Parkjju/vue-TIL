@@ -2,7 +2,6 @@
 title: React 기초 - 인터랙션 구현해보기
 
 ---
-
 ## React
 
 리액트는 인터랙티브한 UI를 만들기 위해 제작된 오픈소스 라이브러리이다. 인터랙티브라는 것에 대한 의미가 사전적으로는 알겠지만 실제 체감을 하기 위해서는 직접 코드를 작성해봐야 한다. 리액트 인터랙티브 구현에 앞서 바닐라 자바스트립트만 사용하여 클릭 시 카운터가 올라가는 코드를 작성해보자.
@@ -62,6 +61,19 @@ title: React 기초 - 인터랙션 구현해보기
 </script>
 ```
 
+:::tip
+둘 이상의 엘리먼트를 root에 붙이고 싶으면 해당 엘리먼트들을 상위 엘리먼트 하나로 묶어서 상위 엘리먼트를 루트에 붙이자. 부모 요소 생성 시 리액트 `createElement` 메서드 세 번째 파라미터에 배열 형태로 자식 요소들을 전달하면 된다.
+
+```javascript
+const root = document.getElementById("root");
+const childOne = React.createElement("span", null, "child one!");
+const childTwo = React.createElement("span", null, "child two!");
+const parent = React.createElement("div", null, [childOne, childTwo]); // 부모 요소 생성
+
+ReactDOM(parent, root);
+```
+:::
+
 `React`의 `createElement` 메서드 활용 시 html태그만 인자로 전달할 수 있는 것은 아니다. 다음의 인자들이 메서드 인자로 들어갈 수 있다.
 1. html 태그명
 2. 해당 태그의 프로퍼티, 객체 형태로 전달한다. `const span = React.createElement("span", {id: "mySpan"});`
@@ -83,6 +95,18 @@ title: React 기초 - 인터랙션 구현해보기
 반면 리액트의 경우 특별한 [비교 알고리즘(diffing algorithm)](https://ko.reactjs.org/docs/reconciliation.html#the-diffing-algorithm)을 통해 HTML을 꼭 업데이트 해야만할 때 업데이트 하기 때문에 더 성능적으로 좋은 것이다.
 
 ## 리액트 이벤트
+`React.createElement`로 생성한 엘리먼트에 이벤트를 등록하는 방법은 메서드 파라미터로 전달할 때 두 번째로 전달하는 프로퍼티에 **프로퍼티 방식의 이벤트 핸들러를 등록하면 된다.** 자세한 내용은 [Javascript Fundamental - Event](https://parkjju.github.io/vue-TIL/js/event.html) 문서를 참조하자.
 
+```javascript
+const btn = React.createElement("button", {
+  onClick: () => {
+    alert("Clicked!");
+  }
+}, "Click me !");
+
+ReactDOM.render(btn, root);
+```
+
+사실, 지금까지의 `React.createElement` 방식을 통한 요소 생성 방식은 잘 이용하지 않는 방식이다. 
 ## Reference 
 1. [nomad coders - React로 영화 웹 서비스 만들기](https://nomadcoders.co/react-for-beginners/lobby)
