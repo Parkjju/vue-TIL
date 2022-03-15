@@ -1,3 +1,85 @@
 ---
 title: React State
+
 ---
+## State
+
+리액트 state는 데이터가 저장되는 곳이다. [리액트 기초 - 인터랙션 구현하기](https://parkjju.github.io/vue-TIL/react/start.html)에서 바닐라 자바스크립트만 사용하여 구현된 코드를 보면 이벤트 감지마다 `counter`변수를 증가시키는 것을 볼 수 있다.
+
+먼저 코드의 구조를 봐보자.
+```javascript
+const root = document.getElementById("root");
+const Container = () => {
+  return (
+    <div>
+      <h3> Total Clicks : 0 </h3> // 하드코딩
+      <button> Click me! </button>
+    </div>
+  );
+};
+
+ReactDOM.render(<Container/>, root);
+```
+
+컨테이너 컴포넌트 내에 클릭 수 표시 요소와 버튼을 추가하여 렌더링하고 있다. 이제 자바스크립트에서 변수를 하나 생성하고 이를 컨테이너 JSX에 전달하려면 어떻게 해야할까? `{}` 중괄호를 통해 전달하면 된다! 
+
+```javascript
+const Container = () => {
+  return (
+    <div>
+      <h3> Total Clicks : {counter} </h3> // counter 변수의 전달
+      <button> Click me! </button>
+    </div>
+  );
+};
+```
+
+버튼 클릭 수에 따라 카운터 변수의 값을 하나씩 증가시켜보자. 프로퍼티 방식의 이벤트 핸들러를 등록해보면 다음과 같다.
+```javascript
+function countUp() {
+    counter = counter + 1;
+}
+
+const Container = () => {
+    return (
+        <div>
+            <h3>Total Clicks : {counter}</h3>
+            <button
+                onClick={() => {
+                    countUp();
+                }}
+            >
+                Click Me!
+            </button>
+        </div>
+    );
+};
+```
+하지만, 클릭 감지 후에 카운터변수가 실제로 증가는 하고 있지만 화면 상에 반영이 되고 있지 않는 것을 볼 수 있을 것이다. counter 변수를 콘솔에 출력해보면 값은 증가하고 있다. 코드의 흐름을 보면, `ReactDOM.render()`함수를 통한 `Container` 컴포넌트를 페이지가 로드된 시점에 단 한번만 렌더링 하고 있기 때문이다.
+
+위의 문제를 해결하기 위해서는 **카운트업 함수 호출 시 렌더링을 한번 더 진행하면 된다.** 
+
+```javascript
+function countUp(){
+  counter = counter + 1;
+  ReactDOM.render(<Container/>, root); // 외부 함수로 따로 빼서 작성하면 더 이쁘겠죠?
+}
+```
+위의 방식은 효율적이지 않다. 리 렌더링에 대한 생각을 빼먹으면 안되기 때문에 실수의 여지가 존재한다. 
+
+:::tip Why React?
+바닐라 자바스크립트로 코드를 작성할 경우 엄격한 기준으로 코드를 작성하지 않으면 리 렌더링과 관련된 부분이 브라우저 상에서 매우 비효율적으로 구현된다. 이게 무슨 말이냐 하면 단순 `innerText` 또는 `innerHTML`을 기반으로 코드 작성을 하게 될때 XSS 공격에 노출될 수 있고, 엄격한 기준 아래 텍스트 노드에 직접 접근하여 `appendChild`, `removeChild`등의 메서드를 사용하면 코드가 복잡해진다는 것이다.
+
+심지어 `innerHTML`와 같이 코드를 작성하게 되면 업데이트 대상 요소만 바뀌는 것이 아니라 마크업 전체가 업데이트 되기 때문에 코드 규모가 커질 수록 리 렌더링 과정에서 브라우저 성능에 악영향을 미치게 된다. 
+
+반면 리액트의 경우 실제 업데이트될 요소의 특정 부분만 업데이트 된다. `ReactDOM`은 기본적으로 XSS에 대한 공격도 방어할 수단을 갖추고 있다.
+
+개발자 도구 요소 검색에 들어가 버튼 클릭을 직접 해보자. 요소의 어떤 부분이 깜빡 거리는지, 코드는 어떻게 짜여있는지 바닐라 자바스크립트와 리액트 코드를 비교해보자.
+:::
+
+
+
+
+
+## Reference
+1. [nomad coders - React로 영화 웹 서비스 만들기](https://nomadcoders.co/react-for-beginners/lobby)
