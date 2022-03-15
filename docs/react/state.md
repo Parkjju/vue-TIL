@@ -74,8 +74,56 @@ function countUp(){
 
 반면 리액트의 경우 실제 업데이트될 요소의 특정 부분만 업데이트 된다. `ReactDOM`은 기본적으로 XSS에 대한 공격도 방어할 수단을 갖추고 있다.
 
-개발자 도구 요소 검색에 들어가 버튼 클릭을 직접 해보자. 요소의 어떤 부분이 깜빡 거리는지, 코드는 어떻게 짜여있는지 바닐라 자바스크립트와 리액트 코드를 비교해보자.
+개발자 도구 요소 검색에 들어가 버튼 클릭을 직접 해보자. 요소의 어떤 부분이 깜빡 거리는지, 코드는 어떻게 짜여있는지 바닐라 자바스크립트와 리액트 코드를 비교해보면 좋을 것이다.
 :::
+
+## setState
+이제 본격적으로 리액트 state에 대한 이야기가 시작된다. 변수와 함수를 선언하여 리액트 리렌더링을 직접 하는 방식은 번거롭다. 문제점을 한 마디로 정리하면 **리 렌더링의 트리거(발동)를 개발자가 모두 직접 다뤄야 한다는 것이다.** 이에 대해 자동화를 시켜줄 수 있는 함수가 바로 `React.useState()`이다.
+
+```javascript
+const App = () => {
+  const data = React.useState();
+  // JSX code...
+};
+```
+JSX 작성에 앞서 `React.useState()`함수를 통해 반환받은 값을 출력해보면 배열(Array)이 나타난다. `[undefined, function]`의 형태인데, 0번째 인덱스 값이 리액트에서 관리할 데이터이고 1번째 인덱스 값이 데이터를 바꿀 때 사용하는 함수이다.
+
+`React.useState(0)`함수에 파라미터를 전달함으로써 데이터 초기값을 지정할 수 있다. 
+
+`React.useState()` 배열의 데이터 관리를 위해 변수를 하나 생성하여 JSX 전달해보자.
+```javascript
+const App = () => {
+  const data = React.useState();
+  const counter = data[0];
+  const modifier = data[1];
+  // JSX code...
+  // return <div> Hello {data[0]} !!</div>
+  // or return <div Hello {counter} !! </div>
+```
+
+위와 같은 방식도 좋지만, ES6 구조 분해 문법(Destructuring) 통해 더 보기좋게 표현할 수 있다.
+```javascript
+const App = () => {
+  const data = React.useState();
+  const [counter, modifier] = data;
+  console.log(counter);
+  console.log(modifier);
+  // JSX code..
+}
+```
+
+카운트 변수에 데이터를 담을 수 있게 되었으니 리 렌더링만 처리하면 된다. 기존에 `ReactDOM.render()`함수를 매번 호출하며 어떤 컴포넌트를 렌더링할지 고민해야 했다면, `useState`를 통해 **렌더링할 데이터와 관련된 1번째 인덱스의 Setter함수만 호출하면 된다.**
+
+```javascript
+const App = () => {
+  let [counter, modifier] = React.useState(0); // Setter함수명 : modifier
+  const countUp = () => {
+    counter = counter + 1;
+    modifier(counter); // Setter 호출 후 리렌더링 요청을 직접한다.
+  };
+  // JSX code...
+}
+```
 
 
 
