@@ -125,6 +125,78 @@ const App = () => {
 }
 ```
 
+:::warning Update Hook
+리액트 `useState`의 두 번째 인자로 **함수가 전달된다.** 이 함수를 통해 `useState` 훅은 리액트 상태 변화를 감지하여 자동으로 리 렌더링을 진행한다. 이때 이 함수에 **이미 변환된 값을 전달하는 것이 아니라, 어떻게 변환시킬 지에 대해 방법을 인자로 전달하는 것이 더 안전하다.** 
+
+함수 외부에서 값을 계산하게 되면 동일 스코프의 다른 함수에서 그 값을 사용한 뒤 원하지 않는 결과값을 주고받을 수 있기 때문이다. 
+
+위 코드를 수정하면 다음과 같다.
+```javascript
+const App = () => {
+  let [counter, modifier] = React.useState(0); // Setter함수명 : modifier
+  const countUp = () => {
+    modifier(counter => counter + 1); // 파라미터로 함수를 전달
+    // 현재 counter가 파라미터로 전달
+    // counter라는 값을 어떻게 변화시킬지
+    // 화살표 함수!
+  };
+  // JSX code...
+```
+
+참고로, useState의 Setter함수 내에 전달되는 내부 함수의 파라미터는 암묵적으로 **현재 상태의 값이 할당된다.**
+:::
+
+리액트 `useState` 훅을 사용하는 다음 예제를 직접 구현해보자.
+
+### 1. 시간을 분으로 변환해보자.
+
+:::details 정답 코드
+```javascript
+    function App() {
+      const [amount, setAmount] = React.useState(0);
+      const [disabled, setDisabled] = React.useState(true);
+      const onChange = (e) => {
+        setAmount(e.target.value);
+      };
+      const reset = () => {
+        setAmount(0);
+      };
+      const flip = () => {
+        setDisabled((current) => !current);
+      };
+
+      return (
+        <div>
+          <h1>Super converter</h1>
+          <label htmlFor='minutes'>Minutes</label>
+          <input
+            id='minutes'
+            placeholder='Minutes'
+            type='number'
+            value={!disabled ? amount * 60 : amount}
+            onChange={onChange}
+            disabled={!disabled}
+          />
+
+          <label htmlFor='hours'>Hours</label>
+          <input
+            onChange={onChange}
+            id='hours'
+            placeholder='Hours'
+            type='number'
+            value={disabled ? Math.round(amount / 60) : amount}
+            disabled={disabled}
+          />
+          <button onClick={reset}>Reset</button>
+          <button onClick={flip}>Flip!</button>
+        </div>
+      );
+    }
+    const root = document.getElementById('root');
+    ReactDOM.render(<App />, root);
+```
+:::
+
 
 
 
