@@ -53,6 +53,33 @@ ReactDOM.render(Parent, root);
 컴포넌트의 이름의 첫 글자는 무조건 대문자로 작성한다. 함수형 컴포넌트 이름을 `Title`이 아닌 `title`로 작성할 경우 이후 JSX 코드를 실제 html 요소와 혼동되기 때문이다.
 :::
 
+:::tip React Hack!
+`useState` 훅을 사용하여 특정 컴포넌트만 표시하는 방식을 알아보자. JSX는 HTML과 닮았지만 자바스크립트가 근본이다. 따라서 자바스크립트 코드를 사용할 수는 있지만 JS코드를 그대로 쓰는 것은 또 안된다.
 
+다음은 App컴포넌트 내에서 `select` html 요소를 통해 컴포넌트 렌더링을 선택하는 코드이다.
+```javascript
+    function App() {
+      const [index, setIndex] = React.useState('xx');
+      const onSelect = (event) => {
+        setIndex(event.currentTarget.value);
+      };
+      return (
+        <div>
+          <h1>Super Converter</h1>
+          <select value={index} onChange={onSelect}>
+            <option value='xx'>Select options</option>
+            <option value='1'>KM & Miles</option>
+            <option value='0'>Minutes & Hours</option>
+          </select>
+          {index === 'xx' ? <div>Select units!</div> : null}
+          {index === '0' ? <MinutesToHours /> : null}
+          {index === '1' ? <KmToMiles /> : null}
+        </div>
+      );
+    }
+```
+:::
+
+`{index === 'xx ? ...}` 코드를 (삼항연산자) 통해 렌더링할 컴포넌트를 선택하는 모습이다.
 ## Reference
 1. [nomad coders - React로 영화 웹 서비스 만들기](https://nomadcoders.co/react-for-beginners/lobby)
