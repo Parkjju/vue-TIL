@@ -24,6 +24,10 @@ const Title = <h1 id="title" onMouseEnter={ () => console.log("mouse Enter!") }>
 </body>
 ```
 
+:::warning CSS-in-JS
+JSX문법이 아무리 HTML과 닮았다고 해도 근본은 자바스크립트 코드이다. JSX 내에서 CSS 코드를 작성할 때 주의할 점으로 `style` 프로퍼티를 자바스크립트 형식으로 표기해야한다. 가령 CSS의 `class`키워드를 사용할 경우 JSX에서는 `<h1 className="myClass">Hi~</h1>`과 같이 작성해야 한다는 것이다.
+:::
+
 ## 부모 - 자식관계 생성
 JSX로 리액트 요소를 한 상위 요소로 묶기 위해서는 어떻게 하면 될까? 함수형 컴포넌트 방식이 여기서 등장한다.
 ```javascript
