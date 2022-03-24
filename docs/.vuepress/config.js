@@ -123,6 +123,7 @@ module.exports = {
           '/javascript/hoisting',
           '/js/closure',
           '/js/event',
+          '/js/json',
           '/js/ajax',
         ],
       },
