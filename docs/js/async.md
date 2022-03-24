@@ -1,3 +1,0 @@
----
-title: Asynchronous processing model
----
