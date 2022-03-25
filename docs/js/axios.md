@@ -448,6 +448,8 @@ function performPostRequest(e) {
 
 POST 메서드 요청의 경우 `axios.post` 메서드를 호출한다. 인자로는 POST요청 URL, 요청 데이터를 객체로 담아 전달하면 된다. 성공적인 요청 후 리스폰스로 반환되는 데이터는 요청 시 보낸 데이터이다. 
 
+전체 코드는 [깃헙 링크](https://github.com/Parkjju/axios-playground)에서 받을 수 있다.
+
 ## 결론
 `XMLHttpRequest`와 `axios`를 활용한 실습 코드들을 살펴보았다. 직접 여기저기 조작해보며 데이터 요청을 화면에 렌더링해주는 작업을 해보자. 
 
