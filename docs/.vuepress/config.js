@@ -124,8 +124,8 @@ module.exports = {
           '/js/closure',
           '/js/event',
           '/js/json',
-          '/js/axios',
           '/js/ajax',
+          '/js/axios',
         ],
       },
       {
