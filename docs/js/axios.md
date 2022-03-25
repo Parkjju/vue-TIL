@@ -187,6 +187,271 @@ xhr.onload = (e) => {
 ```
 
 ## axios
+Axios 라이브러리를 활용하여 투두 리스트 데이터를 비동기적으로 처리해보자. 다음은 부트스트랩을 이용한 UI 코드이다.
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JS Axios Demo</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+      integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="panel panel-primary">
+        <div class="panel-heading">GET Request</div>
+        <div class="panel-body">
+          <button class="btn btn-primary" id="get">Get Todos</button>
+          <button class="btn btn-warning" onclick="clearOutput(this)">
+            Clear
+          </button>
+          <div class="alert alert-primary" id="getResult1"></div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">GET Request with Param</div>
+        <div class="panel-body">
+          <input
+            type="text"
+            class="form-control"
+            id="todoId"
+            placeholder="Todo ID ..."
+          />
+          <button class="btn btn-primary" onclick="performGetRequest2()">
+            Get Todos
+          </button>
+          <button class="btn btn-warning" onclick="clearOutput(this)">
+            Clear
+          </button>
+          <div class="alert alert-primary" id="getResult2"></div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">POST Request</div>
+        <div class="panel-body">
+          <form class="form-inline" id="todoInputForm">
+            <div class="form-group">
+              <div>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="todoTitle"
+                  placeholder="Todo Title ..."
+                />
+              </div>
+              <div>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="todoId"
+                  placeholder="Todo number ..."
+                />
+              </div>
+              <div>
+                <input id="todoCheck" type="checkbox" class="form-control" />
+                <button type="submit" class="btn btn-primary">Send</button>
+              </div>
+            </div>
+          </form>
+          <br />
+          <button class="btn btn-warning" onclick="clearOutput(this)">
+            Clear
+          </button>
+          <div class="alert alert-primary" id="postResult"></div>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="./index.js"></script>
+  </body>
+</html>
+```
+
+```css
+.container {
+  padding-top: 100px;
+}
+.panel {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  margin-bottom: 100px;
+  padding: 30px;
+  border-radius: 5px;
+}
+.panel-heading {
+  margin-bottom: 10px;
+}
+
+.panel-body > input {
+  margin-bottom: 10px;
+}
+
+.alert {
+  margin-top: 10px;
+}
+
+.alert p {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.todo-title {
+  font-size: 20px !important;
+}
+.todo-body {
+  padding: 5px;
+  background-color: white;
+  border-radius: 10px;
+  width: 70%;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+
+.form-group div {
+  margin-bottom: 5px;
+}
+.form-group div:last-child {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+```
+
+1. GET 요청
+2. 파라미터가 있는 GET요청
+3. POST 요청
+
+세 가지 요청을 진행하는 코드를 자바스크립트로 구현해보자.
+
+### 1. 파라미터가 없는 GET
+`performGetRequest1()` 함수를 보자.
+```javascript
+// const { default: axios } = require('axios');
+
+const btn = document.querySelector('#get');
+const input = document.querySelector('#todoInputForm');
+
+btn.addEventListener('click', performGetRequest1);
+
+function performGetRequest1() {
+  var resultElement = document.getElementById('getResult1');
+  resultElement.innerHTML = '';
+
+  axios.get('https://jsonplaceholder.typicode.com/todos/1').then((result) => {
+    const { id, title, completed } = result.data;
+    resultElement.innerHTML = `<p class="todo-title">Todo no.<p class="todo-body">${id}</p><p><p class="todo-title">Title <p class="todo-body">${title}</p></p><p class="todo-title">Checked</p>`;
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    if (completed == true) {
+      checkbox.checked = true;
+    } else {
+      checkbox.checked = false;
+    }
+    resultElement.appendChild(checkbox);
+  });
+}
+```
+
+`axios.get` 함수를 호출, 인자로 GET 요청에 대한 URL만 보내면 된다. 프라미스 기반이므로 `then` 메서드의 인자로 리스폰스가 암묵적으로 할당된다. 이후 `const {id, title, completed } = result.data`의 구조분해문법으로 리스폰스 객체에 대한 프로퍼티를 각각 빼온 후 결과 블록에 렌더링한다.
+
+### 2. 파라미터가 있는 GET
+```javascript
+function performGetRequest2() {
+  var resultElement = document.getElementById('getResult2');
+  resultElement.innerHTML = '';
+  const input = document.querySelector('#todoId');
+  const value = input.value;
+
+  axios
+    .get('https://jsonplaceholder.typicode.com/todos', {
+      params: {
+        id: value,
+      },
+    })
+    .then((result) => {
+      console.log(result.data);
+      const { id, title, completed } = result.data[0];
+
+      resultElement.innerHTML = `<p class="todo-title">Todo no.<p class="todo-body">${id}</p><p><p class="todo-title">Title <p class="todo-body">${title}</p></p><p class="todo-title">Checked</p>`;
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      if (completed == true) {
+        checkbox.checked = true;
+      } else {
+        checkbox.checked = false;
+      }
+      resultElement.appendChild(checkbox);
+    });
+}
+```
+
+URL파라미터를 통해 GET요청을 보내는 코드이다. `axios.get` 메서드의 두번째 인자에 객체 프로퍼티로 `params`를 전달하여 URL 파라미터를 전달한다. `todos/params`에 접근하게 되는 것이다. 
+
+파라미터 입력 인풋박스에 3을 입력했다면 리스폰스 URL은 `https://jsonplaceholder.typicode.com/todos/id=3`이 된다. 액시오스 `then` 메서드 내에서 `result.responseURL`을 출력해보자.
+
+### 3. POST
+```javascript
+function performPostRequest(e) {
+  e.preventDefault();
+  const inputTitle = document.querySelector('#todoTitle');
+  const inputId = document.querySelector('#todoId');
+  const inputCheck = document.querySelector('#todoCheck');
+
+  const title = inputTitle.value;
+  const id = inputId.value;
+  const checked = inputCheck.checked;
+  axios
+    .post('https://jsonplaceholder.typicode.com/posts', {
+      title: title,
+      id: id,
+      completed: checked,
+    })
+    .then((result) => {
+      const resultElement = document.querySelector('#postResult');
+      const { id, title, completed } = result.data;
+      resultElement.innerHTML = `<p class="todo-title">Todo no.<p class="todo-body">${id}</p><p><p class="todo-title">Title <p class="todo-body">${title}</p></p><p class="todo-title">Checked</p>`;
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = checked;
+
+      resultElement.appendChild(checkbox);
+    });
+}
+```
+
+POST 메서드 요청의 경우 `axios.post` 메서드를 호출한다. 인자로는 POST요청 URL, 요청 데이터를 객체로 담아 전달하면 된다. 성공적인 요청 후 리스폰스로 반환되는 데이터는 요청 시 보낸 데이터이다. 
+
+## 결론
+`XMLHttpRequest`와 `axios`를 활용한 실습 코드들을 살펴보았다. 직접 여기저기 조작해보며 데이터 요청을 화면에 렌더링해주는 작업을 해보자. 
+
+
 
 
 ## Reference
