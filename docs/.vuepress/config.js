@@ -170,6 +170,7 @@ module.exports = {
         title: 'Vuepress',
         collapsable: true,
         children: [
+          '/vuepress/start.md',
           '/vuepress/seo.md',
           '/vuepress/pwa.md',
           '/vuepress/cms.md',
