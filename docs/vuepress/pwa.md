@@ -181,3 +181,7 @@ head: [
 PWA 적용 뒤 모바일 환경에서 실행하는 모습입니다.
 
 ![](../.vuepress/assets/vuepress/pwa.gif)
+
+:::warning
+아이콘 이미지는 
+:::
