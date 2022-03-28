@@ -148,9 +148,9 @@ head: [
 ```js
   // config.js
   head: [
-    ["link", { rel: "shortcut icon", href: "./favicon.ico" }],
+    ["link", { rel: "shortcut icon", href: "/favicon.ico" }],
     ["meta", { name: "apple-mobile-web-app-capable", content: "yes" }],
-    ["link", { rel: "manifest", href: "./manifest.json" }],
+    ["link", { rel: "manifest", href: "/manifest.json" }],
     [
       "link",
       {
