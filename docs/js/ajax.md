@@ -71,11 +71,63 @@ xhr.onload = function(){
 위 코드는 모두 POST 메서드로, 내부 구성 요소가 `URL`, `Data`, `Params`, `callback`으로 동일하다.
 1. URL - `"https://jsonplaceholder.typicode.com/users/1/posts"`
 2. Data - `JSON.stringify(data)`의 `data`
-3. callback - `xhr.onload`
+3. callback - `xhr.onload`, 요청 보낸 뒤에 실행되는 콜백 함수
 
-Data의 경우 POST 요청시 URL 파라미터로 넘어가 `responseURL`
+주방에 음식 조리를 의뢰하기 위해 단순히 **버거 제작만을** 오더로 전달해도 될까? 그렇지 않다. **어떤 버거 메뉴인지, 세트인지, 라지 세트인지 등** 오더로 전달할 **데이터 객체의 속성들을 함께 전달해야한다.**
+
+```javascript
+const order = {
+  menu: "cheeseBurger",
+  size: "large",
+  price: 6
+}
+
+xhr.open("POST", "https://mcdonald/burger");
+xhr.send(JSON.stringify(order));
+```
+
+다음은 콜백에 대한 이야기이다. 버거 속성 정의와 함께 오더를 주방에 전달이 **잘 완료되었는지 고객에게 알려야한다.** 주문 요청 후에 **결과물을 받는 것이 아니라, 오더가 잘 제출되었는지에 대한 이야기이다.** 
+
+잘 제출되었을 때에 알려주는 것이 콜백이며, 현재의 예시에서는 `console.log` 또는 `alert`를 콜백으로 등록함으로써 사용자에게 인식을 줄 수 있다. 
+
+`XMLHttpRequest`객체는 `onreadystatechange` 메서드를 등록함으로써 콜백함수를 트리거할 수 있다.
+
+```javascript
+const xhr = new XMLHttpRequest()
+
+const data = { // 전달 데이터 정의
+    title: "Title",
+    body: "Hello!",
+}
+
+// Request 오픈
+xhr.open('POST', 'https://jsonplaceholder.typicode.com/posts'); 
+
+// stateChange 이벤트 리스닝
+xhr.onreadystatechange = function(){
+    // Request 제출 완료되었을 때
+    if(xhr.readyState == 4){
+        console.log("Request Completed!");
+        callback(xhr.responseText); // 다음 손님 오세요! 와 같은 이치
+    } else {
+        console.log("Processing...")
+    }
+}
+xhr.setRequestHeader("Content-type", "application/json")
+
+xhr.send(JSON.stringify(data));
+
+function callback(responseText){
+    console.log(JSON.parse(responseText));
+}
+```
+
+주문 접수가 완료되고, 다음 손님에게 주문을 받는 프로세싱을 생각하면 이해하기 쉬울 것이다. 
+
 ### 2. GET
 GET요청은 조리된 음식에 대해 손님에게 포장 및 전달하는 과정과 유사하다.
+
+
 
 
 
