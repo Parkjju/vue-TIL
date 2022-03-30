@@ -131,7 +131,38 @@ function callback(responseText){
 
 ### 2. GET
 
-GET요청은 조리된 음식에 대해 손님에게 포장 및 전달하는 과정과 유사하다.
+GET요청은 조리된 음식에 대해 손님에게 포장 및 전달하는 과정과 유사하다. HTTP GET 요청시 **Query string, Path value** 방식으로 특정 URL 데이터를 요청할 수 있는데, 레스토랑 비유에 적용해보자면 **자신이 요청한 주문에 따른 음식을 받는 것이다.** 
+
+POST가 음식 제작을 요청하는 것이라면, GET은 POST로 제작된 음식을 딜리버리 받는다 라고 생각하자.
+
+또한 GET에는 두 가지 방식으로 파라미터를 전달하여 더 구체화된 데이터를 받아올 수 있다.
+1. **Query String** 방식 : `/burger?menu=cheeseBurger`
+2. **Path value** 방식 : `/mcdonald/fries`
+
+`Node.js`에서는 쿼리 스트링 방식을 요청 객체인 `req`의 `query`프로퍼티 (`req.query`)를 통해 처리할 수 있고, `Path value`의 경우 `req`의 `params` (`req.params`)를 통해 처리할 수 있다.
+
+쿼리스트링은 **특정 리소스를 식별할 때 사용하며** Path value는 리소스들을 더 큰 범위로 필터링할때 사용한다.
+
+Jsonplaceholer 투두 리스트 유저 아이디가 1값인 리소스를 쿼리 스트링으로 불러오는 코드를 작성해보자. 리터럴 문법을 통해 URL을 작성하면 된다.
+
+```javascript
+const xhr = new XMLHttpRequest();
+const id = 1;
+
+xhr.open('GET',`https://jsonplaceholder.typicode.com/todos?userId=${id}`);
+
+xhr.onreadystatechange = function(){
+  if(xhr.readyState == 4){
+    console.log("Completed!");
+    console.log("This is Todo Data with User 1 : ",JSON.parse(xhr.response));
+  } else {
+    console.log("Current state: ", xhr.readyState);
+    console.log("Processing....");
+  }
+}
+
+xhr.send();
+```
 
 ## Reference
 
@@ -140,3 +171,5 @@ GET요청은 조리된 음식에 대해 손님에게 포장 및 전달하는 과
 3. [stackoverflow - Ajax without JavaScript](https://stackoverflow.com/q/2386602)
 4. [stackoverflow - How are parameters sent in an HTTP POST request?](https://stackoverflow.com/questions/14551194/how-are-parameters-sent-in-an-http-post-request)
 5. [Development: Difference between the http requests POST and GET](https://lazaroibanez.com/difference-between-the-http-requests-post-and-get-3b4ed40164c1)
+6. [Get 방식의 Query string 방식과 Path value 방식](https://ooeunz.tistory.com/43)
+7. [REST API Response Body 형식에 대한 경험적 구조](http://blog.storyg.co/rest-api-response-body-best-pratics)
