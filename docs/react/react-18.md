@@ -1,7 +1,7 @@
 ---
 title: React 18
----
 
+---
 리액트 18이 안정적인 버전으로 배포가 이루어지면서 현재 배우고 있는 리액트 기술과 다른 점들을 정리해보고자 한다. (꾸준히 추가 예정)
 
 ## ReactDOM.render
@@ -76,6 +76,8 @@ ReactDOM.hydrate(<App tab='home' />, container);
 ```javascript
 import * as ReactDOM from 'react-dom';
 import App from 'App';
+
+// server codes..
 
 const container = document.getElementById('app');
 
