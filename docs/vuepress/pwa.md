@@ -149,7 +149,6 @@ head: [
   // config.js
   head: [
     ["link", { rel: "shortcut icon", href: "/favicon.ico" }],
-    ["meta", { name: "apple-mobile-web-app-capable", content: "yes" }],
     ["link", { rel: "manifest", href: "/manifest.json" }],
     [
       "link",
@@ -158,10 +157,6 @@ head: [
         sizes: "192x192",
         href: "images/maskable_icon_x192.png",
       },
-    ],
-    [
-      "meta",
-      { name: "apple-mobile-web-app-status-bar-style", content: "black" },
     ],
   ],
 ```
@@ -172,7 +167,9 @@ head: [
 
 하지만 `html`의 메타데이터로 들어가는 파일들, 가령 `favicon.ico`, `robots.txt`, `manifest.json`등의 파일들은 빌드 결과물을 모아두는 `dist`폴더에 `html`파일로 변환되어 저장되기 때문에 경로 설정 시 이를 고려해야합니다.
 
-위의 `config.js`파일에서 `manifest.json`파일의 경로가 `./manifest.json`으로 설정되어 있는 이유가 바로 위의 현상때문입니다. 빌드 이후의 `index.html` 파일 기준으로 `manifest.json`이 같은 위치에 있기 때문에 위와 같이 경로 설정을 해야합니다.
+위의 `config.js`파일에서 `manifest.json`파일의 경로가 `/manifest.json`으로 설정되어 있는 이유가 바로 위의 현상때문입니다. 빌드 이후의 `index.html` 파일 기준으로 `manifest.json`이 같은 위치에 있기 때문에 위와 같이 경로 설정을 해야합니다.
+
+`config.js`에 설정해놓은 `base`속성에 따라 `manifest.json` 경로가 변경됩니다.
 
 정리하자면 빌드 과정에서 특정 파일은 그대로 둔 상태로 빌드를 하고싶을때 `public`폴더에 넣어두고, **경로 설정은 index.html** 기준으로 하면 됩니다.
 
