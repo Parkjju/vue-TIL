@@ -91,7 +91,20 @@ function Button({text}){
 
 위의 기능이 CSS 모듈을 이용할 수 밖에 없게 해주는 기능인 것 같다.
 
+:::tip
+CRA프로젝트 내에서는 `node_modules`에 리액트 라이브러리가 이미 설치되어 있기 때문에 어느 곳의 자바스크립트 파일에서든 **import문을** 통해 리액트 훅들을 불러와 사용할 수 있다. 
 
+```javascript
+import { useState } from "react"; // react로부터 useState를 import
+
+function App(){
+  const [counter, setValue] = useState(0);
+  // ....
+}
+
+export default App;
+```
+:::
 ## Reference
 1. [nomad coders - React로 영화 웹 서비스 만들기](https://nomadcoders.co/react-for-beginners/lobby)
 2. [React Docs - Create React App](https://ko.reactjs.org/docs/create-a-new-react-app.html#create-react-app)
