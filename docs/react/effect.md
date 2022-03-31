@@ -87,3 +87,4 @@ function App() {
 2. [React hooks stale closures](https://dmitripavlutin.com/react-hooks-stale-closures/)
 3. [Understanding react useEffect cleanup function](https://blog.logrocket.com/understanding-react-useeffect-cleanup-function/)
 4. [React useEffect훅과 라이프사이클](https://krpeppermint100.medium.com/js-useeffect%EB%A5%BC-%ED%86%B5%ED%95%9C-react-hooks%EC%9D%98-lifecycle-%EA%B4%80%EB%A6%AC-3a65844bcaf8)
+5. [React docs - hooks effect](https://ko.reactjs.org/docs/hooks-effect.html)
