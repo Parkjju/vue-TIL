@@ -47,3 +47,43 @@ function App(){
 2. 인풋박스에 텍스트 입력시 해당 값을 인풋박스 내부 값 변화가 `onChange`이벤트를 트리거하여 `onChange`함수가 실행된다. `keyword` 상태가 변화된다. 
 3. `keyword` 상태가 변화되어 원래는 `App`컴포넌트 전체가 리 렌더링 된다. **하지만 useEffect에 등록된 console.log("Run when counter changes!")는 실행되지 않는다.** 디펜던시 리스트에 `keyword`가 없기 때문이다.
 4. `counter`변수도 마찬가지이다. 온클릭 이벤트가 트리거 되어 `App`컴포넌트 전체가 리 렌더링 되더라도 `useEffect`에 등록된 `counter`에 대한 상태 변화 함수만 실행한다.
+
+## clean-up function
+`useEffect`훅은 `clean-up function`을 다룰 수 있다. `useEffect`는 리액트 컴포넌트의 라이프사이클을 다루게 되는데, 클린업 함수는 **componentWillUnmount** 단계에서 실행되는 함수이다. 다양한 라이프사이클이 있으며 이에 대한 내용은 [다음 링크를](https://krpeppermint100.medium.com/js-useeffect%EB%A5%BC-%ED%86%B5%ED%95%9C-react-hooks%EC%9D%98-lifecycle-%EA%B4%80%EB%A6%AC-3a65844bcaf8) 참조하자. 
+
+```javascript
+function Hello() {
+  function create() {
+    console.log('Created!');
+    return destroy;
+  }
+
+  function destroy() {
+    console.log('Destroyed!');
+  }
+  useEffect(create, []); 
+  return <h1>Hello!</h1>;
+}
+
+function App() {
+  const [showing, setShowing] = useState(false);
+  const onClick = () => setShowing((prev) => !prev);
+  return (
+    <div>
+      {showing ? <Hello /> : null}
+      <button onClick={onClick}>{showing ? 'Hide' : 'Show'}</button>
+    </div>
+  );
+}
+```
+위 코드에서 버튼 클릭을 통해 `showing` 상태가 변화됨에 따라 `Hello` 컴포넌트가 마운트되고 언마운트 되는데, 마운트 될 때에 컴포넌트 내에 정의된 `useEffect`훅에 따라 `create` 함수가 호출되어 실행되며, 언마운트 될 때에 클로저로 `create`함수에서 리턴된 `destroy`가 호출된다.
+
+이에 따라 `Hello` 컴포넌트 컴포넌트 렌더링 시 `Created!`, 컴포넌트 파괴 시 `Destroyed!`가 콘솔에 출력된다.
+
+
+
+## Reference
+1. [nomad coders - React로 영화 웹 서비스 만들기](https://nomadcoders.co/react-for-beginners/lobby)
+2. [React hooks stale closures](https://dmitripavlutin.com/react-hooks-stale-closures/)
+3. [Understanding react useEffect cleanup function](https://blog.logrocket.com/understanding-react-useeffect-cleanup-function/)
+4. [React useEffect훅과 라이프사이클](https://krpeppermint100.medium.com/js-useeffect%EB%A5%BC-%ED%86%B5%ED%95%9C-react-hooks%EC%9D%98-lifecycle-%EA%B4%80%EB%A6%AC-3a65844bcaf8)
