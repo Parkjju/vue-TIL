@@ -1,8 +1,8 @@
 ---
-title: Vuepress SEO 최적화
----
+title: Vuepress Google Search Console
 
-## SEO, GA
+---
+## SEO
 
 SEO란 Search Engine Optimization의 약자로 직역하면 검색 엔진 최적화를 의미합니다. 성능, 접근성 등 몇 가지 지표로 점수를 매겨 포털 사이트 검색 결과로 페이지 노출 우선순위를 결정하게 되며, SEO가 높은 사이트의 게시글은 검색창에서 찾기 쉬워지게 됩니다.
 
@@ -49,11 +49,9 @@ plugins: [
 
 `robots.txt` 파일의 내용은 다음과 같이 작성하면 됩니다.
 
-```
-User-agent: *
-Allow: /
-Sitemap: https://Username.github.io/TIL/sitemap.xml
-```
+    User-agent: *
+    Allow: /
+    Sitemap: https://Username.github.io/TIL/sitemap.xml
 
 `Sitemap`에 자신의 사이트에 등록된 `sitemap.xml` 위치만 적으면 됩니다.
 
@@ -92,7 +90,7 @@ head: [
 
 위와 같은 방식으로 옮겨 작성하면 됩니다.
 
-소유권 확인 뒤에는 URL검사를 먼저 진행합니다. 구글 서치콘솔 내의 검색창에 본인 사이트의 URL을 입력하고 **색인 생성을 진행합니다.** 1~2분의 간단한 색인 생성 테스트를 진행한 뒤 크롤링 대기열에 사이트가 추가됩니다.
+소유권 확인 뒤에는 URL검사를 먼저 진행합니다. 구글 서치콘솔 내의 검색창에 본인 사이트의 URL을 입력하고 **색인 생성을 진행합니다.** 1\~2분의 간단한 색인 생성 테스트를 진행한 뒤 크롤링 대기열에 사이트가 추가됩니다.
 
 마지막으로 **Sitemaps** 메뉴에 들어가 사이트의 사이트맵을 추가해주면 마무리됩니다. 본인 페이지의 사이트맵 위치를 작성하면 됩니다.
 
