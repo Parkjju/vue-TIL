@@ -153,6 +153,7 @@ module.exports = {
           'react/state',
           'react/props',
           'react/cra',
+          'react/effect',
         ],
       },
       {
