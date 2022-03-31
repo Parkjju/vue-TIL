@@ -148,6 +148,7 @@ module.exports = {
         title: 'React',
         collapsable: true,
         children: [
+          'react/react-18',
           'react/start',
           'react/jsx',
           'react/state',
