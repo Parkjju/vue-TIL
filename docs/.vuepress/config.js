@@ -224,6 +224,7 @@ module.exports = {
           '/grow/cleancode',
           '/grow/Missing',
           '/grow/windows-zsh',
+          '/grow/gg',
         ],
         sidebarDepth: 2,
       },
