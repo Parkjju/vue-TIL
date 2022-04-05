@@ -49,10 +49,34 @@ title: Jun.gg 제작기
 
 찾아보니 `ejs` 템플릿 엔진을 통해 각종 html과 같은 정적 파일을 렌더링 할수 있다고 합니다.
 
-## CORS
+## CORS 
 
-라이엇 API 테스트를 위해 라이엇 개발자 사이트에 들어가 키 발급 후 테스트를 진행하였습니다. 추후 CORS조사 후 정리할 예정이지만, 간단히 이슈 원인에 대해 나누면 **라이엇은 클라이언트 단의 CORS 요청을 막아둔 상태였습니다.** 크롬 브라우저에서 에러가 발생하여 어쩔 수 없이 로컬서버를 통해 통신하는 방법밖에 없었습니다.
+라이엇 API 테스트를 위해 라이엇 개발자 사이트에 들어가 키 발급 후 테스트를 진행하였습니다. 추후 CORS조사 후 정리할 예정이지만, 간단히 이슈 원인에 대해 나누면 **라이엇은 클라이언트 단의 CORS 요청을 막아둔 상태였습니다.** 크롬 브라우저에서 에러가 발생하여 어쩔 수 없이 로컬서버를 통해 통신하는 방법밖에 없었습니다. 그런데..?
+
+## API 키의 누락
+
+CORS 에러가 계속 발생하기에 공부해가는 과정에서 `ACAO`라고 불리는 헤더, 즉 `Access-Control-Allow-Origin` 정의에 따라 브라우저가 CORS를 일으킨다는 것을 알게 됩니다. 저의 블로그 브라우저 페이지에서 `fetch API`를 통해 API통신을 시도하면 어김없이 에러가 났었는데, 처음에는 라이엇 측에서 요구하는 ACAO가 저의 오리진과 맞지 않아서 그러는 것이라고 생각했습니다. 하지만 `preflight` 요청에대한 응답에 표기된 ACAO는 `*`로 모든 오리진에 대해 AJAX요청을 허용하고 있었습니다.
+
+아뿔싸..! 이번에 알게되었던 문제는 **쿼리 스트링에 라이엇으로부터 발급받은 API키를 쿼리 스트링에 넣고 있지 않았다는 사실입니다.** 
+
+HTML 스크립트 태그에 axios 설치 태그를 넣어두고, 다음 코드를 실행해보았습니다.
+
+```javascript
+const riotURL = "https://kr.api.riotgames.com";
+const api = "/lol/summoner/v4/summoners/by-name/";
+const userName = encodeURI("롤 닉네임");
+const apiKey = "라이엇에서 발급받은 API 키";
+
+axios.get(`${riotURL}${api}${userName}?api_key=${apiKey}`).then((response) => {
+  console.log(response.data);
+});
+```
+
+![request](../.vuepress/assets/grow/reqRequest.png)
+![origin](../.vuepress/assets/grow/reqOrigin.png)
+
+결과값이 잘 출력되네요. CORS관련된 이슈는 ACAO가 설정된 API를 직접 더 찾아봐야할 것 같습니다.
+
+
 
 ## Reference
-
-1. \[nodeJS 템플릿과 html관한 오류\]
