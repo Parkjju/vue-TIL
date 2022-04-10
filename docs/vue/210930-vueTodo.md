@@ -1,10 +1,11 @@
 ---
 title: Vue Todo앱 만들기
----
 
+---
 다음의 글은 [Do it! Vue.js - 장기효 저](http://www.yes24.com/Product/Goods/58206961)와 인프런의 [캡틴판교 - Vuejs 중급강의](https://www.inflearn.com/course/vue-pwa-vue-js-%EC%A4%91%EA%B8%89/dashboard)를 정리한 내용입니다.
 
 ## 1. Todo App 구현
+
 
 ```vue
 //TodoHeader.vue
