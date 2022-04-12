@@ -109,4 +109,83 @@ const apiKey = JSON.parse(data).key;
 헤드 태그에 JSON파일이 로드되어 있기 때문에 `data`라는 이름의 JSON객체로 전역적 관리가 이루어집니다. `secret.json`에서 모두 문자열로 저장되어 있기 때문에 꼭 `JSON.parse()` 메서드에 통과시켜줘야 JSON객체로 변환되어 JSON 프로퍼티가 인식되게 됩니다.
 :::
 
-## Reference
+## 배열 데이터로 API요청하기
+사용자 티어 표시까지는 완료 했는데, 매치 정보를 표기하는 데에서 막혔다. 최근전적 20전을 불러오는 API를 통해 배열 데이터를 받아온 후 변수에 저장하고, 각 배열 원소마다 접근하여 최근 20전 각각 매치에 대한 자세한 정보를 표기하려고 하는데 **비동기 처리 시 불러온 API 데이터의 순서가 뒤죽박죽인 상태이다.** (API request rate limit에 대한 이슈도 있었지만 `setTimeout` 설정과 함께 해결되었다.)
+
+```javascript
+axios.get(`${matchAPI}`).then((response) => {
+    const matchData = response.data;
+    console.log(matchData);
+    matchData.map((perMatch) => {
+        const perMatchAPI = `https://asia.api.riotgames.com/lol/match/v5/matches/${perMatch}?api_key=${apiKey}`;
+
+        setTimeout(fetchMatchData, 1000, `${perMatchAPI}`);
+    });
+});
+
+async function fetchMatchData(api) {
+    await axios.get(`${api}`).then((response) => {
+        console.log(response.data);
+    });
+}
+```
+
+대략 위와 같은 코드로 각 매치 각 아이디 데이터를 추출하여 새로운 api에 요청을 보내는 코드이다. 결과 반환 자체는 잘 되는데, 배열 `matchData`의 순서에 따라서 출력되지 않는다. 액시오스 체이닝 문법을 활용하면 되긴 하는데 코드 작성 효율이 너무 떨어지기 때문에 좋은 방법이 없을까 고민된다.
+
+구글링 중 찾아낸 방법은 액시오스의 `all`, `spread` 메서드를 활용하는 방법이었다.
+
+`all` 메서드를 활용하게 되는 상황은 현재 처한 문제처럼 **한 번에 네트워크 요청을 보낼 때에 사용하게 된다.** `spread` 메서드는 `all` 메서드에 따라오는 메서드이다.
+
+`for`루프를 돌며 **루프마다 `get`요청을 각각 보내는 것이 아니라, `fulfilled`된 프라미스 객체 배열을 받아 `spread` 메서드를 통해 한 번에 모아보기 라고 생각하면 된다.**
+
+```javascript
+    for (let i = 0; i < matchData.length; i++) {
+        setTimeout(() => {
+            perMatchAPI.push(
+                axios.get(
+                    `https://asia.api.riotgames.com/lol/match/v5/matches/${matchData[i]}?api_key=${apiKey}`
+                )
+            );
+        }, 400);
+    }
+
+    setTimeout(() => {
+        axios.all(perMatchAPI).then(
+            axios.spread((...response) => {
+                for (let i = 0; i < response.length; i++) {
+                    console.log(response[i].data);
+                }
+            })
+        );
+    }, 8000);
+```
+최근전적 20전 매치 ID를 AJAX통신을 통해 `matchData`로 가져온 상태인 것은 동일하다. 이후 for루프를 돌며 배열 객체에 `axios.get`을 푸시한다. `axios`는 ES6 프라미스 기반으로, `axios.get`결과에 따라 `fulfilled`된 프라미스 객체가 반환되거나 `reject`된 프라미스 객체가 반환된다. API에 문제가 없었다면 `perMatchAPI`라는 배열 객체에는 응답에 대한 처리를 기다리는 프라미스 객체 20개가 대기하고 있게 된다.
+
+대기중인 20개의 프라미스 객체 처리를 위해 `axios.all`메서드를 사용한다. 파라미터로 `perMatchAPI`를 전달하고, `then` 메서드를 호출한다.
+
+:::tip API Call rate limit
+예시 코드 중간중간 `setTimeout`을 삽입해놓은 이유는 **API 호출 제한 횟수 때문이다.** 
+:::
+
+이후 `axios.spread` 메서드를 호출하게 되는데, 원래 같으면 다음 코드를 사용하게 된다.
+```javascript
+axios.spread((response1, response2, response3) => {
+  console.log(response1.data);
+  console.log(response2.data);
+  console.log(response3.data);
+});
+```
+
+`axios.all`에 전달된 프라미스 배열 객체의 원소 수만큼 응답이 반환되는데 이를 `spread` 메서드에서 한꺼번에 처리하게 되는 것이다. 
+
+배열 객체 각 원소 모두 처리함에 있어서 직접 접근하는 방법도 중요하지만 ES6의 구조분해 할당 문법을 통해 반복문으로 처리할 수 있다.
+```javascript
+axios.spread((...response) => { // ...response가 구조분해 할당 문법이다.
+  for(let i=0; i< response.length; i++){
+    console.log(response[i].data);
+  }
+})
+```
+
+**병렬적(concurrent)인** 비동기 처리에 있어서 요청에 대한 응답 순서가 보장되지 않는 점을 **배열 인덱스를 통한 처리로 순서를 부여하게 되는 것이다.**
+
