@@ -189,3 +189,13 @@ axios.spread((...response) => { // ...response가 구조분해 할당 문법이�
 
 **병렬적(concurrent)인** 비동기 처리에 있어서 요청에 대한 응답 순서가 보장되지 않는 점을 **배열 인덱스를 통한 처리로 순서를 부여하게 되는 것이다.**
 
+## Game constants
+라이엇 API에는 게임 상수(Game constants)라는 것을 취급한다. 각종 데이터 요청을 통해 받은 응답들을 살펴보는 도중 **매치데이터 큐의 타입을 분류해야하는 문제가 생겼다.** 가져온 매치 데이터가 솔로랭크인지 자유랭크인지 일반인지 칼바람 나락인지 등 라이엇에서 취급하는 다양한 매치 데이터에 따라 텍스트를 다르게 렌더링해야 했다. 
+
+하지만 요청을 통해 받은 API 결과물을 보면 `gameMode`라는 프로퍼티가 **ARAM이 아니면 CLASSIC으로만 분류되고 있었다.** 구글링을 해보니 ARAM은 무작위 총력전(전부 미드에 모여서 싸우는거)을 통칭하는 명칭이었고 CLASSIC은 일반, 랭크, 자유랭크 등 협곡에서 일반적으로 이루어지는 게임 타입을 묶어 분류하는 명칭이었다. 
+
+[라이엇 API문서를](https://developer.riotgames.com/apis#match-v5) 살펴보면 매치 데이터의 응답 프로퍼티인 `infoDto.gameMode` 등에 대해 디스크립션을 **Refer to the Game Constants documentation.** 라고 달아둔 것을 확인할 수 있다. API DOCS에 들어가보니 네비게이션에 `Game Constants`라고 나와있는 것이 아닌가! 이렇게 뭔가 맞아떨어질 때 정말 짜릿하다. 
+
+무튼 `Game Constants`를 참조하면 각종 JSON파일을 fetch할 수 있게끔 API를 정리해뒀는데, 여기서 `queueId`에 따라 `CLASSIC` 분류 내에서도 자유랭크, 솔로랭크, 일반게임을 디테일하게 분류할 수 있게 된다. `queues.json` [API를 참조](https://static.developer.riotgames.com/docs/lol/queues.json)하자.
+
+
