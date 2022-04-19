@@ -208,6 +208,7 @@ module.exports = {
                     '/algorithm/graphAlgo',
                     '/algorithm/mst',
                     '/algorithm/backtrack',
+                    '/algorithm/baekjoon',
                 ],
             },
             {
