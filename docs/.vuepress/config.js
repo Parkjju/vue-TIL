@@ -111,6 +111,7 @@ module.exports = {
                     '/daily/220208-browser',
                     '/daily/220224-shadow',
                     '/daily/220223-virtualDom',
+                    '/daily/220420-api',
                 ],
             },
             {
@@ -214,7 +215,12 @@ module.exports = {
             {
                 title: 'Git',
                 collapsable: true,
-                children: ['/git/gitSubmodule', '/git/open', '/git/GA'],
+                children: [
+                    '/git/gitSubmodule',
+                    '/git/open',
+                    '/git/GA',
+                    '/git/pr',
+                ],
             },
 
             {
