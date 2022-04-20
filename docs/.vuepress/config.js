@@ -275,5 +275,11 @@ module.exports = {
                 },
             },
         ],
+        [
+            'disqus',
+            {
+                shortname: 'Parkjju',
+            },
+        ],
     ],
 };

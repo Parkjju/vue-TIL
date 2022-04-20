@@ -1,10 +1,10 @@
 ---
 title: React Todo list
-
 ---
+
 ## React 투두 리스트 세팅
 
-먼저 CRA를 통해 리액트 프로젝트를 하나 생성합니다. 
+먼저 CRA를 통해 리액트 프로젝트를 하나 생성합니다.
 
 ```sh
 npx create-react-app todoApp
@@ -21,6 +21,7 @@ npx create-react-app todoApp
 이후 App.js 파일을 수정하여 투두 앱을 만들어봅시다.
 
 ## 투두 앱 제작
+
 투두 앱 제작을 위해서는 다음 과정들이 필요합니다.
 
 1. 인풋박스 데이터 입력 마무리 시 인풋박스 내부 텍스트 비워주기 - 인풋박스 데이터를 state로 관리
@@ -35,18 +36,19 @@ npx create-react-app todoApp
 import { useState } from 'react';
 
 function App() {
+    const onChange = () => {};
 
-    const onChange = () => {
-
-    }
-    
     return (
         <div>
             <form>
-                <input onChange={onChange} type="text" placeholder="type your todos.." />
+                <input
+                    onChange={onChange}
+                    type='text'
+                    placeholder='type your todos..'
+                />
             </form>
         </div>
-    )
+    );
 }
 ```
 
@@ -56,17 +58,21 @@ function App() {
 import { useState } from 'react';
 
 function App() {
-    const [toDo, setToDo] = useState(""); // 추가
+    const [toDo, setToDo] = useState(''); // 추가
 
     const onChange = (event) => setTodo(event.target.value); // 추가
-    
+
     return (
         <div>
             <form>
-                <input onChange={onChange} type="text" placeholder="type your todos.." />
+                <input
+                    onChange={onChange}
+                    type='text'
+                    placeholder='type your todos..'
+                />
             </form>
         </div>
-    )
+    );
 }
 ```
 
@@ -86,7 +92,7 @@ console.log(b); // 1
 자바스크립트 원시 타입 중 하나인 `Number`타입에 대해서는 문제가 크게 없는 것으로 보입니다. 다음 코드를 봐볼까요?
 
 ```javascript
-var obj1 = {one: 1, two: 2};
+var obj1 = { one: 1, two: 2 };
 var obj2 = obj1;
 
 obj2.one = 2;
@@ -105,15 +111,16 @@ function App() {
     const [toDos, setToDos] = useState([]);
 
     const onChange = (event) => setToDo(event.target.value);
-    const onSubmit = (event) => { //추가
-        if (toDo == '') { // 빈 입력 검사
+    const onSubmit = (event) => {
+        //추가
+        if (toDo == '') {
+            // 빈 입력 검사
             return;
         }
         event.preventDefault(); // preventDefault
         setToDos((currentToDos) => [toDo, ...currentToDos]); // todo배열에 데이터 추가
         // Setter함수를 이용하자!
-        setToDo(''); // 입력 비우기        
-      
+        setToDo(''); // 입력 비우기
     };
 
     return (
@@ -133,9 +140,9 @@ function App() {
 
 입력된 toDo를 상태배열인 `currentToDos`에 추가해줍니다.
 
-
-
-
 ## Reference
+
 1. [nomad coders - React로 영화 웹 서비스 만들기](https://nomadcoders.co/react-for-beginners/lobby)
 2. [React에서 왜 불변성을 지켜야할까?](https://webigotr.tistory.com/293)
+
+<Disqus/>
