@@ -276,11 +276,14 @@ module.exports = {
             },
         ],
         [
-            '@saintic/utterances',
+            'register-components',
             {
-                repo: 'Parkjju/vue-TIL',
-                theme: 'github-light',
-                issueTerm: 'pathname',
+                components: [
+                    {
+                        name: 'Comment',
+                        path: '../.vuepress/components/Comment.vue',
+                    },
+                ],
             },
         ],
     ],
