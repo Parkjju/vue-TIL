@@ -53,17 +53,6 @@ module.exports = {
                 "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-QP5LL1SE8Q');",
             ],
         ],
-        [
-            'script',
-            [
-                `(function()
-                    var d = document, s = d.createElement('script');
-                    s.src = 'https://parkjju-github-io.disqus.com/embed.js';
-                    s.setAttribute('data-timestamp', +new Date());
-                    (d.head || d.body).appendChild(s);
-                    })();`,
-            ],
-        ],
     ],
 
     /**
@@ -287,9 +276,11 @@ module.exports = {
             },
         ],
         [
-            'disqus',
+            '@saintic/utterances',
             {
-                shortname: 'parkjju-github-io',
+                repo: 'Parkjju/vue-TIL',
+                theme: 'github-light',
+                issueTerm: 'pathname',
             },
         ],
     ],
