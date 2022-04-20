@@ -10,9 +10,9 @@ export default {
         utterances.async = true;
         utterances.crossorigin = 'anonymous';
         utterances.src = 'https://utteranc.es/client.js';
-        utterances.setAttribute('issue-term', 'pathname'); // pathname|url|title|og:title 중 택 1
+        utterances.setAttribute('issue-term', 'url'); // pathname|url|title|og:title 중 택 1
         utterances.setAttribute('theme', 'github-light'); // theme 설정
-        utterances.setAttribute('repo', `Parkjju/vue-TIL`); // 사용할 repository
+        utterances.setAttribute('repo', `Parkjju/blog-comment`); // 사용할 repository
         // script tag 삽입
         this.$refs.comment.appendChild(utterances);
     },
