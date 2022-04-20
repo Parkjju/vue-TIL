@@ -1,13 +1,14 @@
 <template>
     <ParentLayout>
-        <Comment />
+        <template #page-bottom>
+            <Comment />
+        </template>
     </ParentLayout>
 </template>
 
 <script>
 import ParentLayout from '@parent-theme/layouts/Layout.vue';
-import Comment from '@theme/components/Comment.vue';
-
+import Comment from '../components/Comment.vue';
 export default {
     components: {
         ParentLayout,
