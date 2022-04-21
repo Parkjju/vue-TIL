@@ -1,6 +1,6 @@
 <template>
     <ParentLayout>
-        <template #page-bottom>
+        <template v-slot:page-bottom>
             <Comment />
         </template>
     </ParentLayout>
