@@ -136,7 +136,7 @@ module.exports = {
                     '/javascript/ecma',
                     '/javascript/set',
                     '/javascript/symbol',
-                    '/javascript/prototype',
+                    // '/javascript/prototype',
                     '/javascript/prototypeReal',
                     '/javascript/constructor',
                     '/javascript/generator',
