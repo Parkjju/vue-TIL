@@ -18,13 +18,17 @@
     "@vuepress/plugin-google-analytics": "^1.8.2",
     "@vuepress/plugin-medium-zoom": "^1.9.7",
     "@vuepress/plugin-pwa": "^1.9.5",
+    "@vuepress/plugin-register-components": "^1.9.7",
+    "@vuepress/theme-default": "^1.9.7",
     "vuepress": "^1.9.5",
     "vuepress-plugin-canonical": "^1.0.0",
+    "vuepress-plugin-disqus": "^0.2.0",
     "vuepress-plugin-live": "^1.6.2",
     "vuepress-plugin-sitemap": "^2.3.1",
     "vuepress-plugin-smooth-scroll": "^0.0.10"
   },
   "dependencies": {
+    "@saintic/vuepress-plugin-utterances": "^0.2.0",
     "http-server": "^13.0.1",
     "pug": "^3.0.2",
     "vuepress-plugin-code-copy": "^1.0.6",
