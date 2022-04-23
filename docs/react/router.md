@@ -138,4 +138,4 @@ function Movie({ title }) {
 
 1. [nomad coders - React로 영화 웹 서비스 만들기](https://nomadcoders.co/react-for-beginners/lobby)
 2. [YTS movie API docs](https://yts.torrentbay.to/api)
-3. [React Router v6 튜토리얼](React Router v6 튜토리얼 - veloghttps://velog.io › react-router-v6-tutorial)
+3. [React Router v6 튜토리얼](https://velog.io/@velopert/react-router-v6-tutorial)
