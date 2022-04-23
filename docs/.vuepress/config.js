@@ -127,6 +127,7 @@ module.exports = {
                     '/js/json',
                     '/js/ajax',
                     '/js/axios',
+                    '/js/spa',
                 ],
             },
             {
