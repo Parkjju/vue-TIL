@@ -3,11 +3,13 @@ title: React Router
 
 ---
 ## Movie API
+
 [다음 링크에는](https://yts.torrentbay.to/api) 각종 영화들에 대한 정보에 접근할 수 있게 API DOCS가 작성되어 있습니다.
 
 `https://yts.torrentbay.to/api/v2/list_movies.json`에 GET요청을 보내면 되는데, 파라미터로 `minimum_rating`을 전달하면 최저 평점 이상의 영화 정보들만 모아서 가져올 수 있습니다. 기본적인 네트워크 요청 방식에 대해 알고싶으시면 [AJAX TODO 문서의 Axios 투두리스트 만들기](https://parkjju.github.io/vue-TIL/js/axios.html#xmlhttprequest) 문서를 참조해주세요.
 
 데이터 요청 후 받아온 영화 정보들을 렌더링해줍니다.
+
 ```javascript
 import { useState, useEffect } from 'react';
 import Movie from './Movie';
@@ -54,9 +56,11 @@ function App() {
 }
 export default App;
 ```
+
 리액트 라우팅 기능 이용에 앞서 기본적인 애셋을 제작하였습니다.
 
 ## Routing
+
 본격적으로 리액트 라우팅을 알아보게 될텐데, 우선 필요성에 대해 알아야 할 것 같습니다.
 
 당장 위의 영화 정보 서비스만 하더라도 각 영화에 대한 디테일한 정보가 담겨져있을텐데 이를 한 페이지에서 모두 표기하기에는 너무나 많은 리소스를 요청하게 됩니다. 따라서 메인 페이지에서는 **최소한의 것들, 즉 영화 데이터만 제공을 한 상황에서** 특정 영화를 클릭했을때 해당 영화 정보를 디테일하게 보여주는 로직의 구현이 필요합니다.
@@ -87,6 +91,7 @@ function App() {
     );
 }
 ```
+
 ```javascript
 // 6.X 버전
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -104,15 +109,16 @@ function App() {
 ```
 
 사용된 라우팅 컴포넌트 몇 가지 역할에 대해 정리하면 다음과 같습니다.
+
 1. `BrowseRouter` - 라우트 `path`에 따라 UI를 동기화 시켜주는 컴포넌트입니다. (라이브러리 자체적으로 HTML5 API를 활용합니다.) 쉽게 말해, 입력되는 URL에 따라 UI 렌더링 로직을 처리해주는 최상위 컴포넌트라고 보시면 됩니다.
 2. `Routes` - `BrowseRouter` 내에서는 여러 `Route` 컴포넌트들을 동시에 렌더링할 수 있지만, `Routes`에 감싸진 라우트 컴포넌트들은 URL에 따라 하나씩만 렌더링되게 됩니다.
-3. `Route` - `path`와 일치하는 URL에서 전달된 컴포넌트 UI를 렌더링합니다. 
+3. `Route` - `path`와 일치하는 URL에서 전달된 컴포넌트 UI를 렌더링합니다.
 
 `Routes`로 감싸지지 않은 `Route`에서 URL파라미터 활용을 위해 `path`를 `path="/:users"` 라고 정의한다면, 실제 URL 구성에서 `https://...../:users`라는 URL이 없다면 404페이지를 띄우게 되는 겁니다.
 
 여기까지 보면 리액트 라우터를 굳이 사용해나 싶기는 합니다. 컴포넌트를 `path`에 등록된 URL에 따라 렌더링 한다는 것이죠. HTML에서 `anchor`의 `href` 속성을 통해 라우트 설정된 컴포넌트 링크로 이동하면 되는 것 아닌가요?
 
-**이때 SPA의 위력이 발휘됩니다.** HTML `anchor`태그를 통해 설정된 라우터에 접근이 분명 가능합니다. 하지만 **페이지 전체가 리로딩된다는 단점이 있는 것이죠.** 이에 따라 SPA기반의 라우트 컴포넌트 설정이 사실상 의미가 없게 되는 것입니다. 
+**이때 SPA의 위력이 발휘됩니다.** HTML `anchor`태그를 통해 설정된 라우터에 접근이 분명 가능합니다. 하지만 **페이지 전체가 리로딩된다는 단점이 있는 것이죠.** 이에 따라 SPA기반의 라우트 컴포넌트 설정이 사실상 의미가 없게 되는 것입니다.
 
 리액트 라우터는 **페이지 전체가 리로딩되는 것처럼 보이게 하지만, 사실은 한 페이지 내에서 컴포넌트의 교체만 동적으로 이루어지게 되는 것입니다.** 이때 사용되는 컴포넌트가 바로 `react-router-dom`의 `<Link></Link>` 컴포넌트입니다. `Link` 컴포넌트의 `to` 프로퍼티를 사용하면 이동하고 싶은 링크를 설정할 수 있습니다.
 
@@ -129,10 +135,6 @@ function Movie({ title }) {
     );
 }
 ```
-
-
-
-
 
 ## Reference
 
