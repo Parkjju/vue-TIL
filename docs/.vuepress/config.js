@@ -157,6 +157,7 @@ module.exports = {
                     'react/cra',
                     'react/effect',
                     'react/todo',
+                    'react/router',
                 ],
             },
             {
