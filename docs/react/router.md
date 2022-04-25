@@ -136,6 +136,96 @@ function Movie({ title }) {
 }
 ```
 
+## URL parameter
+URL의 구성 요소에는 정적인 파라미터만 있는 것이 아닙니다. 라우트 컴포넌트를 통해 URL 구성이 모듈화되어 있다고 해도, 그 동일한 모듈이 재사용되는 서비스의 경우 고유한 값에 따라 페이지 URL을 다르게 구성해야 하는 것이죠. 
+
+쉽게 말해 우리가 컴포넌트 생성 시 `map()` 메서드로 여러 HTML 엘리먼트들을 생성하였고, 그 엘리먼트를 클릭했을때 이동하는 `Link` 컴포넌트를 생성하는 상황에서 몇 개가 될지 모르는 HTML 엘리먼트에 대해 각각 이름을 다르게 붙여줄 수 있을까요? 
+
+이럴 때에 URL 동적 파라미터를 사용하게 되는 것입니다. `Link` 컴포넌트의 `path`에 상위 컴포넌트로부터 넘어온 고유값 프롭스를 `to` 프로퍼티에 전달하면 됩니다.
+
+```javascript
+<Link to={`/movie/${id}`}>{title}</Link>
+```
+링크 컴포넌트 `to` 프로퍼티에 콧수염 괄호를 열어주고, 상위 컴포넌트로부터 받아온 프롭스 `id`를 전달합니다. 상위 컴포넌트는 현재 map을 통해 `Movie` 컴포넌트를 여러개 생성해주고 있죠. 
+
+```javascript
+{movies.map((movie) => (
+    <Movie
+        key={movie.id}
+        id={movie.id}
+        medium_cover_image={movie.medium_cover_image}
+        genres={movie.genres}
+        title={movie.title}
+        summary={movie.summary}
+    />
+))}
+```
+
+`Link` 컴포넌트를 활용하여 여러 개의 컴포넌트들을 무사히 렌더링할 수 있었습니다. 그렇다면 이번엔 `App.js`, 즉 전체 라우트 컴포넌트들을 관리하는 최상위 컴포넌트로 이동해봅시다.
+
+```javascript
+function App() {
+    return (
+        <Router>
+            <Routes>
+                <Route path='/movie' element={<Detail />} />
+                <Route path='/' element={<Home />} />
+            </Routes>
+        </Router>
+    );
+}
+```
+현재 `Route` 컴포넌트 중 영화 디테일 페이지를 렌더링하는 `path`는 `/movie` 라고 되어있습니다. 이곳에 동적 파라미터를 등록하고 싶다면 URL파라미터 이름 앞에 콜론만 붙여주면 됩니다.
+
+
+```javascript
+<Route path='/movie/:myid' element={<Detail />} />
+```
+
+이후 만약 디테일 컴포넌트 내에서 `myid`라는 URL파라미터와 또는 그 외의 파라미터 값들을 모두 알아야하는 상황이 있습니다. YTS로부터 영화 디테일 정보들을 받아온다고 했을때 URL 파라미터에 전달된 `myid`값을 가지고 이에 해당하는 영화를 찾아 디테일 정보를 요청한다고 가정해봅시다. 이러한 상황에서 사용되는 리액트 훅이 바로 `useParams` 입니다.
+
+```javascript
+import { useParams } from 'react-router-dom';
+
+function Detail() {
+    const x = useParams();
+    console.log(x);
+    return <h1>Detail</h1>;
+}
+
+export default Detail;
+```
+`Detail` 컴포넌트를 렌더링하면 `x`에 URL 파라미터 값들이 객체 형태로 전달됩니다.
+```javascript
+x = {myid: '31234'};
+```
+
+현재까지의 흐름을 정리하면 다음과 같습니다.
+1. `react-router-dom`의 Link 컴포넌트를 통해 HTML `href` 대신 컴포넌트 렌더링 로직으로 대체한다. 정적 리소스 재요청을 막기 위함입니다. 이때 `to` 프로퍼티에는 `to={프롭스값}`과 같은 형태, 즉 동적인 값을 전달해야겠죠.
+2. `Route` 컴포넌트에서 `path`에 콜론을 붙인 URL파라미터 이름을 전달합니다. `<Route path="/movie/:id" element={<Detail/}`과 같은 형태입니다.
+3. 라우트 컴포넌트를 통해 새롭게 렌더링된 `Detail` 컴포넌트에서 다양한 로직 처리를 위해 URL 파라미터의 값들을 받아와야 합니다. 이때 `useParams` 훅을 사용합니다. URL파라미터 전체 값이 객체 형태로 반환됩니다.
+
+다음은 디테일 컴포넌트에서 URL파라미터 값을 추출하여 API요청을 보내는 코드입니다.
+```javascript
+function Detail() {
+    const { id } = useParams(); // Params 추출
+
+    const getMovie = async () => {
+        const json = await (
+          // Params로 API요청
+            await fetch(
+                `https://yts.mx/api/v2/movie_details.json?movie_id=${id}` 
+            )
+        ).json();
+        console.log(json);
+    };
+    useEffect(() => {
+        getMovie();
+    }, []);
+    return <h1>Detail</h1>;
+}
+```
+
 ## Reference
 
 1. [nomad coders - React로 영화 웹 서비스 만들기](https://nomadcoders.co/react-for-beginners/lobby)
