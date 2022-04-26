@@ -159,6 +159,7 @@ module.exports = {
                     'react/effect',
                     'react/todo',
                     'react/router',
+                    'react/styled',
                 ],
             },
             {
