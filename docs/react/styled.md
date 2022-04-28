@@ -169,6 +169,99 @@ function App() {
   );
 }
 ```
+
+## Animation
+`styled-components`에서는 애니메이션을 위한 기능도 제공합니다. `keyframes`를 먼저 임포트해줍니다.
+```javascript
+import styled, { keyframes } from 'styled-components';
+```
+
+이후 애니메이션을 정의해주는데 **스타일 컴포넌트 정의와 동일한 형태로 이루어집니다.** (템플릿 리터럴 방식)
+```javascript
+const rotateAnimation = keyframes`
+from{
+    transform:rotate(0deg);
+}to{
+    transform:rotate(360deg);
+}
+`;
+```
+
+## pseudo selector
+`styled-components`에서는 좀 더 컴포넌트 단위로 쪼개어 CSS 작업을 할 수 있도록 특별한 pseudo selector들을 제공합니다. `Box` 컴포넌트 아래에 `span` 이 태그에 스타일링을 진행하는 상황입니다. 이 `span`태그는 `styled`로 정의되지 않은 일반 HTML 태그이기 때문에 스타일 프로퍼티라던지 글로벌 CSS 등의 원초적인 방법을 사용해야 합니다.
+
+하지만 `span`을 감싸는 `Box` 스타일 컴포넌트 내에서 `span`태그를 선택할 수 있게끔 기능을 제공합니다.
+
+```javascript
+const Box = styled.div`
+  height: 200px;
+  width: 200px;
+  border-radius: 100px;
+  background-color: tomato;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // ----- 여기!
+  span {
+    font-size: 30px;
+    &:hover {
+      font-size: 50px;
+    }
+  }
+  // -----
+`;
+
+function App() {
+  return (
+    <Father>
+      <Box>
+        <span>😀</span>
+      </Box>
+    </Father>
+  );
+}
+```
+관련 내용은 공식 문서의 [Supported CSS](https://styled-components.com/docs/api#supported-css)를 참조하시면 좋습니다.
+
+추가적으로 위의 코드는 `Box` 컴포넌트에 속하는 `span`태그에 대한 스타일링이 `span`이라는 HTML요소에 너무 의존적이게 됩니다. 의존적인 문제를 해결하기 위해 `span`태그를 스타일 컴포넌트로 대체하고 `Box` 스타일 컴포넌트 내에서 직접 타겟팅할 수 있습니다.
+
+```javascript
+// styled 컴포넌트 정의
+const Text = styled.span`
+  font-size: 30px;
+`;
+
+const Box = styled.div`
+  height: 200px;
+  width: 200px;
+  border-radius: 100px;
+  background-color: tomato;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // ----- 여기!
+  // Box안에 있는 Text를 직접 타겟팅
+  ${Text} {
+    &:hover {
+      font-size: 50px;
+    }
+  }
+  // -----
+`;
+
+function App() {
+  return (
+    <Father>
+      <Box>
+        <Text>😀</Text>
+      </Box>
+    </Father>
+  );
+}
+```
+`span`이라는 의존성에서 벗어나기 위해 스타일 컴포넌트를 `styled.span`으로 생성하였는데 추후 다른 HTML요소로 변경하고 싶다면? `as` 프로퍼티를 활용하면 됩니다.
+
+
 ## Reference
 
 1. [styled-components 공식문서](https://styled-components.com/)
