@@ -95,6 +95,8 @@ const Child = styled.div`
 
 스타일 컴포넌트는 기본적으로 템플릿 리터럴로 코드가 작성되기 때문에 `${}` 형태로 프롭스에 접근할 수 있습니다. CSS 프로퍼티 변수화를 위해 프롭스의 커스텀 프로퍼티를 함수 형태로 반환해주면 됩니다.
 
+### 중복된 스타일링
+
 프로퍼티 확장에 더불어 컴포넌트 간 코드의 중복을 피하는 방법도 있습니다.
 
 일반적으로 스타일링을 진행하게 되면 여러 컴포넌트 간 중복되는 스타일링이 발생하기 마련입니다. 스타일 컴포넌트를 활용하면 효율적으로 코드를 작성할 수 있습니다.
@@ -127,8 +129,46 @@ function App() {
 ```
 `Sibling` 컴포넌트에 `Child` 컴포넌트 프로퍼티를 전부 복사 붙여넣기 하지 않고 위의 형태로 코드를 작성함으로써 더 효율적으로 컴포넌트 스타일링을 진행할 수 있습니다. 
 
+### as 프로퍼티
+컴포넌트 프로퍼티 확장 이외에 **스타일링은 그대로 가져가되 HTML 태그만 변경하고 싶을 경우** `as` 프로퍼티를 활용합니다.
 
+```javascript
+function App() {
+  return (
+    <Box>
+      <Btn>Log in</Btn>
+      <Btn as='a' href='/'>
+        Link
+      </Btn>
+    </Box>
+  );
+}
+```
+`Btn` 컴포넌트가 있고 스타일링도 되어 있는 상태입니다. 또 다른 컴포넌트 `Link`를 생성하여 `styled(Btn)`으로 코드를 작성하면 문제가 해결될까요? 문제는 바로 HTML 요소를 변경하고 싶은 것이기 때문에 해결되지 않습니다. 
 
+이럴 때에 위에서 `as="a"`라는 코드처럼 변경하고자 하는 태그 명을 `as` 프로퍼티에 전달하면 됩니다. 
+
+### attrs 
+`styled-components`에서는 `attrs`라는 기능을 제공합니다. 특정 컴포넌트가 여러번 중복되어 사용되면서 HTML 어트리뷰트 또한 동일하게 적용되어야 한다고 할때 컴포넌트에 매번 값을 전달해야하는 문제가 있습니다. 이때 사용하는 것이 `attrs` 입니다.
+
+```javascript
+// ----- 추가된 코드
+const Child = styled.input.attrs({ required: true, minLength: 10 })`
+  background-color: tomato;
+`;
+// -----
+
+function App() {
+  return (
+    <Father>
+      <Child />
+      <Child />
+      <Child />
+      <Child />
+    </Father>
+  );
+}
+```
 ## Reference
 
 1. [styled-components 공식문서](https://styled-components.com/)
