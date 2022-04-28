@@ -63,10 +63,69 @@ export default App;
 비주얼 스튜디오 코드에서 styled-components를 위한 익스텐션을 제공합니다. `vscode-styled-components`를 설치하면 스타일 컴포넌트 정의 시 자동완성이 이루어집니다.
 :::
 
+## 스타일 컴포넌트 확장
+
+스타일 컴포넌트의 경우 CSS 프로퍼티 값이 일정하지 않은 경우가 많습니다. 즉 하드코딩의 형태가 아닌 변수 형태로 처리되는 것이죠. 컴포넌트의 커스텀 프로퍼티 정의 후 이를 **프롭스 형태로 내려주어 사용하면** 스타일 컴포넌트의 프로퍼티 확장이 이루어집니다. 아래 예제 코드를 보겠습니다.
 
 
+```javascript
+function App() {
+    return (
+        <Box>
+            <Child bgColor="black"/>
+            <Child bgColor="red"/>      
+        </Box>
+    );
+}
+```
 
+`Child`라는 컴포넌트의 커스텀 프로퍼티 `bgColor`를 정의 후 이 프로퍼티 값에 따라 `Child` 컴포넌트 배경색을 변경하는 코드입니다. 이를 위해서는 `styled.div`로 스타일 컴포넌트를 생성할 때에 아래 코드와 같이 작성하면 됩니다.
 
+```javascript
+const Child = styled.div`
+  background-color: ${(props) => {
+    return props.bgColor;
+  }};
+  width: 100px;
+  height: 100px;
+`;
+
+// background-color: ${(props) => props.bgColor};
+```
+
+스타일 컴포넌트는 기본적으로 템플릿 리터럴로 코드가 작성되기 때문에 `${}` 형태로 프롭스에 접근할 수 있습니다. CSS 프로퍼티 변수화를 위해 프롭스의 커스텀 프로퍼티를 함수 형태로 반환해주면 됩니다.
+
+프로퍼티 확장에 더불어 컴포넌트 간 코드의 중복을 피하는 방법도 있습니다.
+
+일반적으로 스타일링을 진행하게 되면 여러 컴포넌트 간 중복되는 스타일링이 발생하기 마련입니다. 스타일 컴포넌트를 활용하면 효율적으로 코드를 작성할 수 있습니다.
+
+아래의 코드는 `Child` 컴포넌트가 있고 `Sibling` 컴포넌트가 이 컴포넌트의 형제로 동일한 스타일링 프로퍼티들을 사용하며 `border-radius` 프로퍼티만 추가하는 상황입니다.
+
+```javascript
+const Child = styled.div`
+  background-color: ${(props) => {
+    return props.bgColor;
+  }};
+  width: 100px;
+  height: 100px;
+`;
+
+// ----- 추가된 코드!
+const Sibling = styled(Child)`
+  border-radius:50px;
+`;
+// -----
+
+function App() {
+    return (
+        <Box>
+            <Child bgColor="black"/>
+            <Sibling bgColor="red"/>      
+        </Box>
+    );
+}
+```
+`Sibling` 컴포넌트에 `Child` 컴포넌트 프로퍼티를 전부 복사 붙여넣기 하지 않고 위의 형태로 코드를 작성함으로써 더 효율적으로 컴포넌트 스타일링을 진행할 수 있습니다. 
 
 
 
