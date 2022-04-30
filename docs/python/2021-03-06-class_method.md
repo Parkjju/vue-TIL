@@ -1,10 +1,11 @@
 ---
 title: 클래스 메소드와 static 메소드
----
 
+---
 ## 클래스 변수에 대한 이해
 
 인스턴스 변수 vs 클래스 변수
+
 
 ```python
 class simple:
