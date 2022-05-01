@@ -147,6 +147,11 @@ module.exports = {
                 ],
             },
             {
+                title: 'Typescript',
+                collapsable: true,
+                children: ['typescript/typescript'],
+            },
+            {
                 title: 'React',
                 collapsable: true,
                 children: [
