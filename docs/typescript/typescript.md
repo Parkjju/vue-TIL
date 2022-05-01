@@ -41,4 +41,4 @@ npm install @types/설치하고싶은 패키지
 
 `@types`라는 용어를 명시함으로써 타입 명시된 자바스크립트 패키지를 설치하게 됩니다. (타입명시 없이 패키지를 설치하게 되면 모듈 인식을 하지 못합니다.)
 
-
+패키지 목록은 [Definitely Typed github](https://github.com/DefinitelyTyped/DefinitelyTyped) 레포지토리의 `typed` 폴더 내에서 찾아볼 수 있습니다. (10000개 이상이 넘어가 스크롤이 끝까지 넘어가지는 않습니다.) 
