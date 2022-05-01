@@ -55,7 +55,7 @@ sections:
           - post
     - type: directory
       path: docs/typescript
-      label: ES6+
+      label: Typescript
       create: documents
       match: '*.md'
       templates:
