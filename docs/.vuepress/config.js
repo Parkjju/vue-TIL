@@ -165,6 +165,7 @@ module.exports = {
                     'react/todo',
                     'react/router',
                     'react/styled',
+                    'react/query',
                 ],
             },
             {

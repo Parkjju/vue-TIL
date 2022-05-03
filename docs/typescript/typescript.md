@@ -1,5 +1,5 @@
 ---
-title: Typescript - CRA적용
+title: Typescript CRA 설치
 
 ---
 ## 타입스크립트 시작
