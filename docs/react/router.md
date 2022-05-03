@@ -226,6 +226,11 @@ function Detail() {
 }
 ```
 
+:::warning Typescript useParams
+React Router Dom 사용시 v6 이상이면 useParams 훅 사용시 타입을 특정짓지 않아도 됩니다. `useParams`훅을 사용한 이상 타입이 `string` 또는 `undefined`로 지정됩니다.
+:::
+
+
 ## Reference
 
 1. [nomad coders - React로 영화 웹 서비스 만들기](https://nomadcoders.co/react-for-beginners/lobby)
