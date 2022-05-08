@@ -169,6 +169,11 @@ module.exports = {
                 ],
             },
             {
+                title: 'React Native',
+                collapsable: true,
+                children: ['react-native/fast'],
+            },
+            {
                 title: 'Vue',
                 collapsable: true,
                 children: [
