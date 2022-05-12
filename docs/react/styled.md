@@ -1,7 +1,7 @@
 ---
 title: React styled-components
----
 
+---
 ## styled components
 
 항상 어떤 라이브러리를 사용하는 데에는 이유가 필요합니다. `styled-components`는 CSS-in-JS 기반의 라이브러리인데 여러 방식의 CSS-in-JS 중 가장 편안하고 직관적인 기능을 갖습니다.
@@ -277,6 +277,118 @@ function App() {
 
 `span`이라는 의존성에서 벗어나기 위해 스타일 컴포넌트를 `styled.span`으로 생성하였는데 추후 다른 HTML요소로 변경하고 싶다면? `as` 프로퍼티를 활용하면 됩니다.
 
+:::tip document에 CSS 적용하기
+`styled-components`는 스타일이 적용되는 특정 컴포넌트를 제작하게 됩니다. `reset CSS`나 폰트와 같이 도큐먼트 전체에 적용될 스타일은 어떻게 적용해야할까요? `styled-components`에서는 `createGlobalStyle`이라는 컴포넌트를 제공합니다. 
+
+```javascript
+// App.js
+import { createGlobalStyle } from "styled-components";
+
+const GlobalStyle = createGlobalStyle`
+body{
+  background-color:green;
+}
+`
+
+function App(){
+  return (
+    <>
+      <GlobalStyle/>
+      <Router/>
+    </>
+  );
+}
+```
+
+참고로 `App` 컴포넌트 내에서 빈 태그로 감싸는 것을 **Fragments** 라고 합니다. 어떤 두 컴포넌트를 묶기 위해 필요없는 `div` 태그를 사용하는 것이 아니라 빈 태그로 감싸기 위해 사용합니다.
+:::
+
+## theme
+`styled-components`에서는 `theme`이라는 기능을 제공합니다. 최상위 단계에서 **어플리케이션에서 사용할 스타일을 한 객체에 담아 `props` 형태로 전달하기 위해 사용합니다.** `styled-components`에서 **ThemeProvider를** 임포트 해줍니다. 코드 작업은 **index.js에서** 진행합니다.
+
+:::tip color picker
+[Flat UI Palette](https://flatuicolors.com/palette/defo)에서 원하는 컬러를 쉽게 가져올 수 있습니다!
+:::
+
+```javascript
+// index.js
+import { ThemeProvider } from "styled-components";
+
+const myTheme = {
+  textColor: "#1abc9c",
+  bgColor: "white"
+};
+
+const root = ReactDOM.createRoot(
+    document.getElementById('root') as HTMLElement
+);
+
+root.render(
+    <React.StrictMode>
+        <ThemeProvider theme={myTheme}>
+            <App />
+        </ThemeProvider>
+    </React.StrictMode>
+);
+```
+
+`ThemeProvider`를 통해 `theme`을 제공하면 `App` 컴포넌트를 통해 뻗어져 나가는 자식 컴포넌트 전체가 `styled-components`로 생성된 컴포넌트에서 프롭스 형태로 컬러를 받을 수 있습니다.
+
+```javascript
+// Component.js
+import styled from "styled-components";
+
+const Header = styled.div`
+  display: flex;
+  background-color: ${(props) => props.theme.backgroundColor};
+`
+```
+
+:::tip Typescript theme 적용하기
+타입스크립트에서 `styled-components`의 `theme` 기능을 사용하기 위해 [Typescript Theme API reference](https://styled-components.com/docs/api#typescript)를 참조합니다. 먼저 `Definitely Typed`에서 라이브러리를 설치합니다.
+```sh
+npm install --save @types/styled-components
+```
+
+이후 타입스크립트의 **선언 파일을 생성해야합니다.** 파일명은 `styled.d.ts`로 생성하고 `src` 아래에 위치시킵니다.
+
+```typescript
+// import original module declarations
+import 'styled-components';
+
+// and extend them!
+declare module 'styled-components' {
+  export interface DefaultTheme {
+    borderRadius: string;
+
+    colors: {
+      main: string;
+      secondary: string;
+    };
+  }
+}
+```
+
+선언 파일을 통해 `styled-components`로부터 상속을 받아 개발자가 관리하고자 하는 `theme` 객체에 대하여 인터페이스를 먼저 정의해줘야 합니다. API 문서에 따라 `DefaultTheme`이라고 정의를 하겠습니다.
+
+이후에는 실제로 `DefaultTheme`에 대한 내부 속성들을 (스타일들) 정의합니다. `my-theme.ts` 타입스크립트 파일 하나를 생성하고 정의합니다. 선언 파일에서 새롭게 만들었던 `DefaultTheme` 인터페이스를 임포트한 뒤에 내부 속성을 정의합니다.
+```typescript
+import { DefaultTheme } from 'styled-components';
+
+const myTheme: DefaultTheme = {
+  borderRadius: '5px',
+
+  colors: {
+    main: 'cyan',
+    secondary: 'magenta',
+  },
+};
+
+export { myTheme };
+```
+
+디테일한 속성들을 정의한 뒤에 익스포트 하여 `theme`을 사용합니다. 
+:::
 ## Reference
 
 1. [styled-components 공식문서](https://styled-components.com/)
