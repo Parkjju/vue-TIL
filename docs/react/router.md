@@ -230,6 +230,37 @@ function Detail() {
 React Router Dom 사용시 v6 이상이면 useParams 훅 사용시 타입을 특정짓지 않아도 됩니다. `useParams`훅을 사용한 이상 타입이 `string` 또는 `undefined`로 지정됩니다.
 :::
 
+## useLocation
+`react-router-dom`의 훅 중에서는 `useLocation`이 있다. 자바스크립트에서의 `location` 객체가 간소화된 형태로 제공된다고 보면 된다.
+`useLocation`훅이 `location` 객체를 다룬다는 것 자체에도 의미가 있지만 **이전 페이지 라우터 컴포넌트로부터 프롭스를 받아올 수 있다는 점에서 유용하게 사용되고는 한다.** 
+
+코드를 보자.
+```javascript
+import { Link } from "react-router-dom";
+
+// ....
+<Link to={`/${myfile.id}`} state={myfile.name}>
+    <Img
+        src={`${endpoint}/myFile.txt}`}
+        alt='coin'
+    />
+    {coin.name} &rarr;
+</Link>
+```
+`Link` 컴포넌트를 통해 특정 API에 요청을 보낸다. 이때 이 컴포넌트에는 `state` 프로퍼티를 전달할 수 있다. 
+
+**중요한건 프롭스로 `state`를 받는 컴포넌트에서 인터페이스를 정의해야한다는 것이다.** 위의 코드에서 만약 `myFile.name`이 `string`타입이었다면 하위 컴포넌트에서의 인터페이스는 다음과 같이 정의되어야 할 것이다.
+```javascript
+interface FileState{
+  state: string;
+}
+
+function Child(){
+  const { state } = useLocation() as FileState;
+}
+```
+
+`useLocation`으로부터 구조 분해 되어 `state`에는 상위 컴포넌트의 프롭스로부터 전달받은 `myFile.name` 문자열 값이 저장되게 된다.
 
 ## Reference
 
