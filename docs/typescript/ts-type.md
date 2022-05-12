@@ -147,6 +147,24 @@ console.log(realFalst); // Falsy
 자세한 내용은 [다음의 문서를 참조해주세요.](https://joshua1988.github.io/vue-camp/es6+/nullish-coalescing-operator.html)
 :::
 
+## React event type
+리액트에서 이벤트 기반으로 값을 조정할 때에 이벤트핸들러 함수의 파라미터로 `event`를 전달하게 된다. 이때 `event`는 타입스크립트에서 **any 타입으로 적용되어 있는데** 이는 타입스크립트 언어 내에서는 최대한 자제해야 한다. 타입스크립트가 적용된 리액트 프로젝트에서 이벤트 타입을 지정하는 코드는 다음과 같다.
+
+```javascript
+const onClick = (event : React.FormEvent<HTMLInputElement>) => {
+  const {
+    currentTarget: {value},
+  } = event; // const value = event.currentTarget.value;
+}
+```
+
+타입스크립트가 설치되어 있는 이상 `React`의 프로퍼티로 접근하게 되면 여러가지 이벤트들이 나열된다. 폼과 관련된 이벤트를 비롯하여 여러가지 이벤트들이 있는데 이는 적재 적소에 다른 이벤트로 타입을 등록해야하기 때문에 구글링을 통해 진행하도록 하자.
+
+이벤트를 결정했으면 **어떤 요소로부터 이벤트가 트리거되는지까지 지정해야한다.** 꺽쇠로 열어서 지정하면 된다.
+
+위와 같은 특별한 형태의 이벤트를 리액트에서 **Synthetic event라고 한다.** 
+
+
 
 
 ## Reference 
