@@ -262,6 +262,37 @@ function Child(){
 
 `useLocation`으로부터 구조 분해 되어 `state`에는 상위 컴포넌트의 프롭스로부터 전달받은 `myFile.name` 문자열 값이 저장되게 된다.
 
+:::warning 
+위 코드의 하위 컴포넌트가 `state`을 사용하기 위해서는 상위 컴포넌트의 프롭스로부터 `state` 값을 전달받아야 한다. 
+`Link`를 통해 순서가 있는 접근이 아닌 하위 컴포넌트 URL로 직접 접근하게 되면 `undefined` 값이 저장되게 된다. 이는 분명 논리적 오류이며 이를 예외적으로 처리해야한다.
+ 
+널 병합 연산자 `??`를 통해 처리하도록 하자.
+```javascript
+function Child(){
+  const { state } = useLocation() as FileState;
+  
+  return (
+    <div>
+      <span>{state ?? "UNDEFINED!!"}</span>
+    </div>
+  )
+}
+```
+
+`state`가 객체 형태로 프롭스에 전달되었다면 옵셔널 체이닝으로 깔끔한 코딩을 할 수도 있다. `state` 객체의 `name` 프로퍼티가 있다고 가정해보자.
+```javascript
+function Child(){
+  const { state } = useLocation() as FileState;
+  
+  return (
+    <div>
+      <span>{state?.name ?? "UNDEFINED!!"}</span>
+    </div>
+  )
+}
+```
+`state`객체가 undefined가 아니면 해당 객체의 `name` 프로퍼티 값을 출력하고 이 또한 `undefined`면 후에 작성된 `UNDEFINED!!`를 부착한다.
+:::
 ## Reference
 
 1. [nomad coders - React로 영화 웹 서비스 만들기](https://nomadcoders.co/react-for-beginners/lobby)
