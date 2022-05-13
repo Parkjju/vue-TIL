@@ -128,6 +128,7 @@ module.exports = {
                     '/js/ajax',
                     '/js/axios',
                     '/js/spa',
+                    '/js/methods',
                 ],
             },
             {
