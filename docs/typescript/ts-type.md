@@ -164,8 +164,43 @@ const onClick = (event : React.FormEvent<HTMLInputElement>) => {
 
 위와 같은 특별한 형태의 이벤트를 리액트에서 **Synthetic event라고 한다.** 
 
+## 크기가 큰 객체 타입 설명하기 
+객체를 구성하는 프로퍼티의 종류가 다양하다면 이에 대한 인터페이스를 하나 하나 정의해주기가 여간 번거로운게 아니다. 조금이나마 편리하게 작업하는 방식을 소개한다.
 
+먼저 객체를 콘솔에 출력한다. 출력된 객체를 우클릭 하게 되면 몇가지 탭이 보이는데 `store object as global variable`을 클릭하자.
 
+![](../.vuepress/assets/typescript-object.png)
+
+콘솔 상의 전역 변수로 선언되어 해당 객체에 접근 및 객체 내장 메서드를 활용하여 작업할 수 있게 된다.
+
+먼저 해야할 작업은 인터페이스에 등록할 객체 프로퍼티 이름들을 가져오는 것이다. 전역변수 temp1에 객체 프로퍼티 명이 저장되어 있다고 가정한다. 아래 코드를 실행하면 객체 프로퍼티 키값(프로퍼티명)들이 join되어 한 문자열로 반환된다.
+
+```javascript
+Object.keys(temp1).join();
+```
+
+이 문자열을 복사하여 VSC로 가져간 후 Command + D 로 쉼표를 일괄 삭제하고 Alt + Shift + I 로 동시 커서 생성을 한뒤 콜론과 세미콜론을 같이 찍어주자.
+
+객체 프로퍼티에 대한 설명은 이루어졌으니 어떤 타입인지 설명해야한다.
+```javascript
+Object.values(temp1).map(item => typeof item).join();
+```
+temp1 객체의 프로퍼티 값들을 모두 가져오고 각 값에 `map` 함수를 통해 원소값들을 각 원소의 타입값으로 변환해준다. 조인까지 사용하여 한 문자열로 반환하고 프로퍼티 이름을 인터페이스에 등록할때처럼 VSC에서 작업하면 된다.
+
+:::warning Object Type
+객체 프로퍼티의 Array타입이 Object로 인식이 되는데 이때 타입스크립트에는 각 배열 원소가 어떤 타입인지도 설명해줘야 한다.
+
+```javascript
+interface IArrayInterface{
+  arr: IMyType[];
+}
+
+interface IMyType{
+  ....
+}
+```
+:::
 
 ## Reference 
 1. [Cracking Vue.js - 널 병합 연산자](https://joshua1988.github.io/vue-camp/es6+/nullish-coalescing-operator.html)
+2. [Nomad coders - 리액트 마스터 클래스](https://nomadcoders.co/react-masterclass/lobby)
