@@ -91,5 +91,36 @@ const {isLoading: myLoading, data: myData} = useQuery(key, fetcherFunction);
 ```javascript
 const {isLoading, data} = useQuery(key, () => fetcher(myArgument));
 ```
+
+:::tip 3번째 인자
+`useQuery`훅은 세 번째 인자를 전달할 수 있다. 바로 `refetch` 주기를 밀리초 단위로 설정하는 것이다. 객체를 전달하면 되고 `refetchInterval` 프로퍼티에 대한 값을 지정한다.
+```javascript
+const {isLoading, data} = useQuery('queryKey', fetcher, {
+  refetchInterval:5000
+})
+```
+:::
+
+## Outlet Context
+
+리액트 쿼리에서 우리는 중첩 라우트를 구현했었다. 버전6으로 업데이트 되면서 `Outlet` 컴포넌트를 활용할 수 있게 되어 이를 활용하였었는데 중첩 라우트의 자식 컴포넌트에 프롭스를 전달하기 위해서는 어떻게 해야할까?
+
+컨텍스트 개념이 등장하여 `Outlet` 컴포넌트에 전달할 수 있게 되었다. 나중에 `Outlet`으로 대체될 중첩 라우트에 특정 프롭스가 정의되어 있지 않더라도 `Outlet`이 부착된 컴포넌트에 커스텀 프롭스를 `context`라는 이름으로 정의하면 된다. 
+
+```javascript
+<Outlet context={{myProps: data }}/>
+```
+
+프롭스가 전달되면 중첩 라우트의 자식 컴포넌트에서 `useOutletContext` 훅을 통해 프롭스를 전달받을 수 있게 된다. (타입스크립트 기반이라면 인터페이스를 제네릭으로 전달해야한다.)
+
+```javascript
+import {useOutletContext} from "react-router";
+
+function Component(){
+  const data = useOutletContext<MyGeneric>();
+  return <h1>Hello!</h1>;  
+}
+```
+
 ## Reference
 1. [노경환님의 기억보다 기록을](https://kyounghwan01.github.io/blog/React/react-query/basic/)
