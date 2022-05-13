@@ -231,8 +231,8 @@ React Router Dom 사용시 v6 이상이면 useParams 훅 사용시 타입을 특
 :::
 
 ## useLocation
-`react-router-dom`의 훅 중에서는 `useLocation`이 있다. 자바스크립트에서의 `location` 객체가 간소화된 형태로 제공된다고 보면 된다.
-`useLocation`훅이 `location` 객체를 다룬다는 것 자체에도 의미가 있지만 **이전 페이지 라우터 컴포넌트로부터 프롭스를 받아올 수 있다는 점에서 유용하게 사용되고는 한다.** 
+`react-router-dom`의 훅 중에서는 `useLocation`이 있다. 자바스크립트에서의 `location` 객체가 간소화된 형태로 제공된다고 보면 됩니다.
+`useLocation`훅이 `location` 객체를 다룬다는 것 자체에도 의미가 있지만 **이전 페이지 라우터 컴포넌트로부터 프롭스를 받아올 수 있다는 점에서 유용하게 사용되고는 합니다.** 
 
 코드를 보자.
 ```javascript
@@ -247,9 +247,9 @@ import { Link } from "react-router-dom";
     {coin.name} &rarr;
 </Link>
 ```
-`Link` 컴포넌트를 통해 특정 API에 요청을 보낸다. 이때 이 컴포넌트에는 `state` 프로퍼티를 전달할 수 있다. 
+`Link` 컴포넌트를 통해 특정 API에 요청을 보냅니다. 이때 이 컴포넌트에는 `state` 프로퍼티를 전달할 수 있습니다.
 
-**중요한건 프롭스로 `state`를 받는 컴포넌트에서 인터페이스를 정의해야한다는 것이다.** 위의 코드에서 만약 `myFile.name`이 `string`타입이었다면 하위 컴포넌트에서의 인터페이스는 다음과 같이 정의되어야 할 것이다.
+**중요한건 프롭스로 `state`를 받는 컴포넌트에서 인터페이스를 정의해야한다는 것입니다.** 위의 코드에서 만약 `myFile.name`이 `string`타입이었다면 하위 컴포넌트에서의 인터페이스는 다음과 같이 정의되어야 할 것입니다.
 ```javascript
 interface FileState{
   state: string;
@@ -260,13 +260,13 @@ function Child(){
 }
 ```
 
-`useLocation`으로부터 구조 분해 되어 `state`에는 상위 컴포넌트의 프롭스로부터 전달받은 `myFile.name` 문자열 값이 저장되게 된다.
+`useLocation`으로부터 구조 분해 되어 `state`에는 상위 컴포넌트의 프롭스로부터 전달받은 `myFile.name` 문자열 값이 저장되게 됩니다.
 
 :::warning 
-위 코드의 하위 컴포넌트가 `state`을 사용하기 위해서는 상위 컴포넌트의 프롭스로부터 `state` 값을 전달받아야 한다. 
-`Link`를 통해 순서가 있는 접근이 아닌 하위 컴포넌트 URL로 직접 접근하게 되면 `undefined` 값이 저장되게 된다. 이는 분명 논리적 오류이며 이를 예외적으로 처리해야한다.
+위 코드의 하위 컴포넌트가 `state`을 사용하기 위해서는 상위 컴포넌트의 프롭스로부터 `state` 값을 전달받아야 합니다. 
+`Link`를 통해 순서가 있는 접근이 아닌 하위 컴포넌트 URL로 직접 접근하게 되면 `undefined` 값이 저장되게 됩니다. 이는 분명 논리적 오류이며 이를 예외적으로 처리해야합니다.
  
-널 병합 연산자 `??`를 통해 처리하도록 하자.
+널 병합 연산자 `??`를 통해 처리하도록 해봅시다.
 ```javascript
 function Child(){
   const { state } = useLocation() as FileState;
@@ -279,7 +279,7 @@ function Child(){
 }
 ```
 
-`state`가 객체 형태로 프롭스에 전달되었다면 옵셔널 체이닝으로 깔끔한 코딩을 할 수도 있다. `state` 객체의 `name` 프로퍼티가 있다고 가정해보자.
+`state`가 객체 형태로 프롭스에 전달되었다면 옵셔널 체이닝으로 깔끔한 코딩을 할 수도 있습니다. `state` 객체의 `name` 프로퍼티가 있다고 가정해봅시다.
 ```javascript
 function Child(){
   const { state } = useLocation() as FileState;
@@ -291,8 +291,54 @@ function Child(){
   )
 }
 ```
-`state`객체가 undefined가 아니면 해당 객체의 `name` 프로퍼티 값을 출력하고 이 또한 `undefined`면 후에 작성된 `UNDEFINED!!`를 부착한다.
+`state`객체가 undefined가 아니면 해당 객체의 `name` 프로퍼티 값을 출력하고 이 또한 `undefined`면 후에 작성된 `UNDEFINED!!`를 부착합니다.
 :::
+
+## Nested Router
+라우터가 중첩된 형태를 가지면 `Nested Router`이다. 유용하게 사용될텐데, 바로 **탭 기능 구현에 사용된다.** 
+
+react-router-dom의 `Outelet` 컴포넌트를 사용하면 `Router.tsx`에 정의된 중첩 라우트가 자동으로 삽입된다. 컴포넌트의 구조가 Todos가 있고 완료 여부를 route path에 넘기는 형식이라고 가정하자. 
+
+이때 Todo 컴포넌트 안에 중첩 라우트를 사용하는 상황이다.
+```javascript
+// Router.tsx
+function Router(){
+  return(
+    //...
+    <Routes>
+      <Route path="/todos" element={<Todos/>}>
+        <Route path="completed" element={<Completed/>}/>
+        <Route path="incompleted" element={<Incompleted/>}/>
+      </Route>
+    </Routes>
+  )
+}
+```
+위와 같이 한 투두 리스트 안에 완료된 투두 / 완료되지 않은 투두를 고를 수 있도록 중첩 라우트를 구성한 상태에서 URL "/todos/completed"에 접근할 때 중첩 라우트를 분리하여 코드 작성할 필요없이 `Outlet` 컴포넌트를 사용하면 URL 검사와 함께 부모 / 자식 컴포넌트를 비교하여 자동으로 위 구조 컴포넌트를 렌더링해준다.
+
+```javascript
+// In Router.tsx
+
+<Route path="/:todoId/*" element={<Todo/>} />
+
+// In Coin.tsx
+
+<Routes>
+  <Route path="completed" element={<Completed />} />
+  <Route path="incompleted" element={<Incompleted />} />
+</Routes>
+```
+위 처럼 분리하는 것이 아니라,
+
+```javascript
+// In Router.tsx
+<Route path="/:coinId" element={<Coin />} >
+  <Route path="chart" element={<Chart />} />
+  <Route path="price" element={<Price />} />
+</Route>
+```
+위 처럼 라우터 파일에 중첩 라우트를 구성하고 위의 Coin/Chart&Price 구조의 컴포넌트를 부착할 위치에 `Outlet` 컴포넌트를 부착하면 된다는 것이다.
+
 ## Reference
 
 1. [nomad coders - React로 영화 웹 서비스 만들기](https://nomadcoders.co/react-for-beginners/lobby)
