@@ -167,6 +167,7 @@ module.exports = {
                     'react/router',
                     'react/styled',
                     'react/query',
+                    'react/state-manage',
                 ],
             },
             {
