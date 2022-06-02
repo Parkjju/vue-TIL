@@ -219,6 +219,7 @@ module.exports = {
                 title: 'Algorithm',
                 collapsable: true,
                 children: [
+                    '/algorithm/method',
                     '/algorithm/dp',
                     '/algorithm/greedy',
                     '/algorithm/graph',
