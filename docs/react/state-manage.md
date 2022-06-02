@@ -49,3 +49,18 @@ function Component(){
 }
 ```
 
+`useRecoilValue`훅을 사용하여 객체 생성 및 관리를 하면 해당 객체가 리코일의 아톰과 커플링됩니다. 커플링된 아톰을 또 다른 컴포넌트에서 세팅하기 위해서는 `useSetRecoilState`을 사용합니다. 이 훅은 리액트의 `useState`의 Setter 함수와 동일하게 작동합니다. (current 값을 변화시키는 함수로써의 역할)
+
+```javascript
+import {useSetRecoilState} from 'recoil'
+import {isDarkAtom} from './atoms' // myAtom파일이 저장되어 있는 위치
+
+function Component(){
+  const setter = useSetRecoilState(myAtom);
+  
+  return(
+    <button onClick={() => ((current) => !current)}>Click Me!</button>
+  )
+}
+```
+
