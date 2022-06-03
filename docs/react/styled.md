@@ -29,6 +29,11 @@ npm install styled-components
 ```sh
 npm install --save-dev @types/styled-components
 ```
+
+혹여나 Module not found 에러가 계속 발생하면 `yarn` 패키지 매니저로 설치합니다.
+```sh
+yarn add @types/styled-components --dev
+```
 :::
 
 ```javascript
