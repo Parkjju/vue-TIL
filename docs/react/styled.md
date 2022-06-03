@@ -34,6 +34,11 @@ npm install --save-dev @types/styled-components
 ```sh
 yarn add @types/styled-components --dev
 ```
+
+타입스크립트에서 다음의 명령어도 실행해야 모듈이 인식될때도 있습니다.
+```sh
+npm i styled-components
+```
 :::
 
 ```javascript
