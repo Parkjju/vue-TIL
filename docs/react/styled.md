@@ -24,6 +24,13 @@ title: React styled-components
 npm install styled-components
 ```
 
+:::warning
+타입스크립트에서 `styled-components`를 사용하려면 반드시 `--save-dev` 옵션을 부여해야합니다.
+```sh
+npm install --save-dev @types/styled-components
+```
+:::
+
 ```javascript
 // App.js
 import styled from 'styled-components';
