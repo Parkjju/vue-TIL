@@ -168,6 +168,7 @@ module.exports = {
                     'react/styled',
                     'react/query',
                     'react/state-manage',
+                    'react/hook',
                 ],
             },
             {
