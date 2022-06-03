@@ -354,7 +354,7 @@ const Header = styled.div`
 :::tip Typescript theme 적용하기
 타입스크립트에서 `styled-components`의 `theme` 기능을 사용하기 위해 [Typescript Theme API reference](https://styled-components.com/docs/api#typescript)를 참조합니다. 먼저 `Definitely Typed`에서 라이브러리를 설치합니다.
 ```sh
-npm install --save @types/styled-components
+npm install --save-dev @types/styled-components
 ```
 
 이후 타입스크립트의 **선언 파일을 생성해야합니다.** 파일명은 `styled.d.ts`로 생성하고 `src` 아래에 위치시킵니다.
