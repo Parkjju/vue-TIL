@@ -112,6 +112,7 @@ module.exports = {
                     '/daily/220224-shadow',
                     '/daily/220223-virtualDom',
                     '/daily/220420-api',
+                    '/daily/220605-regex',
                 ],
             },
             {
