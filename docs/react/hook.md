@@ -220,8 +220,45 @@ function Component(){
 
 `pattern` 속성에는 정규식 형태로 입력 형식을 정의할 수 있다. 그 동안 정규식에 대한 내용을 미뤄왔다는 이제는 정리할 때가 왔다.
 
+위 코드에서 form 내의 input부분만 발췌해보자.
+
+```javascript
+<input
+    placeholder='Email'
+    {...register('Email', {
+        required: {
+            value: true,
+            message: 'Required!!!!',
+        },
+      // pattern추가.
+        pattern: {
+            value: /[A-Za-z0-9._%+-]+@naver\.com/g,
+            message: 'Only naver.com emails allowed',
+        },
+    })}
+/>
+```
+
+value에 정규표현식이 들어간 상태이다. **정규표현식은 따옴표로 감싸지 않는다.**
+
+:::tip 타입스트립트 폼 제네릭 설정
+타입스크립트 기반의 react-hook-form을 사용할 때에는 `useForm`훅에 유효성 검사 대상 폼 데이터 타입을 지정하여 제네릭으로 전달해야합니다.
+
+```javascript
+interface IForm{
+  email:string,
+  username: string,
+}
+  
+function Component(){
+  const {formState:{errors}} = useForm<IForm>();
+  //  .....
+  // form 내에 email과 username으로 register된 인풋태그 2개가 배치되어 있다.
+}
+```
+:::
+
+
+
 
 ## 유효성 검사 커스텀
-
-
-
