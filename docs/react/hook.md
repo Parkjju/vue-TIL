@@ -301,6 +301,20 @@ onValid함수가 호출되고 패스워드 둘에 대한 유효성 검사가 진
 setError함수의 인자로 shouldFocus를 지정할 수 있다. 객체로 감싸 `{shouldFocus: true}`와 같이 표기하면 setError로 인한 에러 발생시 커서가 에러 발생 폼으로 자동 전환된다.
 :::
 
+:::tip setValue
+setValue함수는 원하는 폼에 대한 값을 새롭게 설정한다.
+
+onValid함수가 있다는 가정 하에 다음과 같이 사용할 수 있다.
+```javascript
+const onValid = (data:IForm) => {
+  if(data.todo.length > 10) {
+    setError("todo", {message: "짧게 쓰세용"});
+  }
+  setValue('todo', ""); // todo로 register된 폼 비우기
+}
+```
+:::
+
 커스텀 방법 두번째로 register의 인자인 `validate`가 있다. 코드 작성부터 보자.
 ```javascript
 <input
