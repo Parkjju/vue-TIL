@@ -259,6 +259,77 @@ function Component(){
 :::
 
 
-
-
 ## 유효성 검사 커스텀
+유효성 검사에 대한 조건을 커스텀 한다는 것은 라이브러리나 HTML자체에서 제공하는 몇 가지 유효성 검사, 즉 `pattern`의 정규식을 통과하고 `required`도 통과하며 `minLength`같은 조건들을 모두 만족했음에도 검사 해야만 하는 조건이 있는 상황을 말합니다.
+
+패스워드 재 입력 과정에서 첫 번째 패스워드와 두 번째 패스워드가 다르면 분명 심각한 상황인데, 이를 JSX return 태그들 내에서 프로퍼티를 통해 처리할 수 있는 방법이 없습니다. 
+
+함수를 정의해야 하는데 이때 사용되는 것이 바로 onValid 함수입니다. 
+
+onValid는 기본적인 유효성 검사 조건을 모두 만족했을 때 실행되는 함수이지만 커스텀된 유효성 검사를 추가적으로 진행하는 함수이기도 합니다. 
+
+onValid함수는 인자로 `data`를 받고 이 `data`안에는 유효성 검사를 진행할 데이터들이 모여있습니다. 즉 submit된 폼 내의 데이터들을 말합니다. 
+
+예를 들어 회원가입을 할때 `username`, `password1`, `password2`를 입력해야한다고 가정하면 data객체의 프로퍼티로 `username` `password1` `password2`가 있으며 각각 접근할 수 있는 것입니다.
+
+그럼 이제 onValid 함수를 통해 커스텀 유효성 검사 조건을 하나 마련해보겠습니다.
+```javascript
+interface IForm{
+  username: string,
+  password1: string,
+  password2: string
+}
+
+function Register(){
+  const {setError} = useForm<IForm>();
+  
+  const onValid = (data : IForm) => {
+    if(password1 !== password2){
+      setError("password1", {message: "password must same"})
+    }
+  }
+}
+```
+
+onValid함수가 호출되고 패스워드 둘에 대한 유효성 검사가 진행됩니다. 이때 두 패스워드가 다르다는 if문에 진입하면 useForm훅의 **setError** 함수를 호출합니다.
+
+`setError`의 첫 번째 인자로는 유효성 검사에 통과하지 못한 대상을 전달하고 두 번째 인자로 에러메세지를 객체에 감싸 전달합니다.
+
+위에서의 onValid 활용이 특정 폼들에 대한 유효성 커스텀이었다면 전체 폼에 대한 유효성 검사도 진행할 수 있습니다. 사실상 전체 폼 유효성검사 통과 이후에도 특정 이유로 인한 error raise 상황이 발생할 수 있는 것입니다.
+
+:::tip setError shouldFocus
+setError함수의 인자로 shouldFocus를 지정할 수 있다. 객체로 감싸 `{shouldFocus: true}`와 같이 표기하면 setError로 인한 에러 발생시 커서가 에러 발생 폼으로 자동 전환된다.
+:::
+
+커스텀 방법 두번째로 register의 인자인 `validate`가 있다. 코드 작성부터 보자.
+```javascript
+<input
+    placeholder='First Name'
+    {...register('firstName', {
+        validate: (value) => // register의 인자로 객체로 감싼 validate를 전달.
+            !value.includes('jun') || 'jun 포함하지마',
+    })}
+/>
+```
+
+validate는 함수를 객체 프로퍼티에 대한 값으로 받는다. 이 함수는 인자로 `value`를 받는데, 이는 폼을 통해 전달된 값을 말한다. 에러 처리의 방법으로 위와 같이 `!value.includes('jun') || '에러메세지'`의 방식으로 처리하게 된다.
+
+`value`는 includes함수를 가지며 `includes`에 전달한 문자열을 포함하면 true, 포함하지 않으면 false를 반환한다.
+
+위의 `||`연산자를 통해 value에 jun이 포함되어 있었다면 첫 번째 조건 탈락으로 다음 에러메세지로 검사가 넘어가게 되는데, 에러메세지는 그 자체로 에러이므로 결과적으로 `jun 포함하지마`가 firstName의 에러로 저장된다.
+
+또한 validate에 한 가지 함수만 전달할 수 있는 것이 아니라 둘 이상의 함수도 전달할 수 있다.
+
+```javascript
+<input
+    placeholder='First Name'
+    {...register('firstName', {
+        // 객체 정의
+        validate: {
+          noJun: (value) => !value.includes('jun') || "No JUN!!",
+          noPark: (value) => !value.includes('jun') || "No PARK!!!",
+        }
+    })}
+/>
+```
+위와 같이 객체 리터럴을 validate에 전달해도 된다. 에러메세지 호출 시 별도의 객체 프로퍼티 접근이 필요없고 `errors?.firstName?.message`로 접근하면 된다.
