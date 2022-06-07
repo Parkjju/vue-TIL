@@ -171,6 +171,7 @@ module.exports = {
                     'react/state-manage',
                     'react/state-manage2',
                     'react/hook',
+                    'react/hooks',
                 ],
             },
             {
