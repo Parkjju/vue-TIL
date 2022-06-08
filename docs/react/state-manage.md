@@ -111,3 +111,52 @@ function Component(){
 ```
 어트리뷰트 방식 이벤트 핸들러 함수에 인자를 전달하기 위해서는 **익명함수를 onClick 이벤트 핸들러에 호출해버리면 된다.**
 :::
+
+## Selector
+셀렉터는 Recoil 공식문서에서 `derived state`라고 한다. 직역하면 파생된 상태값이라고 할 수 있겠는데, 이게 어떤 의미일까?
+
+Recoil의 atom함수를 사용하여 버블 상태값 하나를 선언했다고 해보자. 컴포넌트 여기 저기서 `useSetRecoilState` 훅을 통해 내부 상태값에 변화를 계속해서 쌓아가고 있는데 이때 여러 컴포넌트로부터 발생한 상태값 변화가 **한 곳에 집결한다는 것이 중요하다.** 
+
+한 공간(atom)에 상태들이 머무르게 되는데 Recoil에서는 **셀렉터를 통해 이 상태들을 구분지을 수 있다.** 구분지은 이 상태들이 또 다른 버블 state로 관리가 되기 때문에 derived state인 것이다.
+
+다음 코드를 보자.
+```javascript
+import {atom, selector} from "recoil";
+
+// 원천 state
+export const originState = atom({
+  key: "origin",
+  default: []
+})
+
+// selector, derived state
+export const derivedState = selector({
+  key: "derived",
+  get: ({get}) => {
+    const originStateArray = get(originState);
+    return [
+      originStateArray.filter((item) => item.name === "ONE"),
+      originStateArray.filter((item) => item.name === "TWO"),
+      originStateArray.filter((item) => item.name === "THREE"),
+    ]
+  }
+})
+```
+
+originState로부터 selector가 사용되어 derivedState가 생겼다. **selector로 생긴 상태값은 원천 state를 watch, 즉 지켜보고 있다.** `derivedState`에서 get 프로퍼티를 등록하게 되면 **get 대상인 원천 state에 종속되게 된다.** 원천 state의 값이 변하면 그에 따라 derivedState의  상태값도 동일하게 변하게 된다.
+
+위 코드는 배열 filter 메서드를 통해 세 부분으로 원천 state를 나누었다.
+
+이후 저 나뉜 배열 요소들을 테마에 맞게 컴포넌트에서 출력하기 위해서는 다음과 같이 `useRecoilValue` 훅으로 셀렉터를 호출하면 된다. (셀렉터라고 해서 함수 느낌이 나지만, 실제로는 derived state, 아톰 단위 하나로 구분되기 때문에 useRecoilValue 등 Recoil 훅에 전달될 수 있다.)
+
+```javascript
+import derivedState from "./atoms"
+function Component(){
+  const [one, two, three] = useRecoilValue(derivedState);
+  
+  return (
+    // ......
+  )
+}
+```
+
