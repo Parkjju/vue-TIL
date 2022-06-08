@@ -214,6 +214,19 @@ const myFunction = (param: IString["text"]){
 }
 ```
 :::
+
+## 타입 재사용
+타입스크립트에서는 정의한 타입을 재사용 할 수 있다. 객체 타입선언을 위해 interface 키워드를 쓰곤 하는데, 하나의 타입을 선언하기 위해서는 `type` 키워드를 사용한다. 
+
+```javascript
+type myType = "ONE"|"TWO"|"THREE";
+
+export interface IText{
+  test: myType;
+}
+```
+
+
 ## Reference 
 1. [Cracking Vue.js - 널 병합 연산자](https://joshua1988.github.io/vue-camp/es6+/nullish-coalescing-operator.html)
 2. [Nomad coders - 리액트 마스터 클래스](https://nomadcoders.co/react-masterclass/lobby)
