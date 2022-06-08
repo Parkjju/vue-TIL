@@ -201,6 +201,19 @@ interface IMyType{
 ```
 :::
 
+:::tip 타입스크립트 내부 타입 재사용
+기존에 사용했던 인터페이스의 내부 타입들 중 재사용하고 싶은 타입이 있다면 다음과 같이 사용하면 된다.
+
+```javascript
+interface IString{
+  text: "ONE"|"TWO"|"THREE"
+}
+
+const myFunction = (param: IString["text"]){
+  // ...
+}
+```
+:::
 ## Reference 
 1. [Cracking Vue.js - 널 병합 연산자](https://joshua1988.github.io/vue-camp/es6+/nullish-coalescing-operator.html)
 2. [Nomad coders - 리액트 마스터 클래스](https://nomadcoders.co/react-masterclass/lobby)
