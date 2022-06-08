@@ -145,6 +145,8 @@ export const derivedState = selector({
 
 originState로부터 selector가 사용되어 derivedState가 생겼다. **selector로 생긴 상태값은 원천 state를 watch, 즉 지켜보고 있다.** `derivedState`에서 get 프로퍼티를 등록하게 되면 **get 대상인 원천 state에 종속되게 된다.** 원천 state의 값이 변하면 그에 따라 derivedState의  상태값도 동일하게 변하게 된다.
 
+get프로퍼티는 함수를 받는데, 함수의 인자로 options객체를 받는다. options객체중 get이라는 함수가 있으며 이 함수는 원천 state를 받아온다.
+
 위 코드는 배열 filter 메서드를 통해 세 부분으로 원천 state를 나누었다.
 
 이후 저 나뉜 배열 요소들을 테마에 맞게 컴포넌트에서 출력하기 위해서는 다음과 같이 `useRecoilValue` 훅으로 셀렉터를 호출하면 된다. (셀렉터라고 해서 함수 느낌이 나지만, 실제로는 derived state, 아톰 단위 하나로 구분되기 때문에 useRecoilValue 등 Recoil 훅에 전달될 수 있다.)
@@ -161,4 +163,3 @@ function Component(){
 ```
 
 셀렉터를 사용했을 때의 코드 구조적인 이점은 바로 **한 곳에 모아둔 state들을 직접 변경하지 않고 안전하게 관리할 수 있다는 것이다.** 자바스크립트의 immutability를 만족하는 강력한 기능이다.
-
