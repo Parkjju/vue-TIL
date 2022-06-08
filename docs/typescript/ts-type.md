@@ -226,6 +226,43 @@ export interface IText{
 }
 ```
 
+C언어를 학습해봤다면 enum 자료형에 대해 들어본 적이 있을 것이다. enum 타입 역시 `type`키워드와 비슷한 역할을 한다. 다만 더 좋은 점은 `type`의 경우 복사 붙여넣기에 대해서만 귀찮음을 덜어주지만 `enum`으로 선언된 타입의 경우 **내부에 정의된 세부 타입 데이터들에 접근할 수 있게 해준다.**
+
+```javascript
+export enum Types{
+  "ONE",
+  "TWO",
+  "THREE",
+}
+```
+
+위와 같은 형태로 정의하며, 각 enum에 값을 할당하지 않으면 0부터 시작되는 정수 값이 각각 할당된다. 차후 다른 컴포넌트에서 위 `enum`타입에 접근할때 enum값을 미리 정해두려면 다음과 같이 하면 된다.
+
+```javascript
+export enum Types{
+  "ONE": "ONE",
+  "TWO": "TWO",
+  "THREE": "THREE"
+}
+
+interface IType{
+  num: Types; // type Types = "ONE" | "TWO" | "THREE" 와 동일하게 동작
+}
+```
+
+타입에도 재사용 되지만 내부 데이터 자체를 재사용 하기도 한다. 외부에서 접근할때 코드를 봐보자.
+
+```javascript
+function Component(){
+  return (
+    <select>
+    	<option name={Types.ONE}>ONE</option>
+    	<option name={Types.TWO}>TWO</option>
+    	<option name={Types.THREE}>THREE</option>
+    </select>
+  )
+}
+```
 
 ## Reference 
 1. [Cracking Vue.js - 널 병합 연산자](https://joshua1988.github.io/vue-camp/es6+/nullish-coalescing-operator.html)
