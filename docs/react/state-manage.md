@@ -95,3 +95,19 @@ function Component(){
 
 interface IValue의 `myType`은 string형 기반인데, **모든 string을 허용하는 타입이 아니라 위에 명시된 세 문자열에 대해서만 타입으로 허용하겠다는 의미로 해석하면 됩니다.**
 
+:::tip 어트리뷰트 방식 이벤트핸들러에 인자 전달하기
+```javascript
+function Component(){
+  const onClick = (param) => {
+    // ...
+  }
+  
+  return (
+    <div>
+    	<button onClick={() => onClick("PARAM!")}>파라미터 보내기!</button>
+    </div>
+  )
+}
+```
+어트리뷰트 방식 이벤트 핸들러 함수에 인자를 전달하기 위해서는 **익명함수를 onClick 이벤트 핸들러에 호출해버리면 된다.**
+:::
