@@ -1,7 +1,7 @@
 ---
 title: React 상태관리(Recoil)
----
 
+---
 ## 상태관리
 
 리액트를 공부하다보면 전역 상태 관리라는 용어를 접하게 됩니다. 어째서 전역 상태를 관리하게 될 상황을 맞닥뜨리게 되는지 시나리오를 생각해봅시다.
@@ -63,3 +63,35 @@ function Component() {
     return <button onClick={() => (current) => !current}>Click Me!</button>;
 }
 ```
+
+recoil의 훅 중 `useRecoilValue`는 등록된 아톰의 상태값을 get하는 훅이고 `useRecoilSetState` 훅은 아톰 상태값을 set하는 setter함수 훅이라면, `useRecoilState`은 리액트의 `useState`와 마찬가지로 상태값을 get하고 set하는 두 기능 모두를 담는 훅입니다.
+
+타입스크립트 기반에서는 아톰에 대한 타입 제네릭을 `atom` 함수에 전달해야합니다. 다음은 배열 state를 관리하는 코드입니다.
+
+인터페이스 IValue는 
+
+```javascript
+import {atom, useRecoilState} from "recoil";
+
+interface IValue{
+  text:string,
+  myType: "TYPE_ONE" | "TYPE_TWO" | TYPE_THREE"
+}
+
+const valueState = atom<IValue[]>({
+  key:"value",
+  default: []
+})
+
+
+function Component(){
+  const [value, setValue] = useRecoilState(valueState);
+}  
+```
+
+`valueState`라는 아톰은 key를 value로 갖고 디폴트값으로 빈 배열을 갖는 아톰입니다. 타입스크립트 기반에서는 아톰을 생성할때(뿐만 아니라 다른 제네릭을 정의할때도 마찬가지) 배열로 생성하게 된다면 해당 배열 값이 어떤 타입의 원소들로 이루어지는지도 알려줘야합니다.
+
+`valueState`아톰의 경우 각 원소가 `IValue`라는 인터페이스를 갖습니다. `IValue`타입의 객체는 내부 프로퍼티 두 개를 갖는데 각각 `string`형 `text`라는 프로퍼티와 특이한 타입의 `myType`프로퍼티를 갖습니다.
+
+interface IValue의 `myType`은 string형 기반인데, **모든 string을 허용하는 타입이 아니라 위에 명시된 세 문자열에 대해서만 타입으로 허용하겠다는 의미로 해석하면 됩니다.**
+
