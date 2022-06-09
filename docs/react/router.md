@@ -362,6 +362,20 @@ function Router(){
 ```
 위 처럼 라우터 파일에 중첩 라우트를 구성하고 위의 Coin/Chart&Price 구조의 컴포넌트를 부착할 위치에 `Outlet` 컴포넌트를 부착하면 된다는 것이다.
 
+예시 코드를 살펴보자. 중첩 라우트 구성이 위처럼 `/:coinId/chart`, `/:coinId/price`라고 할 때 Outlet 컴포넌트와 함께 context로 URL을 전달하면 된다.
+```javascript
+function Component(){
+  const selectURL = true; // true or false.. 우선은 하드코딩
+  return (
+    <Outlet context={select ? chart : price}/>
+  )
+}
+```
+
+Outlet에 전달된 context의 select 프로퍼티값이 true / false냐에 따라 chart / price로 Outlet이 렌더링 되는 컴포넌트가 달라지게 된다.
+
+
+
 ## Reference
 
 1. [nomad coders - React로 영화 웹 서비스 만들기](https://nomadcoders.co/react-for-beginners/lobby)
