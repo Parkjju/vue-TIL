@@ -176,6 +176,3 @@ function Components(){
 selector로 유도된 상태값에서(derived state) `useRecoilState`의 0번째 인덱스 원소값은 **`myAtom`의 get프로퍼티 실행 함수를 나타낸다..** 
 
 마찬가지로 Setter함수의 경우 위 코드에서 `useRecoilState`의 1번째 인덱스 요소인 `setValue`, 이는 훅에 전달된 인자 `myAtom`에서 정의된 `set`프로퍼티 실행함수이다.
-
-
-
