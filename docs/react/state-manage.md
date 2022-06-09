@@ -163,3 +163,19 @@ function Component(){
 ```
 
 셀렉터를 사용했을 때의 코드 구조적인 이점은 바로 **한 곳에 모아둔 state들을 직접 변경하지 않고 안전하게 관리할 수 있다는 것이다.** 자바스크립트의 immutability를 만족하는 강력한 기능이다.
+
+## recoil set 프로퍼티
+`useRecoilState`훅으로 반환되는 배열 첫 번째 원소는 위에서 이해하기로 **해당 atom이 갖고 있는 값을 나타냈었다.** recoil 셀렉터로 생성된 아톰을 다음 코드에 전달해보자.
+```javascript
+function Components(){
+  const [value, setValue] = useRecoilState(myAtom);
+}
+```
+위 코드에서 value는 `myAtom`이라는 아톰이 여기 저기 컴포넌트로부터 호출되며 쌓인 값들을 얻어낸 결과물이다.
+
+selector로 유도된 상태값에서(derived state) `useRecoilState`의 0번째 인덱스 원소값은 **`myAtom`의 get프로퍼티 실행 함수를 나타낸다..** 
+
+마찬가지로 Setter함수의 경우 위 코드에서 `useRecoilState`의 1번째 인덱스 요소인 `setValue`, 이는 훅에 전달된 인자 `myAtom`에서 정의된 `set`프로퍼티 실행함수이다.
+
+
+
