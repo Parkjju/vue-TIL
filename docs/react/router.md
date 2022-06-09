@@ -137,7 +137,7 @@ function Movie({ title }) {
 ```
 
 :::tip Link에 styled-components로 스타일링하기
-Link태그에 styled-components를 적용하여 스타일링할 수 있습니다. CSS 프로퍼티인 `text-decoration:none`과 같은 스타일들을 `<Link style={{text-decoration:none}}`처럼 인라인 형태로 처리해도 되지만, 좀 더 많은 스타일링을 하고자 한다면 styled-components의 상속을 활용합니다.
+Link태그에 styled-components를 적용하여 스타일링할 수 있습니다. CSS 프로퍼티인 `text-decoration:none`과 같은 스타일들을 인라인 형태로 처리해도 되지만, 좀 더 많은 스타일링을 하고자 한다면 styled-components의 상속을 활용합니다.
 
 ```javascript
 import styled from "styled-components";
