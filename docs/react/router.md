@@ -367,10 +367,11 @@ function Router(){
 function Component(){
   const selectURL = true; // true or false.. 우선은 하드코딩
   return (
-    <Outlet context={select ? chart : price}/>
+    <Outlet context={{url: select ? chart : price}}/>
   )
 }
 ```
+context는 객체 형태로 전달해야한다.
 
 Outlet에 전달된 context의 select 프로퍼티값이 true / false냐에 따라 chart / price로 Outlet이 렌더링 되는 컴포넌트가 달라지게 된다.
 
