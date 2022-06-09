@@ -374,6 +374,17 @@ function Component(){
 
 Outlet에 전달된 context의 select 프로퍼티값이 true / false냐에 따라 chart / price로 Outlet이 렌더링 되는 컴포넌트가 달라지게 된다.
 
+Outlet 대상인 중첩 라우트 하위 컴포넌트에서는 `useOutletContext`훅을 통해 상위 컴포넌트의 context프로퍼티 값을 받아올 수 있습니다. 타입스크립트에서는 해당 훅에 제네릭까지 선언해야합니다.
+
+```javascript
+interface IContext{
+  myContext: string;
+}
+
+function Component(){
+  const {myContext} = useOutletContext<IContext>();
+}
+```
 
 
 ## Reference
