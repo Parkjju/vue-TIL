@@ -136,6 +136,29 @@ function Movie({ title }) {
 }
 ```
 
+:::tip Link에 styled-components로 스타일링하기
+Link태그에 styled-components를 적용하여 스타일링할 수 있습니다. CSS 프로퍼티인 `text-decoration:none`과 같은 스타일들을 `<Link style={{text-decoration:none}}`처럼 인라인 형태로 처리해도 되지만, 좀 더 많은 스타일링을 하고자 한다면 styled-components의 상속을 활용합니다.
+
+```javascript
+import styled from "styled-components";
+
+const MyLink = styled(Link)`
+  text-decoration:none;
+  &:hover{
+    background-color:black;
+  }
+`
+
+function Component(){
+  return(
+    <MyLink to="/"/>
+  )
+}
+```
+
+`Link`컴포넌트를 다른 컴포넌트에서 상속 받아 스타일링을 진행했으면 `Link` 컴포넌트에서 필수적으로 요구하는 프로퍼티들에 대해 값을 각각 설정해야합니다. 예를 들어 `Link`는 `to`라는 프로퍼티 값을 반드시 설정해줘야 하므로 `MyLink`로 커스텀 컴포넌트 스타일링을 진행했더라도 위 코드처럼 `to` 값을 부여해야 합니다.
+:::
+
 ## URL parameter
 URL의 구성 요소에는 정적인 파라미터만 있는 것이 아닙니다. 라우트 컴포넌트를 통해 URL 구성이 모듈화되어 있다고 해도, 그 동일한 모듈이 재사용되는 서비스의 경우 고유한 값에 따라 페이지 URL을 다르게 구성해야 하는 것이죠. 
 
