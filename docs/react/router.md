@@ -159,6 +159,38 @@ function Component(){
 `Link`컴포넌트를 다른 컴포넌트에서 상속 받아 스타일링을 진행했으면 `Link` 컴포넌트에서 필수적으로 요구하는 프로퍼티들에 대해 값을 각각 설정해야합니다. 예를 들어 `Link`는 `to`라는 프로퍼티 값을 반드시 설정해줘야 하므로 `MyLink`로 커스텀 컴포넌트 스타일링을 진행했더라도 위 코드처럼`to` 값을 부여해야 합니다.
 :::
 
+## useNavigate
+`react-router-dom`에서는 HTML5 history를 기반으로 뒤로가기 기능을 제공해줍니다. v5에서는 `useHistory`라는 훅 네이밍을 갖고 있었지만 v6로 업데이트 되면서 `useNavigate`라는 훅 네이밍으로 바뀌었습니다.
+
+useNavigate를 사용하려면 당연히 Routes (v5에서 Switch컴포넌트)를 통한 페이지 이동 컴포넌트 구조가 구성되어 있어야 합니다. URL을 `/`, `/child`로 구성했다고 할때 다음 코드를 보면,
+
+```javascript
+// Home URL '/'
+// Route 구성된 상태
+import {useNavigate} from "react-roouter-dom";
+
+function Home(){
+  const navigate = useNavigate();
+  return <Link onClick={() => navigate('/child')}>Go To Child!</Link>
+}
+
+export default Home;
+```
+
+```javascript
+// Child URL "/child"
+import {useNavigate} from "react-router-dom";
+
+function Child(){
+  return <Link onClick={() => navigate(-1)}> Go Back! </Link>
+}
+```
+
+Home에서 Go To Child! 버튼을 클릭하면 `/child`로 이동하게 되고, `Go Back!`버튼을 클릭하게 되면 HTML History API 기준 이전의 페이지로 이동하게 됩니다. 위 코드에서는 `/`으로 이동하게 됩니다.
+
+`navigate()`함수에 -1과 같이 음수값을 전달하면 현재 페이지 기준으로 접속했던 과거 N번째 페이지로 이동하게 되는 것입니다.
+
+
 ## URL parameter
 URL의 구성 요소에는 정적인 파라미터만 있는 것이 아닙니다. 라우트 컴포넌트를 통해 URL 구성이 모듈화되어 있다고 해도, 그 동일한 모듈이 재사용되는 서비스의 경우 고유한 값에 따라 페이지 URL을 다르게 구성해야 하는 것이죠. 
 
