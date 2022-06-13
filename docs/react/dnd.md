@@ -398,15 +398,15 @@ function DraggableCard({index, item}: IProps){
 export default React.memo(DraggableCard);
 ```
 
+`DraggableCard`를 리액트 memo에 전달하게 되면 리렌더링 양상이 다음과 같이 변한다.
+1. `[a,b,c,d]`의 순서로 투두 리스트 데이터가 저장되어 있다고 가정하자.
+2. b->a로 투두 리스트 순서를 변경한다. 
+3. 이에 따라 App컴포넌트에서 상태 변화를 감지하여 리 렌더링을 진행한다.
+4. App -> DragDropContext -> Wrapper -> Boards -> Droppable -> Board -> DraggableCard 순으로 리 렌더링 대상을 찾아 나간다. 
+5. 이때 DraggableCard에 전달된 프롭스인 `index`와 `item`의 변화가 투두 state의 a,b에만 이루어졌으므로 두 DraggableCard컴포넌트에 대해서만 리렌더링이 이루어진다.
 
+로직을 다시 생각해보면, **위치가 바뀌는 두 투두 목록에 대해서만 props에 전달된 인덱스가 달라지는 것이 아니라는 것을 다시 한 번 상기하자!** `[a,b,c,d]` 투두 리스트에서 c->a로 이동하면 `[c,a,b,d]` 순서로 재배열 되는데, 이때 d의 프롭스만 변화가 없으므로 `c,a,b` 세 DraggableCard컴포넌트에 대해서만 리렌더링이 이루어지는 것이다.
 
-
-
-
-
-
-
-
-
-
-
+:::warning React.memo()
+리액트 컴포넌트 메모이제이션은 남용해서는 안된다. 자칫하면 쓰기 전 보다 성능을 더 악화시킬 수 있다. [다음의 글을](https://ui.toast.com/weekly-pick/ko_20190731) 참조하자.
+:::
