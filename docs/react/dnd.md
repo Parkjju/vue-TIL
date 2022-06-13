@@ -276,3 +276,137 @@ function App(){
   );
 }
 ```
+
+## 성능 최적화
+로직 구현과 기본 구조에 대해 이해가 되었으니 더 나아가 성능적인 측면을 알아볼 때가 되었다. 리액트 컴포넌트의 리렌더링 기준들 중 하나로 상태값이 변하는 경우가 있다.
+
+현재 위의 투두 리스트는 투두 목록을 전역 상태로써 관리하고 있다. 컴포넌트 렌더링 후 드래그-앤-드랍 액션이 이루어져 배열 원소끼리의 위치가 변경될 때마다 전역상태에 변동이 생겨 컴포넌트의 리렌더링이 이루어지고 있는 것이다.
+
+성능 최적화를 위한 목표는 바로 **바꾸고자 하는 요소 둘 사이의 위치가 바뀐 뒤 Drop 액션까지 감지 되었을 때 index 변화가 감지된 Draggable 컴포넌트들에 대해서만 리렌더링이 이루어져야 하는 것이다.** map에 전달된 모든 Draggable 컴포넌트가 리렌더링 될 필요가 없다.
+
+이때 사용하는 것이 **리액트의 memo 함수이다.** 리액트의 memo는 기본적으로 prop이 바뀌지 않으면 컴포넌트를 렌더링 하지 말라고 선언하는 함수이다. state가 아닌 prop이다.
+
+React.memo함수를 사용하기 위해서 Draggable 컴포넌트를 먼저 분리해보자.
+
+```javascript
+function App() {
+  const [toDos, setToDos] = useRecoilState(toDoState);
+
+  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
+    if (!destination) return;
+    setToDos((oldToDos) => {
+      const copy = [...oldToDos];
+      copy.splice(source.index, 1);
+      copy.splice(destination?.index, 0, draggableId);
+      return copy;
+    });
+  };
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Wrapper>
+        <Boards>
+          <Droppable droppableId='ONE'>
+            {(magic) => (
+              <Board {...magic.droppableProps} ref={magic.innerRef}>
+                {toDos.map((toDo, index) => (
+                  // DraggableCard 컴포넌트로 분리
+                  <DraggableCard key={toDo} index={index} item={toDo} />
+                ))}
+                {magic.placeholder}
+              </Board>
+            )}
+          </Droppable>
+        </Boards>
+      </Wrapper>
+    </DragDropContext>
+  );
+}
+
+export default App;
+```
+
+`DraggableCard`로 분리하며, 이 컴포넌트 안에는 `Draggable`로 감싸진 Card컴포넌트가 있다.
+
+:::warning 타입스크립트 프롭스
+타입스크립트 기반에서는 프롭스를 받기 위해 먼저 인터페이스를 정의하고 구조분해 형태로 각 프롭스에 대한 타입을 선언해야한다.
+:::
+```javascript
+// DraggableCard.tsx
+import { Draggable } from 'react-beautiful-dnd';
+import styled from 'styled-components';
+
+interface IProps{
+  index:number;
+  item:string;
+}
+
+function DraggableCard({index, item}: IProps){
+    // 컴포넌트 리렌더링 상태를 지켜본다.
+    console.log(item," has rendered");
+    return (
+    <Draggable draggableId={item} index={index}>
+      {(magic) => (
+        <Card
+          {...magic.dragHandleProps}
+          {...magic.draggableProps}
+          ref={magic.innerRef}
+        >
+          {item}
+        </Card>
+      )}
+    </Draggable>
+  );
+}
+
+export default DraggableCard;
+```
+
+일반적인 형태로 DraggableCard 컴포넌트를 익스포트 하면 각 DraggableCard 컴포넌트를 드래그-앤-드랍할 때에 투두 리스트 state가 변경되어 모든 DraggableCard 컴포넌트가 리렌더링 된다.
+
+이때 `export default Draggable`이 아닌 `export default React.memo(DraggableCard)`를 하게 되면 `DraggableCard` 컴포넌트가 state변화에 리렌더링되는 것이 기본적인 원칙으로 작동하지만, 전달받은 프롭스의 값에 변화가 없다면 리렌더링을 막게 된다. 
+
+```javascript
+// DraggableCard.tsx
+import React from 'react';
+import { Draggable } from 'react-beautiful-dnd';
+import styled from 'styled-components';
+
+interface IProps{
+  index:number;
+  item:string;
+}
+
+function DraggableCard({index, item}: IProps){
+    // 컴포넌트 리렌더링 상태를 지켜본다.
+    console.log(item," has rendered");
+    return (
+    <Draggable draggableId={item} index={index}>
+      {(magic) => (
+        <Card
+          {...magic.dragHandleProps}
+          {...magic.draggableProps}
+          ref={magic.innerRef}
+        >
+          {item}
+        </Card>
+      )}
+    </Draggable>
+  );
+}
+
+// !!!!!!!
+export default React.memo(DraggableCard);
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
