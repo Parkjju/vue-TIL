@@ -1,7 +1,7 @@
 ---
 title: React drag-and-drop
-
 ---
+
 리액트에서는 DND(Drag-and-Drop) 애니메이션 구현을 해주는 라이브러리가 있다.
 
 ```sh
