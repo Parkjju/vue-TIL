@@ -1,7 +1,7 @@
 ---
 title: React drag-and-drop
----
 
+---
 리액트에서는 DND(Drag-and-Drop) 애니메이션 구현을 해주는 라이브러리가 있다.
 
 ```sh
@@ -25,3 +25,254 @@ react-beautiful-dnd는 좀 더 간단한 수준의 드래그 앤 드랍 구현�
 ![dnd](../.vuepress/assets/react/dnd.gif)
 
 `react-beautiful-dnd`의 큰 구조는 다음과 같다.
+
+1. `DragDropContext` 컴포넌트가 DND 동작이 이루어지는 전체 컴포넌트를 감싼다.
+2. `Droppable` 컴포넌트는 DND가 이루어지는 작은 요소들을 감싸는 한 단위이다.
+3. `Draggable` 컴포넌트는 실질적으로 DND 동작이 이루어지는 각 요소 단위이다.
+
+가장 윗단에 위치한 `DragDropContext`에는 DND액션이 끝났을 때 실행될 함수를 전달해야 한다.
+
+아래의 `Wrapper`, `Boards`, `Board`, `Card` 컴포넌트 각각은 투두리스트를 이루는 컴포넌트 요소들이다.
+
+1. Wrapper : 가장 바깥쪽을 감싸는 컴포넌트
+2. Boards : 투두리스트들 카테고리들 전체가 모여있는 큰 판이라고 생각하자.
+3. Board : 투두리스트 카테고리 각각의 단위를 나타낸다.
+4. Card : 각 보드에 들어갈 투두리스트 목록 하나하나를 나타낸다.
+
+```javascript
+import styled from "styled-components";
+import {DragDropContext} from "react-beautiful-dnd";
+
+const Wrapper = styled.div`
+  display: flex;
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
+
+const Boards = styled.div`
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(1, 1fr);
+`;
+
+const Board = styled.div`
+  padding: 20px 10px;
+  padding-top: 30px;
+  background-color: ${(props) => props.theme.boardColor};
+  border-radius: 5px;
+  min-height: 200px;
+`;
+
+const Card = styled.div`
+  border-radius: 5px;
+  margin-bottom: 5px;
+  padding: 10px 10px;
+  background-color: ${(props) => props.theme.cardColor};
+`;
+
+function App(){
+  
+  const onDragEnd = () => {
+    // 추후 정의
+  }
+  
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+    	<Wrapper>
+    		<Boards>
+    		</Boards>
+    	</Wrapper>
+    </DragDropContext>
+  )
+}
+```
+
+이후 한 `Boards`에 여러개의 `Board`들이 등록된다. 한 Board는 react-beautiful-dnd 컴포넌트들 중 `Droppable`컴포넌트와 1대1 매칭될 수 있다. 
+
+각 Droppable 컴포넌트에는 ID가 등록되어야 한다.
+
+Droppable컴포넌트 안에 여러 개의 Draggable 컴포넌트가 등록되는데 이때 Draggable 컴포넌트가 투두 리스트의 각 리스트 항목들을 의미한다. 배열 데이터를 받아와 map 메서드로 각 리스트를 부착해주면 된다.
+
+:::warning magic 인자
+`Droppable`과 `Draggable`컴포넌트는 단순 노드를 부착하는 것이 아니라 **함수 호출을 통해 그 요소들을 구성하게 된다.** 이때 함수 호출 시 인자를 꼭 전달해야 하는데, 이 인자가 바로 `magic`이다. 참고로, magic은 공식 문서에서 `provided`라고 적혀있다.
+
+`Droppable`의 magic과 `Draggable`의 magic은 각각 그 프로퍼티 구성이 다르다.
+
+cmd + 클릭으로 Droppable 함수의 타입 정의 파일로 이동하면 magic의 타입을 DroppableProvided에서 확인할 수 있다.
+
+```javascript
+export interface DroppableProvided {
+    innerRef: (element: HTMLElement | null) => any;
+    placeholder?: React.ReactElement<HTMLElement> | null | undefined;
+    droppableProps: DroppableProvidedProps;
+}
+```
+
+Droppable 매직은 `innerRef`, `placeholder`, `droppableProps`로 구성된다. 
+
+innerRef는 부모 컴포넌트에서 자식 컴포넌트에 DND 액션을 직접적으로 작동시키기 위해 필요한 요소라고 생각하면 된다. ref에 대해서는 [공식 문서를](https://ko.reactjs.org/docs/refs-and-the-dom.html) 참조하자. 
+
+placeholder는 DND가 이루어진 투두 리스트 목록 하나가 드래그 되는 동안 비워진 자리를 빈 HTML요소로 채워주는 역할을 해준다.
+
+`droppableProps`는 Droppable 역할을 할 실질적인 컴포넌트에(이번 예시에서는 Board 컴포넌트를 의미한다.) 필요한 프롭스들이 저장되어 있다. 
+
+:::
+
+Droppable 컴포넌트에는 각각 droppableId값이 부여되어야 한다.
+
+```javascript
+import {DragDropContext, Droppable} from "react-beautiful-dnd";
+
+function App(){
+  
+  const onDragEnd = () => {
+    // 추후 정의
+  }
+  
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+    	<Wrapper>
+    		<Boards>
+    			<Droppable droppableId="TODO">
+                  {(magic) => {
+                    <Board ref={magic.innerRef} {...magic.droppableProps}>
+                    </Board>
+                  }}
+                </Droppable>  
+    		</Boards>
+    	</Wrapper>
+    </DragDropContext>
+  )
+}
+```
+
+Draggable역시 Droppable과 마찬가지로 magic인자를 전달하기 위해 컴포넌트 내부에서 함수를 호출해야한다. Draggable은 리스트 각 요소를 모두 표현해야 하므로 배열의 map메서드를 활용해야한다.
+
+map 메서드에서 표현되는 각 Draggable은 map메서드의 key값과 draggableId값이 동일해야한다. 또한 source에서 destination으로 이동할 때의 각 Draggable요소들의 인덱스를 표현해야하므로 `index` 프로퍼티도 필수적이다. index값은 map에서 기본적으로 제공하는 `map(item, index)`를 사용하면 된다. (배열 인덱스)
+
+```javascript
+import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
+
+// 투두리스트에 등록할 더미데이터
+const todos = ['Study Python', 'Eat', 'Study JavaScript'];
+
+function App(){
+  
+  const onDragEnd = () => {
+    // 추후 정의
+  }
+  
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+    	<Wrapper>
+    		<Boards>
+    			<Droppable id="TODO">
+                  {(magic) => {
+                    <Board ref={magic.innerRef} {...magic.droppableProps}>
+                      {todos.map((todo, index) => {
+                        <Draggable key={todo} draggableId={todo} index={index}>
+                          {(magic) => {
+                            <Card ref={magic.innerRef} {...magic.draggableProps} {...magic.dragHandleProps}>
+                              {todo}
+                            </Card>
+                          }}
+                        </Draggable>
+                      }}
+                      {magic.placeholder}
+                    </Board>
+                  }}
+                </Droppable>  
+    		</Boards>
+    	</Wrapper>
+    </DragDropContext>
+  )
+}
+```
+
+`Draggable`과 1대1 매칭되는 컴포넌트인 Card에는 마찬가지로 `magic.innerRef`와 `...magic.draggableProps`를 전달해야하며 추가적으로 `...magic.dragHandleProps`을 전달해야한다. `dragHandleProps`는 Card 전체를 드래그 감지 대상으로 보지 않고 Card의 특정 부분을 잡아 끌 수 있도록 선택하게 해주는 프로퍼티 등이 있다.
+
+위에서 설명했던 magic.placeholder는 `Droppable` 컴포넌트와 1대1 매칭되는 컴포넌트 (위의 예시에서는 Board) 끝에 전달해주면 된다.
+
+## onDragEnd 정의
+전체적인 DND 컴포넌트 구조는 익혔으니 실제 드래그 후 데이터 변경에 대한 로직을 구성해야한다. 컴포넌트 구조만 옳게 짜면 애니메이션 자체는 동작하게 된다.
+
+```javascript
+const todos = ['Study Python', 'Eat', 'Study JavaScript'];
+
+function App(){
+  
+  const onDragEnd = () => {
+    // 추후 정의
+  }
+  
+  return (// .... 컴포넌트들);
+}
+```
+
+`onDragEnd`는 DragDropContext 컴포넌트에 전달했는데, 함수 호출 시 인자가 자동으로 전달된다. 타입 정의로 이동해보면 다음과 같이 DragDropContext 컴포넌트의 프롭스 타입들이 정의되어 있다.
+
+```javascript
+export interface DragDropContextProps {
+    onBeforeCapture?(before: BeforeCapture): void;
+    onBeforeDragStart?(initial: DragStart): void;
+    onDragStart?(initial: DragStart, provided: ResponderProvided): void;
+    onDragUpdate?(initial: DragUpdate, provided: ResponderProvided): void;
+    onDragEnd(result: DropResult, provided: ResponderProvided): void;
+    children: React.ReactNode | null;
+    dragHandleUsageInstructions?: string | undefined;
+    nonce?: string | undefined;
+    enableDefaultSensors?: boolean | undefined;
+    sensors?: Sensor[] | undefined;
+}
+```
+
+다양한 프롭스 타입들이 있지만 이 중 가져와서 사용할 타입은 `onDragEnd`함수에 대한 타입이다. 인자 타입이 `result`와 `provided`로 나뉘어 정의되어 있는데 실제로 사용하게 될 인자 타입은 `DropResult`라는 타입으로 정의되어 있다.
+
+`DropResult`타입은 또 다른 타입을 extends한 상태로, 해당 타입은 또 다른 타입을 extends하는 방식으로 거슬러 올라가게 된다.
+
+onDragEnd 에서 사용할 인자는 로직 구현을 먼저 생각해보면 골라낼 수 있다. 로직은 다음과 같은 흐름으로 이루어진다.
+1. 특정 Draggable 요소가 선택된다. 이 요소는 source, 출발 지점 인덱스를 갖고 있다.
+2. 원하는 위치까지 드래그 되어 해당위치에 안착된다. 이 지점은 destination이라는 객체 안에 인덱스 값을 갖고 있다.
+3. 위 예시 코드에서의 `draggableId`에는 투두 리스트 각 항목 데이터를 지닌다. (study python, eat, study JavaScript 중 하나) `draggableId`를 onDragEnd에 전달함으로써 교체를 위한 데이터를 얻어낼 수 있다.
+4. 드래그만 하고 위치 변경이 이루어지지 않을 경우 destination이 없을 수도 있다. 이에 대한 예외처리가 필요하다.
+
+더미 데이터가 아닌 실제 투두 데이터를 Recoil atom으로 관리하는 코드를 작성해보자.
+
+:::warning Mutation
+자바스크립트와 리액트를 다룰 때에는 반드시 Mutation을 주의해야한다. 즉 원천 데이터가 변하지 않도록 데이터 복사 이후 해당 복사 데이터를 바꿔주는 코드를 작성하자.
+:::
+
+```javascript
+import {useRecoilState} from "recoil";
+import {todoState} from "./atoms";
+
+function App(){
+  const [toDos, setTodos] = useRecoilState(todoState);
+  
+  const onDragEnd = ({draggableId, source, destination}) => {
+    if(!destination) return;
+    
+    setTodos((oldTodos) => {
+      // Mutation를 방지한 코드
+      const copyTodos = [...oldTodos];
+      
+      // 출발 지점에서 투두 하나 꺼내기
+      copyTodos.splice(source.index, 1);
+      
+      // 도착 지점에 끼워넣기
+      copyTodos.splice(destination?.index, 0, draggableId);
+      
+      return copyTodos;
+      
+    })
+    
+  }
+  
+  return (// .... 컴포넌트들
+  );
+}
+```
