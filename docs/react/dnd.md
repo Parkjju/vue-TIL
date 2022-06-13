@@ -529,5 +529,64 @@ const onDragEnd = (info: DragResult) => {
     }
   }
 }
-
 ```
+
+## snapshot
+Droppable과 Draggable은 함수에 대한 인자로 magic(`provided`)을 갖는데,이 외에 `snapshot`이라는 인자도 가진다. 
+
+```javascript
+export interface DroppableProps {
+    droppableId: DroppableId;
+    type?: TypeId | undefined;
+    mode?: DroppableMode | undefined;
+    isDropDisabled?: boolean | undefined;
+    isCombineEnabled?: boolean | undefined;
+    direction?: Direction | undefined;
+    ignoreContainerClipping?: boolean | undefined;
+    renderClone?: DraggableChildrenFn | undefined;
+    getContainerForClone?: (() => React.ReactElement<HTMLElement>) | undefined;
+    children(provided: DroppableProvided, snapshot: DroppableStateSnapshot): React.ReactElement<HTMLElement>;
+}
+```
+
+`Droppable` 컴포넌트의 타입 정의를 다시 보면 타입중 `children`에 해당하는 것이 있다. `Droppable`컴포넌트 아래에서 함수를 전달하는 것을 위에서 확인하였다. 이때 전달되는 인자가 magic이었는데, 타입을 확인해보면 `DroppableStateSnapshot` 타입으로 정의된 snapshot 인자가 있다.
+
+snapshot 인자 타입은 다음과 같다.
+```javascript
+export interface DroppableStateSnapshot {
+    isDraggingOver: boolean;
+    draggingOverWith?: DraggableId | undefined;
+    draggingFromThisWith?: DraggableId | undefined;
+    isUsingPlaceholder: boolean;
+}
+```
+
+isDraggingOver는 드래그 된 투두 항목이 특정 Droppable영역에 오버 되었을 때 true를 반환해주는 불리언 값이고, draggingFromThisWith는 투두 항목이 기존 Droppable 영역에서 벗어났을 때의 Draggable 아이디를 받는다.
+
+```javascript
+function Board({ toDos, boardId }: IProps) {
+  return (
+    <Wrapper>
+      <Title>{boardId}</Title>
+      <Droppable droppableId={boardId}>
+        {(magic, snapshot) => (
+          <div
+            isDraggingOver={snapshot.isDraggingOver}
+            isDraggingFromThis={Boolean(snapshot.draggingFromThisWith)}
+            {...magic.droppableProps}
+            ref={magic.innerRef}
+          >
+            {toDos.map((toDo, index) => (
+              <DraggableCard key={toDo} index={index} item={toDo} />
+            ))}
+            {magic.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </Wrapper>
+  );
+}
+```
+
+위 코드는 Droppable영역에 대해 snapshot을 적용하는 것이고 Draggable에 대한 snapshot도 커스텀할 수 있다.
+
