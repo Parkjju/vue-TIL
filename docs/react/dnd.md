@@ -410,3 +410,124 @@ export default React.memo(DraggableCard);
 :::warning React.memo()
 리액트 컴포넌트 메모이제이션은 남용해서는 안된다. 자칫하면 쓰기 전 보다 성능을 더 악화시킬 수 있다. [다음의 글을](https://ui.toast.com/weekly-pick/ko_20190731) 참조하자.
 :::
+
+## 보드 간 이동
+투두리스트 제작에는 같은 카테고리별 목록 순서의 변경 이외에 카테고리 별 이동 로직 구현도 필요하다.
+
+큰 로직은 **source에서 destination으로 투두 리스트를 이동시키는데, source는 지우고 destination의 인덱스에 splice를 한다.** 로 정리할 수 있다.
+
+먼저 해야할 것은 아톰으로 관리할 전역 투두 상태를 타입으로 정의해야하는 것이다.
+
+```javascript
+export const toDoState = atom({
+  key: "toDo",
+  default:{
+    "To Do": ["밥먹기", "빨래하기"],
+    Doing: ["파이썬 공부하기", "코테 준비하기"],
+    Done: ["TIL작성하기", "잠자기"]
+  }
+})
+```
+
+현재 관리중인 투두 상태는 위와 같다. 한 보드만 관리할때의 상태는 배열로 관리되어 타입에 대한 변동 가능성이 존재하지 않았다. `string[]`타입으로 선언되어 있으면 `string`형 원소로 이루어진 `Array`타입만 가능했던 것이다.
+
+하지만 위의 타입은 객체 키값과 이에 매핑되는 값에 대해 객체에 추가되는 데이터에 따라 타입이 달라질 수 있다. 예를 들어, 위의 세 키값 To Do, Doing, Done은 문자열에 이에 매핑되는 값이 `string[]` 타입으로 되어 있지만, 이후 객체에 추가되는 타입이 `number`형 키값에 `string`형 밸류가 의도치 않게 추가될 수 있다는 것이다.
+
+이때 `atom` 함수에 제네릭을 선언하여 앞으로 추가될 여지가 있는 데이터들에 대해 타입을 재 선언 해주어야 한다.
+
+```javascript
+// 인터페이스 정의
+// key : value 한 쌍에 대한 타입을 정의한다.
+interface ITodoState{
+  [key: string] : string[];
+}
+
+// 제네릭 선언
+export const toDoState = atom<ITodoState>({
+  key: "toDo",
+  default:{
+    "To Do": ["밥먹기", "빨래하기"],
+    Doing: ["파이썬 공부하기", "코테 준비하기"],
+    Done: ["TIL작성하기", "잠자기"]
+  }
+})
+```
+
+먼저 Board 컴포넌트를 map 메서드로 각각 다른 카테고리를 가지고 관리하기 위해 외부로 분리한다.
+
+```javascript
+function App() {
+  const [toDos, setToDos] = useRecoilState(toDoState);
+  
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Wrapper>
+        <Boards>
+          {Object.keys(toDos).map((boardId) => (
+            <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />
+          ))}
+        </Boards>
+      </Wrapper>
+    </DragDropContext>
+  );
+}
+
+export default App;
+```
+
+`boardId`라는 이름으로 프로퍼티를 새로 정의하여 이 값을 가지고 droppableId를 관리하고, 자식으로 내려가 Draggable을 관리하게 된다.
+
+중요한건 Boards컴포넌트 아래에서 각 보드들을 map으로 접근하기 위한 코드이다.
+
+아톰에서 관리하는 toDoState는 더 이상 string형 배열이 아닌 키 값이 string이고 이에 매핑되는 값이 string형 배열인 객체 타입을 갖는다. useRecoilState으로 가져온 상태값은 배열이 아닌 객체가 되며, 각 객체를 순회하기 위해서는 `Object.keys()`메서드를 활용한다. 
+
+`Object.keys()`메서드는 객체에 대해 키값들을 배열 형태로 반환해준다. 키값 배열에 map을 활용하여 `toDos` 배열 각 객체 프로퍼티 값 (투두리스트 카테고리 별 배열항목)을 프롭스로 전달해준다.
+
+컴포넌트 렌더링 로직이 위와 같이 구성되었으며, 중요한건 투두리스트 항목 이동에 대한 로직이다.
+
+이 역시 큰 로직인 source에서 destination으로 이동한다는 것을 기준으로 로직을 구성하면 된다.
+
+`source`와 `destination`은 단순 값이 아닌 객체인데, 각각 `droppableId`와 `index`를 갖는다. 
+
+보드 간 이동 로직 구현을 위한 차이점은 **destination의 droppableId와 source의 droppableId의 차이 여부에 달려있다.** 두 값이 같을 경우 한 보드에서 투두 리스트 이동이 이루어지는 것이고 다를 경우 다른 보드 간 투두 항목 이동이 이루어지는 것이다.
+
+```javascript
+const onDragEnd = (info: DragResult) => {
+  const {destination, source, draggableId} = info;
+  
+  // 같은 보드에서 이동
+  if(destination?.droppableId === source.droppableId){
+     setTodos((allBoards) => {
+    	// destination.droppableId로 인덱싱해도 됨.
+    	const copyBoard = [...allBoards[source.droppableId]];
+    	copyBoard.splice(source.index, 1);
+    	copyBoard.splice(destination.index, 0, draggableId);
+    	
+    	return {
+          ...allBoards,
+          // 객체 키 값에 접근한다.
+          [source.droppableId]: copyBoard
+        }
+     })
+  } else {
+    // 서로 다른 보드간 이동
+    setToDos((allBoards) => {
+      // typescript기반 예외처리
+      if(!destination) return {...allBoards};
+      
+      const sourceCopyBoard = [...allBoards[source.droppableId]];
+      const destinationCopyBoard = [...allBoards[destination.droppableId]];
+      
+      sourceCopyBoard.splice(source.index, 1);
+      destinationCopyBoard.splice(destination.index, 0, draggableId);
+      
+      return {
+        ...allBoards,
+        [source.droppableId] : sourceCopyBoard,
+        [destination.droppableId] : destinationCopyBoard
+      }
+    }
+  }
+}
+
+```
