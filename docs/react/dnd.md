@@ -590,3 +590,24 @@ function Board({ toDos, boardId }: IProps) {
 
 위 코드는 Droppable영역에 대해 snapshot을 적용하는 것이고 Draggable에 대한 snapshot도 커스텀할 수 있다.
 
+## ref
+ref(Reference)는 리액트 코드를 통해 HTML요소를 지정하고 가져올 수 있는 방법이다. 
+
+리액트의 `useRef`훅을 사용한다. ref 지정으로 변수와 HTML요소를 연결하는 것은 document.querySelector 메서드를 활용하는 것과 동일한 방식이다.
+
+```javascript
+function Component(){
+  const inputRef = useRef<HTMLInputElement>(null);
+  const onClick = () => {
+    inputRef.current.focus();
+  }
+  return (
+    <input ref={inputRef} placeholder="focus me"/>
+    <button onClick={onClick}>Click me</button>
+  )
+}
+```
+
+1. inputRef 변수를 선언하고, `useRef`훅을 호출하며 null로 초기화한다. 이때 제네릭은 reference할 HTML요소로 선언한다.
+2. reference대상 HTML 요소를 ref 프로퍼티 값으로 전달한다. null로 초기화 되었던 inputRef가 위 input요소를 가리키게 된다.
+3. 버튼 클릭 시 input을 가리키고 있는 inputRef가 해당 요소를 포커싱하는 함수가 실행된다.
