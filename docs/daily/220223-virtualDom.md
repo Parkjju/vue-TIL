@@ -4,7 +4,7 @@ title: DailyTech - Virtul DOM이란
 ---
 ## About DOM
 
-DOM에 대한 이야기는 [이전에 문서로](https://parkjju.github.io/vue-TIL/daily/220208-DOM.html#dom%E1%84%8B%E1%85%B5%E1%84%85%E1%85%A1%E1%86%AB) 정리해두었으니 참고하면 가상 돔 이야기를 이야기하는 데에 도움이 많이 될 것 같습니다.
+DOM에 대한 이야기는 [이전에 문서로](https://parkjju.github.io/vue-TIL/daily/220208-DOM.html#dom%E1%84%8B%E1%85%B5%E1%84%85%E1%85%A1%E1%86%AB) 정리해두었으니 참고하면 가상 돔 이야기를 이야기하는 데에 도움이 많이 될 것 같습니다. 
 
  간단히 정리해보자면 DOM은 크로스 플랫폼, 언어 독립적(language-independent)한 웹 API입니다. 구축 과정 및  상세 내용에 대해서는 문서 및 각종 자료를 참조해주시면 좋습니다. (이하 평어체로 작성)
 
