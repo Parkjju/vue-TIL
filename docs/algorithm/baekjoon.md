@@ -60,6 +60,9 @@ for (let i = 0; i < input.length; i++) {
 -   [10951](./ps/input/10951.md) - EOF 에러 처리
 -   [10871](./ps/input/10871.md) - node.js 입출력
 -   [10171](./ps/input/10171.md) - 고양이 출력
+-   [1000](./ps/input/1000.md)
+-   [2752](./ps/input/2752.md) - 세 수 정렬
+-   [2480](./ps/input/2480.md) - 주사위 세개
 
 ## 자바스크립트 코테 준비 관련 문서들
 
