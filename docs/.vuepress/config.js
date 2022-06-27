@@ -232,6 +232,7 @@ module.exports = {
                     '/algorithm/mst',
                     '/algorithm/backtrack',
                     '/algorithm/baekjoon',
+                    '/algorithm/bigO',
                 ],
             },
             {
