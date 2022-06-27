@@ -228,15 +228,15 @@ module.exports = {
                 title: 'Algorithm',
                 collapsable: true,
                 children: [
+                    '/algorithm/baekjoon',
                     '/algorithm/method',
+                    '/algorithm/bigO',
                     '/algorithm/dp',
                     '/algorithm/greedy',
                     '/algorithm/graph',
                     '/algorithm/graphAlgo',
                     '/algorithm/mst',
                     '/algorithm/backtrack',
-                    '/algorithm/baekjoon',
-                    '/algorithm/bigO',
                 ],
             },
             {
