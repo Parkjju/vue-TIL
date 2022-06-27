@@ -53,6 +53,38 @@ for (let i = 0; i < input.length; i++) {
 위 코드에서 `fs.readFileSync()`의 인자로 전달되는 파일 경로는 vscode상에서 상대 경로로 지정하면 되지만 BOJ에서는 dev/stdin이라는 위치로 지정해야합니다.
 :::
 
+## readline 모듈
+
+입출력 시나리오 중 정해진 입력에 대해서 한 번에 데이터를 정제하여 다루는 것도 있지만, 매 입력 줄마다 원하는 값을 그때 그때 출력해야 하는 경우도 존재합니다. [BOJ 2490](https://www.acmicpc.net/problem/2490)의 경우가 위의 경우입니다.
+
+예제 입력 데이터 전체를 readFileSync 메서드로 한 번에 읽어서 각각을 처리하는 것이 아니라, 각 줄이 입력될 때마다 특정 값을 출력해야 하는 것입니다. 동적인 프로그램 작성 시에 readline 모듈을 활용하게 됩니다.
+
+1. readline 모듈을 불러와 변수에 저장합니다.
+2. readline에 대한 입출력 인터페이스를 정의합니다. 프로세스의 stdin, stdout으로 등록하면 됩니다.
+3. readline을 저장한 변수에 이벤트 리스너와 유사한 것을 등록하게 되는데, `line`과 `close`에 대한 콜백 함수를 등록합니다.
+4. javascript 파일 실행 시 터미널에 입력 커서가 활성화 되고 엔터키 입력에 따라 한 라인이 정의됩니다.
+5. 정의된 line 문자열은 콜백 함수의 인자로 전달됩니다.
+
+```javascript
+const readline = require('readline');
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+rl.on('line', (line) => {
+    console.log(line);
+}).on('close', () => {
+    console.log('입력 끝!');
+    process.exit();
+});
+```
+
+:::tip 코드 실행하기
+js 파일 실행을 위해서는 `node 실행할파일.js` 명령어를 터미널에 입력해주면 됩니다. 물론 node가 환경변수로 등록되어 있어야 합니다.
+:::
+
 ## PS 아카이빙
 
 ### 입출력
@@ -63,9 +95,11 @@ for (let i = 0; i < input.length; i++) {
 -   [1000](./ps/input/1000.md)
 -   [2752](./ps/input/2752.md) - 세 수 정렬
 -   [2480](./ps/input/2480.md) - 주사위 세개
+-   [2490](./ps/input/2490.md) - readline 모듈을 활용한 입출력 (중요)
 
 ## 자바스크립트 코테 준비 관련 문서들
 
 1. [Medium - 자바스크립트 코딩 테스트에서 가장 많이 하는 실수들](https://medium.com/%EC%98%A4%EB%8A%98%EC%9D%98-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%EC%BD%94%EB%94%A9-%ED%85%8C%EC%8A%A4%ED%8A%B8%EC%97%90%EC%84%9C-%EA%B0%80%EC%9E%A5-%EB%A7%8E%EC%9D%B4%ED%95%98%EB%8A%94-%EC%8B%A4%EC%88%98%EB%93%A4-a10df2c884c)
 2. [자바스크립트로 코딩테스트 준비하기 - 입출력 관련 이야기](https://velog.io/@bigsaigon333/Javascript%EB%A1%9C-%EC%BD%94%EB%94%A9%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%A4%80%EB%B9%84%ED%95%98%EA%B8%B01)
 3. [Top 10 Algorithms to improve your javascript skills](https://medium.com/javascript-in-plain-english/top-10-algorithms-improve-your-javascript-skills-21507c25ff7)
+4. [BOJ node.js 입력받기](https://velog.io/@exploit017/%EB%B0%B1%EC%A4%80Node.js-Node.js-%EC%9E%85%EB%A0%A5-%EB%B0%9B%EA%B8%B0)
