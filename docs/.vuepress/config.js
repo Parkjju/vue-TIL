@@ -155,6 +155,7 @@ module.exports = {
                     'typescript/typescript',
                     'typescript/ts-type',
                     'typescript/why',
+                    'typescript/220628-types',
                 ],
             },
             {
