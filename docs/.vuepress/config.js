@@ -156,6 +156,7 @@ module.exports = {
                     'typescript/ts-type',
                     'typescript/why',
                     'typescript/220628-types',
+                    'typescript/220630-function',
                 ],
             },
             {
