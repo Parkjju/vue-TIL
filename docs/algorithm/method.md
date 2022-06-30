@@ -241,6 +241,24 @@ let result = arr.reduce((누적되고 있는 값, 현재 순회중인 요소값)
 console.log(result); // 6
 ```
 
+:::tip forEach vs map
+자바스크립트의 배열 메서드중 forEach와 map이 있는데, 두 메서드는 모두 배열 객체 내부 요소들을 순회하며 특정 동작을 취한다는 데에 공통점이 있다.
+
+반면 `forEach`의 경우 인자로 전달될 콜백함수 내에서 **어떠한 값도 리턴하지 않는다.** 단순 출력을 위한 `console.log` 같은 동작만 이루어지며 강제로 return을 시도할 경우 undefined가 반환된다.
+
+`map`의 경우에는 배열 요소에 대해 값의 변경을 시도할 때에 사용된다. immutable하므로 요소 조작 후 리턴을 한다고 해도 다시 대입연산에 전달해야한다.
+
+```javascript
+let arr = [1, 2, 3];
+
+let modifiedArr = arr.map((item) => item + 1);
+
+console.log(arr); // [1,2,3]
+console.log(modifiedArr); // [2,3,4]
+```
+
+:::
+
 ## Set 자료구조
 
 배열로부터 중복값을 제외한 집합을 반환합니다.
