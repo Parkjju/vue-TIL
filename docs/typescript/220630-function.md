@@ -133,6 +133,7 @@ type SuperPrint = {
 
 ```javascript
 type SuperPrint = {
+    // 콜 시그니쳐 앞에 꺾쇠로 제네릭을 전달한다.
     // T or V를 주로 제네릭의 이름으로 사용한다.
     // 아무 이름으로 해도 상관없음.
     <T>(arr: T[]): T,
@@ -152,6 +153,45 @@ const value1 = printFunction([1, 2, 3]);
 // 리턴값의 타입도 number|boolean|string으로 대체된다.
 const value2 = printFunction([1, false, 'Hello']);
 ```
+
+:::warning any vs generic
+제네릭이 함수 다형성 구현을 도와준다고 해서 `any`타입과 똑같은 동작을 한다고 생각하면 매우 큰 착각이다. 각 함수 파라미터 타입에 대한 콜 시그니쳐를 정의하지 않아도 된다 뿐이지 **내부 메서드 호출에 있어서는 `typeof` 키워드 등을 통해 타입 분기를 진행해야한다.**
+
+```javascript
+type SuperPrint = {
+    <T>(arr: T[]): void,
+};
+
+const myPrint: SuperPrint = (arr) => {
+    // 내부에서 string타입에 대한 타입 검사를 해야한다.
+    // 타입 검사 이후에야 toUpperCase메서드를 사용할 수 있게 된다.
+    if (typeof arr[0] === 'string') {
+        console.log(arr[0].toUpperCase());
+    }
+};
+```
+
+:::
+
+제네릭은 함수 뿐만 아니라 각종 타입 정의에도 활용된다.
+
+```javascript
+type Player<T> = {
+    name: string,
+    extraInfo: T,
+};
+
+const me: Player<{ age: number }> = {
+    name: 'Jun',
+    extraInfo: {
+        age: 13,
+    },
+};
+```
+
+위의 코드를 보면 객체 `me`에 대한 타입이 `Player`로 전달되었는데 `Player`타입은 `extraInfo` 프로퍼티 타입에 대해 제네릭으로 받고 있다. 따라서 `Player` 타입으로 선언되는 `me`객체에 제네릭 T와 매핑될 파라미터를 전달해야 한다.
+
+위 코드에서는 T 제네릭에 대한 파라미터로 객체를 전달하고 있고, 객체 내부의 프로퍼티는 age이며 age 프로퍼티는 `number`타입을 갖고 있다.
 
 ## Reference
 
