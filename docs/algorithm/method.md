@@ -246,12 +246,19 @@ console.log(result); // 6
 
 반면 `forEach`의 경우 인자로 전달될 콜백함수 내에서 **어떠한 값도 리턴하지 않는다.** 단순 출력을 위한 `console.log` 같은 동작만 이루어지며 강제로 return을 시도할 경우 undefined가 반환된다.
 
+```javascript
+const a = [1, 2, 3];
+a.forEach((item) => console.log(item));
+a.forEach((item) => item + 1); // undefined
+```
+
 `map`의 경우에는 배열 요소에 대해 값의 변경을 시도할 때에 사용된다. immutable하므로 요소 조작 후 리턴을 한다고 해도 다시 대입연산에 전달해야한다.
 
 ```javascript
-let arr = [1, 2, 3];
+// map메서드는 immutable하므로 const로 선언해도 상관없다!
+const arr = [1, 2, 3];
 
-let modifiedArr = arr.map((item) => item + 1);
+const modifiedArr = arr.map((item) => item + 1);
 
 console.log(arr); // [1,2,3]
 console.log(modifiedArr); // [2,3,4]
