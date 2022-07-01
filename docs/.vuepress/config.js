@@ -105,7 +105,6 @@ module.exports = {
                     //   '/daily/211004-antipattern',
                     '/daily/211004-githubLogin',
                     '/daily/211004-Oauth',
-                    '/daily/211005-json',
                     '/daily/211018-network',
                     '/daily/220208-DOM',
                     '/daily/220208-browser',
@@ -129,7 +128,6 @@ module.exports = {
                     '/js/ajax',
                     '/js/axios',
                     '/js/spa',
-                    '/js/methods',
                 ],
             },
             {
@@ -179,6 +177,7 @@ module.exports = {
                     'react/hook',
                     'react/hooks',
                     'react/dnd',
+                    'react/framer',
                 ],
             },
             {
