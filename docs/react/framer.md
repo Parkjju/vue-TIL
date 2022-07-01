@@ -1,7 +1,7 @@
 ---
 title: React with Framer Motion
----
 
+---
 ## 설치 및 사용
 
 ```sh
@@ -53,6 +53,53 @@ npm install react-scripts@latest
 이때 `react-scripts`는 CRA에서 관리하는 `package.json`의 dependencies에 적혀 있는데, CRA의 버전을 의미하는 것이니 참고하면 좋습니다.
 
 또 다른 해결 방법으로는 CRACO(Create React App Configuration Override) 패키지를 활용하는 것도 있습니다. 현재 기준 버전으로 CRA버전 4까지만 지원하므로 추후에 다루도록 하겠습니다.
+
+## 애니메이션 제작
+`framer developer` 사이트에 들어가보시면 모션 관련된 다양한 API들이 정의되어 있습니다. 해당 API를 활용하기 위해서는 `motion.div` 등의 모션 프로퍼티의 html객체를 활용하거나 `styled-components` 객체를 `motion`으로부터 상속시켜 활용할 수 있습니다.
+
+```javascript
+import styled from "styled-components";
+import {motion} from "framer-motion";
+
+// styled components 상속시키기
+const Box = styled(motion.div)`
+	height:100px;
+	width:100px;
+`;
+
+function App(){
+  return (
+    <div>
+    	<Box/>
+    	<motion.div>Hello!</div>
+    </div>
+  )
+}
+```
+
+위 코드를 통해 motion 객체 활용을 위한 세팅을 하였고 실제 애니메이션을 구현하기 위해서는 API문서에 나와있는 각종 프로퍼티들을 사용하면 됩니다. framer-motion 메인 페이지에 나와있는 데모 애니메이션 구현 코드를 보면 다음과 같이 나와있습니다.
+
+```javascript
+<motion.div
+  initial={{ scale: 0 }}
+  animate={{ rotate: 180, scale: 1 }}
+  transition={{
+    type: "spring",
+    stiffness: 260,
+    damping: 20
+  }}
+/>
+```
+
+1. `initial` - 애니메이션 시작 전 초기상태
+2. `animate` - 애니메이션 동작
+3. `transition` - 애니메이션 동작의 디테일 (속도, 타입, 무게 등)
+
+위의 기본적인 프로퍼티 외에 다양한 것들이 존재합니다.
+
+
+
+
 
 ## Reference
 
