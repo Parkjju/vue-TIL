@@ -1,7 +1,7 @@
 ---
 title: React with Framer Motion
-
 ---
+
 ## 설치 및 사용
 
 ```sh
@@ -55,6 +55,7 @@ npm install react-scripts@latest
 또 다른 해결 방법으로는 CRACO(Create React App Configuration Override) 패키지를 활용하는 것도 있습니다. 현재 기준 버전으로 CRA버전 4까지만 지원하므로 추후에 다루도록 하겠습니다.
 
 ## 애니메이션 제작
+
 `framer developer` 사이트에 들어가보시면 모션 관련된 다양한 API들이 정의되어 있습니다. 해당 API를 활용하기 위해서는 `motion.div` 등의 모션 프로퍼티의 html객체를 활용하거나 `styled-components` 객체를 `motion`으로부터 상속시켜 활용할 수 있습니다.
 
 ```javascript
@@ -81,13 +82,13 @@ function App(){
 
 ```javascript
 <motion.div
-  initial={{ scale: 0 }}
-  animate={{ rotate: 180, scale: 1 }}
-  transition={{
-    type: "spring",
-    stiffness: 260,
-    damping: 20
-  }}
+    initial={{ scale: 0 }}
+    animate={{ rotate: 180, scale: 1 }}
+    transition={{
+        type: 'spring',
+        stiffness: 260,
+        damping: 20,
+    }}
 />
 ```
 
@@ -97,9 +98,31 @@ function App(){
 
 위의 기본적인 프로퍼티 외에 다양한 것들이 존재합니다.
 
+## Variants
 
+위에서는 프레이머 애니메이션 정의를 인라인 형식으로 작성하였는데, Vaiants를 활용하면 프레이머 모션 프로퍼티들을 외부 자바스크립트 객체로 추출하여 관리할 수 있어서 코드가 한결 간결해집니다.
 
+```javascript
+import {motion} from "framer-motion";
 
+const myVariants = {
+    start: { scale: 0 },
+    end: { scale: 1, rotateZ: 360, transition: { type: 'spring', delay: 1 } },
+};
+
+function App(){
+  return (
+    <div>
+    	<motion.div variants={myVariants} initial="start" animate="end">Hello!</div>
+    </div>
+  )
+}
+```
+
+1. `myVariants`라는 이름으로 프레이머 모션 프로퍼티를 객체에 저장합니다.
+2. motion.div 요소의 `variants`라는 프로퍼티에 위에 정의한 `myVariants` 객체를 전달합니다.
+3. 이때 myVariants는 각각 시작시점과 끝 시점의 애니메이션 상태를 프로퍼티로 갖는데, `start`와 `end` 상태로 정의합니다. (이름은 상관없습니다.)
+4. `variants`에 전달했으면 `initial` 프로퍼티에 myVariants의 시작상태 프로퍼티를 전달하고 `animate` 프로퍼티에는 myVariants의 끝 상태 프로퍼티를 전달합니다. 위에서는 각각 `start`, `end`로 정의하였습니다.
 
 ## Reference
 
