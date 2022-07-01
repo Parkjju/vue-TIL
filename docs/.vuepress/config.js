@@ -239,6 +239,7 @@ module.exports = {
                     '/algorithm/graphAlgo',
                     '/algorithm/mst',
                     '/algorithm/backtrack',
+                    '/algorithm/220701-pattern',
                 ],
             },
             {
