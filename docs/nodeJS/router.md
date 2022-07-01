@@ -41,48 +41,13 @@ title: 라우터(router)
 ```js
 const videoRouter = express.Router(); // 라우터 생성
 
-app.use("/videos", videoRouter);
-const handleWatchVideo = (req, res) => res.send("Watch Video");
-videoRouter.get("/watch", handleWatchVideo);
+app.use('/videos', videoRouter);
+const handleWatchVideo = (req, res) => res.send('Watch Video');
+videoRouter.get('/watch', handleWatchVideo);
 ```
 
 1. `express`모듈의 라우터 메서드를 호출하여 비디오 관련 API를 관리하는 라우터를 생성한다.
-2. 비디오 라우터는 `/videos`라는 URL에서 관리된다.
-3. 비디오 라우터도 `get`메서드를 호출할 수 있으며 비디오 라우터의 특정 URL과 관련된 동작을 정의할 수 있다.
-4. 예시에서는 `handleWatchVideo`라는 함수가 콜백으로 전달되었고 이는 HTML을 응답으로 보내준다.
+2. express 앱의 `use` 메서드로 라우터의 URL을 등록한다.
+3. 직접 만든 라우터가 `myRouter`라고 할 때, `myRouter.get` 메서드를 호출하고 서브 URL들을 컨트롤 해줄 컨트롤러들을 콜백함수로 전달한다.
 
-`videoRouter`의 `get`메서드를 통해 통해 `/video/watch`라는 URL로 접근하는 것이 아닌 `/watch`라는 간단한 URL로 접근할 수 있다.
-
-:::tip
-`Router.route("url");` 메서드.
-
-router.route(path)
-Returns an instance of a single route which you can then use to handle HTTP verbs with optional middleware. Use router.route() to avoid duplicate route naming and thus typing errors.
-
-Building on the router.param() example above, the following code shows how to use router.route() to specify various HTTP method handlers.
-
-router.route('/users/:user_id')
-.all(function (req, res, next) {
-// runs for all HTTP verbs first
-// think of it as route specific middleware!
-next()
-})
-.get(function (req, res, next) {
-res.json(req.user)
-})
-.put(function (req, res, next) {
-// just an example of maybe updating the user
-req.user.name = req.params.name
-// save user ... etc
-res.json(req.user)
-})
-.post(function (req, res, next) {
-next(new Error('not implemented'))
-})
-.delete(function (req, res, next) {
-next(new Error('not implemented'))
-})
-
-```
-
-```
+라우터를 사용하게 되면 같은 곳으로부터 뻗어져 나오는 URL에 대하여 `expressApp.get` 메서드를 여러번 호출하지 않아도 된다는 장점이 있다.
