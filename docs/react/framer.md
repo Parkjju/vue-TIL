@@ -124,6 +124,72 @@ function App(){
 3. 이때 myVariants는 각각 시작시점과 끝 시점의 애니메이션 상태를 프로퍼티로 갖는데, `start`와 `end` 상태로 정의합니다. (이름은 상관없습니다.)
 4. `variants`에 전달했으면 `initial` 프로퍼티에 myVariants의 시작상태 프로퍼티를 전달하고 `animate` 프로퍼티에는 myVariants의 끝 상태 프로퍼티를 전달합니다. 위에서는 각각 `start`, `end`로 정의하였습니다.
 
+Variants는 위처럼 단순 코드 미감에도 장점이 있지만 기능적으로 더 빛을 발한다. 프레이머 모션 페이지 데모 애니메이션 중 2번째 Variants를 보면 네모박스 안에 원 네개가 들어가 있는 것을 볼 수 있습니다.
+
+먼저 확인할 수 있는 장점은 **원들을 감싸고 있는 부모 요소인 박스에만 variants를 적용해도 해당 variants의 프로퍼티들이 자식에도 적용된다는 점입니다.**
+
+```javascript
+function App() {
+    return (
+        <Wrapper>
+            <Box variants={boxVariants} initial='start' animate='end'>
+                <Circle />
+                <Circle />
+                <Circle />
+                <Circle />
+            </Box>
+        </Wrapper>
+    );
+}
+```
+
+위와 같은 구조일 때에 Box variants의 initial과 animate가 자식 요소에 자동으로 등록되어 애니메이션이 같이 적용된다는 것입니다.
+
+자식에게 다른 애니메이션을 부여하고 싶다면 위의 코드의 경우에 `circleVariants`와 같이 따로 객체를 생성한 후 initial, animate에 전달하면 될 것이다. 다만, 주의할 점은 부모의 variants 프로퍼티 이름인 start, end와 동일한 이름으로 circleVariants도 작성해야 한다는 것입니다.
+
+두 번째 장점은 Orchestration에 있습니다.
+
+위의 애니메이션을 보면 원 각각이 박스 애니메이션이 끝난 후 하나씩 차례로 나타나는 것을 볼 수 있는데 이를 구현하기 위해 각 원에 variants를 각각 객체 생성 후 할당해야 한다는 문제가 있습니다.
+
+프레이머에서는 이를 당연히 지원하며, **부모 요소의 variants의 transition에 애니메이션에 맞는 children 관련 옵션을 등록하면 됩니다.**
+
+1. `delayChildren` : 자식 요소 전체를 딜레이시킵니다.
+2. `staggerChildren` : 자식 요소 각각에 대해 차례로 딜레이 값을 증가시킵니다.
+
+```javascript
+const boxVariants = {
+    start: { opacity: 0, scale: 0.5 },
+    end: {
+        opacity: 1,
+        scale: 1,
+        transition: {
+            type: 'spring',
+            duration: 0.5,
+            bounce: 0.5,
+            // here!
+            staggerChildren: 0.3,
+        },
+    },
+};
+```
+
+위와 같이 부모 요소의 boxVariants에 `staggerChildren` 프로퍼티를 주게 되면 자식이 각각 0.3초씩 딜레이가 증가되며 차례로 나타나게 됩니다.
+
+:::tip variants autocomplete
+기본적으로 variants 구현을 위한 각종 속성은 CSS 애니메이션과 동일하지만 매번 찾아보기가 어렵다. 프레이머 모션에서 제공하는 `Variants` 타입을 통해 타입스크립트의 자동완성 기능을 활용하면 생산성이 한결 높아질 수 있다.
+
+```javascript
+import { motion, Variants } from 'framer-motion';
+
+const myVariants: Variants = {
+    // scale의 s만 입력해도 자동완성 후보로 나타나게 된다.
+    start: { scale: 0 },
+    end: { scale: 1 },
+};
+```
+
+:::
+
 ## Reference
 
 1. [Create React App 공식문서](https://create-react-app.dev/)
