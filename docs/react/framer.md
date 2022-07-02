@@ -176,7 +176,7 @@ const boxVariants = {
 위와 같이 부모 요소의 boxVariants에 `staggerChildren` 프로퍼티를 주게 되면 자식이 각각 0.3초씩 딜레이가 증가되며 차례로 나타나게 됩니다.
 
 :::tip variants autocomplete
-기본적으로 variants 구현을 위한 각종 속성은 CSS 애니메이션과 동일하지만 매번 찾아보기가 어렵다. 프레이머 모션에서 제공하는 `Variants` 타입을 통해 타입스크립트의 자동완성 기능을 활용하면 생산성이 한결 높아질 수 있다.
+기본적으로 variants 구현을 위한 각종 속성은 CSS 애니메이션과 동일하지만 매번 찾아보기가 어렵다. 프레이머 모션에서 제공하는 `Variants` 타입을 통해 타입스크립트의 자동완성 기능을 활용하면 생산성이 한결 높아질 수 있습니다.
 
 ```javascript
 import { motion, Variants } from 'framer-motion';
@@ -188,6 +188,74 @@ const myVariants: Variants = {
 };
 ```
 
+:::
+
+## Gesture
+
+각종 이벤트 감지에 따른 애니메이션을 구현합니다. 제스쳐와 관련된 프로퍼티는 `while~`로 시작합니다. 프레이머 모션 데모 중 Gesture섹션을 보면 컴포넌트에 마우스 호버 시 스케일 업 & 회전이 일어나고 컴포넌트 클릭을 하게 되면 스케일 다운이 일어납니다. 해당 데모 모션을 구현하기 위해서는 `whileHover`와 `whileTap` 프로퍼티만 등록해주면 된다는 것입니다.
+
+```javascript
+function Component() {
+    return (
+        <div>
+            <motion.div
+                whileHover={{ rotateZ: 90, scale: 2 }}
+                whileTap={{ scale: 1, borderRadius: '50px' }}
+            />
+        </div>
+    );
+}
+```
+
+모션과 관련된 속성들을 객체로 관리하기 위해 `variants`까지 적용하면 아래와 같게 됩니다.
+
+```javascript
+const boxVariants = {
+    hover: {
+        rotateZ: 90,
+        scale: 2,
+    },
+    click: {
+        scale: 1,
+        borderRadius: '50px',
+    },
+};
+
+function Component() {
+    return (
+        <div>
+            <motion.div
+                variants={{ boxVariants }}
+                whileHover='hover'
+                whileTap='click'
+            />
+        </div>
+    );
+}
+```
+
+호버나 클릭 등의 제스쳐 감지도 쉬운데, 드래그 애니메이션은 정말 어썸합니다. 프로퍼티에 `drag`만 삽입하면 해당 컴포넌트에 드래그 제스쳐가 알아서 등록 됩니다.
+
+```javascript
+function Component() {
+    return (
+        <div>
+            <motion.div
+                variants={{ boxVariants }}
+                whileHover='hover'
+                whileTap='click'
+                // here!
+                drag
+            />
+        </div>
+    );
+}
+```
+
+드래그 제스쳐 등록 후 드래그 중의 애니메이션을 감지하고 싶으면 `whileDrag` 프로퍼티를 사용하면 됩니다.
+
+:::tip 색 변화 애니메이션
+각종 색 변화를 부드러운 애니메이션으로 주고싶으면 색 명칭을 명시하는 것이 아니라 `rgb` 또는 `rgba` 값으로 표현합니다. 기존의 수치에서 애니메이션에 등록된 rgb 수치로 동적으로 이동하며 부드러운 애니메이션이 구현됩니다.
 :::
 
 ## Reference
