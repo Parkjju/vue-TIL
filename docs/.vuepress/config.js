@@ -113,6 +113,7 @@ module.exports = {
                     '/daily/220420-api',
                     '/daily/220605-regex',
                     '/daily/220701-grid',
+                    '/daily/220703-recoil',
                 ],
             },
             {
