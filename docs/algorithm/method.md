@@ -348,7 +348,6 @@ m.has('one'); // true
 
 -   for in : 객체의 열거 가능한 **속성에** 대해 반복합니다.
 -   for of : 객체의 반복 가능한 요소에 대해 반복합니다.
-    :::
 
 ```javascript
 let score = new Map();
@@ -362,6 +361,8 @@ for (let [key, value] of score) {
     console.log(key, value);
 }
 ```
+
+:::
 
 ## String 객체
 
