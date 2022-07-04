@@ -15,13 +15,13 @@ title: 템플릿 제작
 
 ```js
 const app = express();
-app.set("view engine", "pug"); // here!
+app.set('view engine', 'pug'); // here!
 ```
 
 퍼그가 실행되면 기본적으로 뷰를 `/views`라는 폴더에서 찾는다.
 
 ```js
-process.cwd() + "/views";
+process.cwd() + '/views';
 ```
 
 `process.cwd()` 는 **current working directory**의 약자이다.
@@ -47,7 +47,7 @@ html(lang = "ko")
 3. 태그에 적용되는 어트리뷰트는 괄호 사이에 작성한다.
    :::
 
-퍼그 작성 후 `res.render(home)` 메서드에 퍼그로 생성한 템플릿 엔진을 전달한다. **렌더 메서드를 활용해야한다.**
+퍼그 작성 후 `res.render("home")` 메서드에 퍼그로 생성한 템플릿 엔진을 전달한다. **렌더 메서드를 활용해야한다.**
 **템플릿 엔진은 따로 설정해주지 않으면 위에서도 언급했듯 익스프레스가 /view 디렉토리에서 뷰를 찾는다.**
 
 현재 디렉토리 구조가 다음과 같으면서 뷰 디렉토리에 대한 설정을 따로 해주지 않은 상태라면,
@@ -74,8 +74,8 @@ src폴더 하위의 views를 찾아보는 것이 아닌 상태이다. 따라서 
 1. 퍼그를 설치한다.
 2. 익스프레스로 앱을 생성한다.
 3. 생성한 앱에 `.set()` 메서드로 퍼그의 옵션들을 전달한다.
-   - 익스프레스가 서치할 뷰의 디렉토리
-   - 템플릿 엔진이 퍼그라는 것을 알리기
+    - 익스프레스가 서치할 뷰의 디렉토리
+    - 템플릿 엔진이 퍼그라는 것을 알리기
 4. 퍼그 파일 생성 및 코드작성
 5. 컨트롤러에서 퍼그를 `.render()`메서드로 불러온다.
 
@@ -187,7 +187,7 @@ html(lang = "ko")
 ```
 
 ```js
-export const trending = (req, res) => res.render("home", { PageTitle: "Home" });
+export const trending = (req, res) => res.render('home', { PageTitle: 'Home' });
 // ...
 ```
 
