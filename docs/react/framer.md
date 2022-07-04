@@ -1,5 +1,5 @@
 ---
-title: React with Framer Motion
+title: React with Framer Motion 1
 ---
 
 ## 설치 및 사용
@@ -256,6 +256,331 @@ function Component() {
 
 :::tip 색 변화 애니메이션
 각종 색 변화를 부드러운 애니메이션으로 주고싶으면 색 명칭을 명시하는 것이 아니라 `rgb` 또는 `rgba` 값으로 표현합니다. 기존의 수치에서 애니메이션에 등록된 rgb 수치로 동적으로 이동하며 부드러운 애니메이션이 구현됩니다.
+:::
+
+드래그 애니메이션에는 제약조건 (constraints)를 부여할 수 있습니다. 화면 내에서 무한한 위치로 드래그를 하는 것이 아니라 드래그 대상이 처음 위치하는 곳을 기준으로 상-하-좌-우에 이동 가능한 좌표 한계점을 지정하는 것입니다.
+
+위의 Component라는 이름의 컴포넌트에서 내부에 위치한 `motion.div` 컴포넌트가 드래그 대상이 됩니다. 이때 `motion.div`태그에 `dragConstraints`라는 프로퍼티를 선언하면 상-하-좌-우에 대한 좌표 제약을 부여할 수 있습니다. 프로퍼티 값으로 객체를 받으며, 프로퍼티는 `top`, `bottom`, `left`, `right`를 사용합니다. 프로퍼티 값 지정은 CSS의 `position:relative`를 기준으로 작성하면 됩니다.
+
+```javascript
+function Component() {
+    return (
+        <div>
+            <motion.div
+                variants={{ boxVariants }}
+                whileHover='hover'
+                whileTap='click'
+                drag
+                dragConstraints={{
+                    top: -50,
+                    bottom: 50,
+                    left: -50,
+                    right: 50,
+                }}
+            />
+        </div>
+    );
+}
+```
+
+위의 프로퍼티를 등록하게 되면 드래그를 쭉 당기더라도 지정한 좌표 이상으로 컴포넌트가 벗어나지 못하게 됩니다.
+
+프레이머 모션 데모를 그대로 구현하기 위해서는 큰 박스가 드래그 박스를 감싸고 있어야 합니다. 위 코드에서는 `motion.div`를 감싸는 `div`태그에 해당합니다. div대신 styled-components로 컴포넌트 하나를 생성해보겠습니다.
+
+```javascript
+// motion.div보다 크게
+// overflow:hidden 효과 부여
+const BiggerBox = styled.div`
+    width: ..;
+    height: ..;
+    background-color: ..;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+`;
+
+function Component() {
+    const biggerBoxRef = useRef < HTMLDivElement > null;
+    return (
+        <BiggerBox ref={biggerBoxRef}>
+            <motion.div
+                variants={{ boxVariants }}
+                whileHover='hover'
+                whileTap='click'
+                drag
+                dragConstraints={biggerBoxRef}
+            />
+        </BiggerBox>
+    );
+}
+```
+
+`dragConstraints`를 인라인 형태로 작성할 필요 없이 리액트의 `ref`를 사용하여 드래그 제약조건 객체를 자신의 부모 박스로 가리키도록 하면 됩니다.
+
+:::tip 그 외의 드래그 제약 프로퍼티
+
+1. `dragSnapToOrigin` : 드래그 하던 컴포넌트를 놓으면 기존에 있었던 위치로 되돌아갑니다. (boolean)
+2. `dragElastic` : 드래그에 대한 장력을 설정합니다. 0~1사이의 숫자값이 필요하며 숫자가 높을수록 드래그에 드는 힘이 빡빡해집니다. `dragElastic={0.5}`
+3. `drag="x"` or `drag="y"` : 드래그가 이루어지는 축을 설정합니다. x면 현 위치에서 x축으로만 드래그가 이루어집니다.
+
+:::
+
+## Motion Value
+
+프레이머 모션에서 `Motion Value`라는 객체가 있습니다. 컴포넌트가 애니메이션에 따라 움직일때 어떤 수치를 가지고 움직이는지 나타냅니다. `useMotionValue`훅을 사용하면 해당 객체가 반환되어 저장됩니다.
+
+```javascript
+import { useMotionValue, motion } from 'framer-motion';
+
+function Component() {
+    const motionValue = useMotionValue(0);
+    console.log(motionValue);
+    return (
+        <Wrapper>
+            <Box
+                style={{ motionValue }}
+                drag='x'
+                dragSnapToOrigin
+                variants={boxVariants}
+                whileHover='hover'
+                whileTap='click'
+                whileDrag={{ backgroundColor: 'rgb(46,204,113)' }}
+            />
+        </Wrapper>
+    );
+}
+```
+
+위 코드를 통해 모션 밸류가 변경될때마다 콘솔에 출력해보려고 합니다. 하지만 `Component`컴포넌트가 첫 렌더링 될 때에만 해당 값이 출력되고 이후에는 콘솔에 변화가 없게 됩니다.
+
+이 말은 즉슨 **useMotionValue** 훅 호출에 따른 값이 컴포넌트 재 렌더링을 발생시키지 않는다는 것입니다. 리액트에서 상태값으로 관리되지 않는다는 것입니다. 하지만 실제로 `style` 프로퍼티를 보면 값에 대한 변화가 이루어지고 있는 것을 확인할 수 있을 것입니다.
+
+모션 밸류를 콘솔에 출력해보고자 한다면 다음과 같이 `useEffect` 훅을 사용하면 됩니다.
+
+```javascript
+import { useMotionValue, motion } from 'framer-motion';
+
+function Component() {
+    const motionValue = useMotionValue(0);
+    // motionValue에 onChange 이벤트리스너 등록
+    useEffect(() => {
+        motionValue.onChange(() => console.log(motionValue.get()));
+    }, [motionValue]);
+    return (
+        <Wrapper>
+            <Box
+                style={{ motionValue }}
+                drag='x'
+                dragSnapToOrigin
+                variants={boxVariants}
+                whileHover='hover'
+                whileTap='click'
+                whileDrag={{ backgroundColor: 'rgb(46,204,113)' }}
+            />
+        </Wrapper>
+    );
+}
+```
+
+위 코드는 `style` 프로퍼티에 `useMotionValue`훅의 반환값을 모션 엘리먼트에 삽입한 것입니다. `motionValue`객체는 다양한 데이터를 포함하고 있지만 `motion.Element` 요소에 들어가게 되면 자동으로 애니메이션에 따른 프로퍼티 값으로 대체됩니다.
+
+### useTransform
+
+motionValue와 함께 사용되는 `useTransform` 훅 또한 유용하고 중요합니다. 모션 컴포넌트에 등록한 애니메이션에 따라 `motionValue` 값이 변하는데 이 값의 변화에 원하는 기준점을 잡고 해당 기준점에 맞춰질때 다른 값을 반환하도록 매핑시켜주는 것이 `useTransform`훅입니다.
+
+예를 들어 위 코드처럼 x축을 따라 모션 컴포넌트가 이동을 할때 `Box`컴포넌트의 style 프로퍼티 `motionValue`값이 변하게 되는데 이때 이 값의 변화 기준점을 `-800`, `800`으로 지정합니다.
+
+이후 `useTransform` 훅을 사용하여 `motionValue`가 -800일때 Z축 기준 회전을 위해 -360deg를 매핑시키고 800일때 360deg를 매핑시킵니다.
+
+`useTransform`으로 관리되는 값은 `motionValue`와 동일하게 컴포넌트 리렌더링 없이 `motionValue`값 변화에 따라 부드럽게 매핑값으로 변화가 이루어집니다. 위의 예시에서는 -360~360까지 자연스러운 변화가 일어나게 됩니다.
+
+```javascript
+function App() {
+    const x = useMotionValue(0);
+    // motionValue와 매핑
+    const rotateZ = useTransform(x, [-800, 800], [-360, 360]);
+
+    return (
+        <Wrapper>
+            <Box
+                // useTransform값 style에 등록
+                style={{ x, rotateZ }}
+                drag='x'
+                dragSnapToOrigin
+                variants={boxVariants}
+                whileHover='hover'
+                whileTap='click'
+            />
+        </Wrapper>
+    );
+}
+```
+
+### scroll
+
+`motionValue`중에는 스크롤과 관련된 것들도 있습니다. `useViewportScroll` 함수인데, 이 함수를 호출하면 `scrollY`, `scrollX`, `scollYProgress`, `scrollXProgress`라는 네 개의 모션밸류를 반환합니다.
+
+아래 코드는 `scrollY`와 `scrollYProgress`차이를 확인하기 위해 `useEffect`훅에 전달 후 스크롤 이벤트에 따라 두 값을 출력합니다.
+
+```javascript
+import { motion, useViewportScroll } from 'framer-motion';
+
+function App() {
+    const x = useMotionValue(0);
+    const { scrollY, scrollYProgress } = useViewportScroll();
+
+    useEffect(() => {
+        scrollY.onChange(() =>
+            console.log(scrollY.get(), scrollYProgress.get())
+        );
+    }, [scrollY, scrollYProgress]);
+
+    return (
+        <Wrapper style={{ background: gradient }}>
+            <Box
+                style={{ x }}
+                drag='x'
+                dragSnapToOrigin
+                variants={boxVariants}
+                whileHover='hover'
+                whileTap='click'
+            />
+        </Wrapper>
+    );
+}
+```
+
+scrollY는 스크롤 맨 위를 기준으로 픽셀이며 아래로 스크롤 할때마다 그 수치가 픽셀값으로 나타납니다.
+
+scrollYProgress는 스크롤 맨 위를 기준으로 아래까지 0~1이라는 값으로 나타내고 스크롤 진행에 대한 비율이 저장됩니다.
+
+스크롤에 따라 모션 컴포넌트의 크기에 변화를 주고싶다면 `scrollYProgress`를 style프로퍼티의 `scale`에 전달합니다.
+
+```javascript
+function App() {
+    const x = useMotionValue(0);
+    const { scrollYProgress } = useViewportScroll();
+    const scale = useTransform(scrollYProgress, [0, 1]);
+
+    return (
+        <Wrapper style={{ background: gradient }}>
+            <Box
+                // scale
+                style={{ x, scale: scrollYProgress }}
+                drag='x'
+                dragSnapToOrigin
+                variants={boxVariants}
+                whileHover='hover'
+                whileTap='click'
+            />
+        </Wrapper>
+    );
+}
+```
+
+## svg path
+
+svg는 `path` 엘리먼트를 포함합니다. svg요소가 그려지는 경로를 나타내며 `motion` 엘리먼트는 `pathLength`라는 프로퍼티를 통해 `path` 엘리먼트가 자연스럽게 그려지는 애니메이션을 제공합니다.
+
+```javascript
+<Svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'>
+    <motion.path
+        stroke='white'
+        strokeWidth={5}
+        variants={svg}
+        initial='start'
+        animate='end'
+        d='M14 95.7924C14 42.8877 56.8878 0 109.793 0H274.161C327.066 0 369.954 42.8877 369.954 95.7924C369.954 129.292 352.758 158.776 326.711 175.897C352.758 193.019 369.954 222.502 369.954 256.002C369.954 308.907 327.066 351.795 274.161 351.795H272.081C247.279 351.795 224.678 342.369 207.666 326.904V415.167C207.666 468.777 163.657 512 110.309 512C57.5361 512 14 469.243 14 416.207C14 382.709 31.1945 353.227 57.2392 336.105C31.1945 318.983 14 289.5 14 256.002C14 222.502 31.196 193.019 57.2425 175.897C31.196 158.776 14 129.292 14 95.7924ZM176.288 191.587H109.793C74.2172 191.587 45.3778 220.427 45.3778 256.002C45.3778 291.44 73.9948 320.194 109.381 320.416C109.518 320.415 109.655 320.415 109.793 320.415H176.288V191.587ZM207.666 256.002C207.666 291.577 236.505 320.417 272.081 320.417H274.161C309.737 320.417 338.576 291.577 338.576 256.002C338.576 220.427 309.737 191.587 274.161 191.587H272.081C236.505 191.587 207.666 220.427 207.666 256.002ZM109.793 351.795C109.655 351.795 109.518 351.794 109.381 351.794C73.9948 352.015 45.3778 380.769 45.3778 416.207C45.3778 451.652 74.6025 480.622 110.309 480.622C146.591 480.622 176.288 451.186 176.288 415.167V351.795H109.793ZM109.793 31.3778C74.2172 31.3778 45.3778 60.2173 45.3778 95.7924C45.3778 131.368 74.2172 160.207 109.793 160.207H176.288V31.3778H109.793ZM207.666 160.207H274.161C309.737 160.207 338.576 131.368 338.576 95.7924C338.576 60.2173 309.737 31.3778 274.161 31.3778H207.666V160.207Z'
+    />
+</Svg>
+```
+
+`Svg`라는 커스텀 컴포넌트를 만들고 그 안에 `path` 엘리먼트를 모션 엘리먼트로 생성해줍니다. `path` 엘리먼트는 기본적으로 `stroke`와 `strokeWidth` 프로퍼티를 제공하는데 이는 svg 그림의 가장자리 선에 대한 데이터입니다. `stroke`는 선의 색을 나타내고 `strokeWidth`는 선의 두께를 나타냅니다.
+
+선을 따라 자연스럽게 그려지는 svg variants를 정의해보면 다음과 같습니다.
+
+```javascript
+const Svg = styled.svg`
+    width: 80px;
+    height: 80px;
+    path {
+        stroke: white;
+        stroke-width: 5;
+    }
+`;
+
+const svg = {
+    start: {
+        pathLength: 0,
+        fill: 'rgba(255,255,255,0)',
+    },
+    end: {
+        pathLength: 1,
+        fill: 'rgba(255,255,255,1)',
+        transition: { duration: 2 },
+    },
+};
+```
+
+1. `Svg` 컴포넌트 내부의 `path` 엘리먼트를 태그 셀렉터로 선택하고 `stroke`와 관련된 값을 정의합니다.
+2. svg variants에서는 모션 엘리먼트 프로퍼티인 `initial`과 `animation`에 들어갈 프로퍼티를 각각 정의합니다.
+3. `pathLength`는 0~1 사이의 값을 가지며 0은 아무것도 그려지지 않았을때, 1은 전체 svg가 그려졌을 때의 상태를 나타냅니다.
+4. `fill`은 svg 내부를 어떤 색으로 채울 지를 결정합니다.
+
+:::tip transition 부분적으로 지정하기
+`animation`에 해당하는 프로퍼티에 `transition`을 적용하면 전체 프로퍼티에 대해 해당 효과가 적용됩니다.
+
+모션 엘리먼트의 `transition` 프로퍼티는 객체를 받으며 첫 번째 프로퍼티로 `default`를 받습니다. `default` 프로퍼티는 모션 엘리먼트 내의 전체 프로퍼티들에 대해 동일한 트랜지션 효과를 부여합니다.
+
+`transition`에 전달되는 객체 내부의 다른 프로퍼티는 **모션 엘리먼트 내의 원하는 프로퍼티를 선택하여 다른 트랜지션 효과를 직접적으로 부여할 수 있습니다.**
+
+```javascript
+<Svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'>
+    <motion.path
+        variants={svg}
+        initial='start'
+        animate='end'
+        // here!!
+        transition={{
+            default: {
+                duration: 2,
+            },
+            fill: {
+                duration: 3,
+            },
+        }}
+        d='M14 95.7924C14 42.8877 56.8878 0 109.793 0H274.161C327.066 0 369.954 42.8877 369.954 95.7924C369.954 129.292 352.758 158.776 326.711 175.897C352.758 193.019 369.954 222.502 369.954 256.002C369.954 308.907 327.066 351.795 274.161 351.795H272.081C247.279 351.795 224.678 342.369 207.666 326.904V415.167C207.666 468.777 163.657 512 110.309 512C57.5361 512 14 469.243 14 416.207C14 382.709 31.1945 353.227 57.2392 336.105C31.1945 318.983 14 289.5 14 256.002C14 222.502 31.196 193.019 57.2425 175.897C31.196 158.776 14 129.292 14 95.7924ZM176.288 191.587H109.793C74.2172 191.587 45.3778 220.427 45.3778 256.002C45.3778 291.44 73.9948 320.194 109.381 320.416C109.518 320.415 109.655 320.415 109.793 320.415H176.288V191.587ZM207.666 256.002C207.666 291.577 236.505 320.417 272.081 320.417H274.161C309.737 320.417 338.576 291.577 338.576 256.002C338.576 220.427 309.737 191.587 274.161 191.587H272.081C236.505 191.587 207.666 220.427 207.666 256.002ZM109.793 351.795C109.655 351.795 109.518 351.794 109.381 351.794C73.9948 352.015 45.3778 380.769 45.3778 416.207C45.3778 451.652 74.6025 480.622 110.309 480.622C146.591 480.622 176.288 451.186 176.288 415.167V351.795H109.793ZM109.793 31.3778C74.2172 31.3778 45.3778 60.2173 45.3778 95.7924C45.3778 131.368 74.2172 160.207 109.793 160.207H176.288V31.3778H109.793ZM207.666 160.207H274.161C309.737 160.207 338.576 131.368 338.576 95.7924C338.576 60.2173 309.737 31.3778 274.161 31.3778H207.666V160.207Z'
+    />
+</Svg>
+```
+
+위 코드는 위에 정의했던 svg variants 내에서 `fill`이라는 특정 프로퍼티를 선택하여 다른 트랜지션 효과를 부여하고 있습니다.
+
+variants 내에 default와 구분하여 트랜지션을 정의해도 똑같이 돌아갑니다.
+
+```javascript
+const svg = {
+    start: {
+        pathLength: 0,
+        fill: 'rgba(255,255,255,0)',
+    },
+    end: {
+        pathLength: 1,
+        fill: 'rgba(255,255,255,1)',
+        // svg variants
+        transition: {
+            default: {
+                duration: 4,
+            },
+            fill: {
+                duration: 3,
+            },
+        },
+    },
+};
+```
+
 :::
 
 ## Reference
