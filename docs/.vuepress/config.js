@@ -181,6 +181,7 @@ module.exports = {
                     'react/hooks',
                     'react/dnd',
                     'react/framer',
+                    'react/framer2',
                 ],
             },
             {
