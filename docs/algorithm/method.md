@@ -458,3 +458,20 @@ var.toFixed(2); // 1.24
 ```
 
 :::
+
+## 함수 관련 팁
+
+자바스크립트에서 함수 파라미터 수를 꼭 고정해서 받을 필요는 없습니다. 동적으로 다양한 파라미터에 대해 **구조분해 문법을 통해 대응할 수 있습니다.**
+
+```javascript
+const variableParameters = (...args) => {
+    let myArgs = [...args];
+
+    for (let i of myArgs) {
+        console.log(i);
+    }
+};
+
+variableParameters(1); // 1
+variableParameters('a', 1, 2); // 'a', 1, 2
+```
