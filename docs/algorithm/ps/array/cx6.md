@@ -53,3 +53,21 @@ const isSubsequence = (str1, str2) => {
 3. 예를 들어 abc,acb가 전달되었을 때 abc라는 str1 문자열에서 a가 str2에서는 0번째에 존재합니다. (shift메서드)
 4. 다음 문자인 b는 str2에서 2번째에 존재하며 ab까지는 순서가 왜곡되지 않은 상태입니다.
 5. 마지막 문자인 c는 str2에서 prevIndex에 저장된 2보다 작은 값으로, 순서가 뒤집어졌다고 판단하여 false를 리턴하게 됩니다.
+
+## Refactor
+
+로직은 동일하지만 배열 순회를 통해 더 가볍게 구현된 솔루션
+
+```javascript
+function isSubsequence(str1, str2) {
+    var i = 0;
+    var j = 0;
+    if (!str1) return true;
+    while (j < str2.length) {
+        if (str2[j] === str1[i]) i++;
+        if (i === str1.length) return true;
+        j++;
+    }
+    return false;
+}
+```

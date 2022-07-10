@@ -131,7 +131,8 @@ js 파일 실행을 위해서는 `node 실행할파일.js` 명령어를 터미�
 -   [11328 Strfry](./ps/array/11328.md) - 애너그램 판단
 -   [1919 애너그램 만들기](./ps/array/1919.md) - 애너그램 판단 + 애너그램 만들기 로직
 -   [udemy coding exercise3 - sameFrequency](./ps/array/cx3.md)
--   [udemy coding exercise3 - Multiple pointer, isSubsequence](./ps/array/cx6.md)
+-   [udemy coding exercise6 - Multiple pointer, isSubsequence](./ps/array/cx6.md)
+-   [udemy coding exercise8 - minSubArrayLen](./ps/array/cx8.md) - 풀이참조 (sliding window)
 
 ## 자바스크립트 코테 준비 관련 문서들
 
