@@ -39,3 +39,5 @@ const minSubArrayLen = (arr, num) => {
     return minLen === Infinity ? 0 : minLen;
 };
 ```
+
+## Description
