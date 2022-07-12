@@ -189,7 +189,7 @@ module.exports = {
             {
                 title: 'React Native',
                 collapsable: true,
-                children: ['react-native/fast'],
+                children: ['react-native/fast', 'react-native/220711-layout'],
             },
             {
                 title: 'Vue',
