@@ -192,7 +192,7 @@ module.exports = {
                 children: [
                     'react-native/fast',
                     'react-native/220711-layout',
-                    'react-native/220713-touch',
+                    'react-native/220712-touch',
                 ],
             },
             {
