@@ -37,7 +37,7 @@ let input = fs.readFileSync('./input.txt').toString();
 input = input.split('\n');
 
 for (let i = 0; i < input.length; i++) {
-  console.log(input[i].split(' ').map((item) => +item));
+    console.log(input[i].split(' ').map((item) => +item));
 }
 //
 //[ 10, 5 ]
@@ -69,15 +69,15 @@ for (let i = 0; i < input.length; i++) {
 const readline = require('readline');
 
 const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
+    input: process.stdin,
+    output: process.stdout,
 });
 
 rl.on('line', (line) => {
-  console.log(line);
+    console.log(line);
 }).on('close', () => {
-  console.log('입력 끝!');
-  process.exit();
+    console.log('입력 끝!');
+    process.exit();
 });
 ```
 
@@ -95,45 +95,49 @@ js 파일 실행을 위해서는 `node 실행할파일.js` 명령어를 터미�
 
 ### 입출력
 
-- [10951 A+B - 4](./ps/input/10951.md) - EOF 에러 처리
-- [10871 X보다 작은 수](./ps/input/10871.md) - node.js 입출력
-- [10171 고양이](./ps/input/10171.md) - 고양이 출력
-- [1000 A+B](./ps/input/1000.md)
-- [2752 세수정렬](./ps/input/2752.md) - 세 수 정렬
-- [2480 주사위 세개](./ps/input/2480.md) - 주사위 세개
-- [2490 윷놀이](./ps/input/2490.md) - readline 모듈 연습 1 (중요)
-- [2587 대표값2](./ps/input/2587.md) - readline 모듈 연습 2 `rl.close()` 활용
-- [2576 홀수](./ps/input/2576.md) - filter 메서드
-- [2309 일곱난쟁이](./ps/input/2309.md) - 일곱난쟁이
-- [10093 숫자](./ps/input/10093.md) - 반례찾기
-- [1267 핸드폰요금](./ps/input/1267.md)
-- [10804 카드 역배치](./ps/input/10804.md)
-- [15552 빠른 A+B](./ps/input/15552.md) - 입출력 시간초과 관련 문제
-- [2438 별찍기 1](./ps/input/2438.md)
-- [2439 별찍기 2](./ps/input/2439.md)
-- [2440 별찍기 3](./ps/input/2440.md)
-- [2441 별찍기 4](./ps/input/2441.md)
-- [2442 별찍기 5](./ps/input/2442.md)
-- [2443 별찍기 6](./ps/input/2443.md)
-- [2444 별찍기 7](./ps/input/2444.md) - reverse활용 1
-- [2445 별찍기 8](./ps/input/2445.md) - reverse활용 2
-- [2446 별찍기 9](./ps/input/2446.md) - reverse활용 3
-- [2562 최댓값](./ps/input/2562.md)
+-   [10951 A+B - 4](./ps/input/10951.md) - EOF 에러 처리
+-   [10871 X보다 작은 수](./ps/input/10871.md) - node.js 입출력
+-   [10171 고양이](./ps/input/10171.md) - 고양이 출력
+-   [1000 A+B](./ps/input/1000.md)
+-   [2752 세수정렬](./ps/input/2752.md) - 세 수 정렬
+-   [2480 주사위 세개](./ps/input/2480.md) - 주사위 세개
+-   [2490 윷놀이](./ps/input/2490.md) - readline 모듈 연습 1 (중요)
+-   [2587 대표값2](./ps/input/2587.md) - readline 모듈 연습 2 `rl.close()` 활용
+-   [2576 홀수](./ps/input/2576.md) - filter 메서드
+-   [2309 일곱난쟁이](./ps/input/2309.md) - 일곱난쟁이
+-   [10093 숫자](./ps/input/10093.md) - 반례찾기
+-   [1267 핸드폰요금](./ps/input/1267.md)
+-   [10804 카드 역배치](./ps/input/10804.md)
+-   [15552 빠른 A+B](./ps/input/15552.md) - 입출력 시간초과 관련 문제
+-   [2438 별찍기 1](./ps/input/2438.md)
+-   [2439 별찍기 2](./ps/input/2439.md)
+-   [2440 별찍기 3](./ps/input/2440.md)
+-   [2441 별찍기 4](./ps/input/2441.md)
+-   [2442 별찍기 5](./ps/input/2442.md)
+-   [2443 별찍기 6](./ps/input/2443.md)
+-   [2444 별찍기 7](./ps/input/2444.md) - reverse활용 1
+-   [2445 별찍기 8](./ps/input/2445.md) - reverse활용 2
+-   [2446 별찍기 9](./ps/input/2446.md) - reverse활용 3
+-   [2562 최댓값](./ps/input/2562.md)
 
 ### 배열
 
-- [10808 알파벳 개수](./ps/array/10808.md)
-- [2577 숫자의 개수](./ps/array/2577.md) - fs모듈 trim 메서드의 중요성
-- [1475 방 번호](./ps/array/1475.md) - 6과 9 카드 뒤집는 로직 (어려웠음)
-- [3273 두 수의 합](./ps/array/3273.md) - O(n²) -> O(nlogn)으로 개선
-- [10807 개수 세기](./ps/array/10807.md)
-- [13300 방 배정](./ps/array/13300.md)
-- [11328 Strfry](./ps/array/11328.md) - 애너그램 판단
-- [1919 애너그램 만들기](./ps/array/1919.md) - 애너그램 판단 + 애너그램 만들기 로직
-- [udemy coding exercise3 - sameFrequency](./ps/array/cx3.md)
-- [udemy coding exercise6 - Multiple pointer, isSubsequence](./ps/array/cx6.md)
-- [udemy coding exercise8 - minSubArrayLen](./ps/array/cx8.md) - 풀이참조 (sliding window)
-- [udemy coding exercise9 - findLongestSubstring](./ps/array/cx9.md) - sliding window
+-   [10808 알파벳 개수](./ps/array/10808.md)
+-   [2577 숫자의 개수](./ps/array/2577.md) - fs모듈 trim 메서드의 중요성
+-   [1475 방 번호](./ps/array/1475.md) - 6과 9 카드 뒤집는 로직 (어려웠음)
+-   [3273 두 수의 합](./ps/array/3273.md) - O(n²) -> O(nlogn)으로 개선
+-   [10807 개수 세기](./ps/array/10807.md)
+-   [13300 방 배정](./ps/array/13300.md)
+-   [11328 Strfry](./ps/array/11328.md) - 애너그램 판단
+-   [1919 애너그램 만들기](./ps/array/1919.md) - 애너그램 판단 + 애너그램 만들기 로직
+-   [udemy coding exercise3 - sameFrequency](./ps/array/cx3.md)
+-   [udemy coding exercise6 - Multiple pointer, isSubsequence](./ps/array/cx6.md)
+-   [udemy coding exercise8 - minSubArrayLen](./ps/array/cx8.md) - 풀이참조 (sliding window)
+-   [udemy coding exercise9 - findLongestSubstring](./ps/array/cx9.md) - sliding window
+
+### 구현
+
+-   [14467 소가 길을 건넌 이유 1](./ps/implementation/14467.js)
 
 ## 자바스크립트 코테 준비 관련 문서들
 
