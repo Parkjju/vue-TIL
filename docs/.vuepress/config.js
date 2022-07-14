@@ -249,6 +249,7 @@ module.exports = {
                     '/algorithm/mst',
                     '/algorithm/backtrack',
                     '/algorithm/220701-pattern',
+                    '/algorithm/220714-recursion',
                 ],
             },
             {
