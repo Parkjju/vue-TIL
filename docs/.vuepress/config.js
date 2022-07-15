@@ -80,15 +80,9 @@ module.exports = {
         sidebar: [
             '/introduction',
             {
-                title: 'TIL',
+                title: 'Snack',
                 collapsable: true,
-                children: [
-                    '/TIL/2021-09-13',
-                    '/TIL/2021-10',
-                    '/TIL/2021-11',
-                    '/TIL/2022-01',
-                    '/TIL/2022-02',
-                ],
+                children: ['/trash/220715-async.md'],
             },
             {
                 title: 'DailyTech',
