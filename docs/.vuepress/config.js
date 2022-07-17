@@ -167,6 +167,7 @@ module.exports = {
                     'react/props',
                     'react/cra',
                     'react/effect',
+                    'react/fragment',
                     'react/todo',
                     'react/router',
                     'react/styled',
