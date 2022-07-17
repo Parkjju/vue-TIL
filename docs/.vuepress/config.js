@@ -82,7 +82,7 @@ module.exports = {
             {
                 title: 'Snack',
                 collapsable: true,
-                children: ['/trash/220715-async.md'],
+                children: ['/trash/220715-async.md', '/trash/220717-api.md'],
             },
             {
                 title: 'DailyTech',
