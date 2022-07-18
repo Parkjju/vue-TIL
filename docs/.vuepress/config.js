@@ -82,7 +82,11 @@ module.exports = {
             {
                 title: 'Snack',
                 collapsable: true,
-                children: ['/trash/220715-async.md', '/trash/220717-api.md'],
+                children: [
+                    '/trash/220715-async.md',
+                    '/trash/220717-api.md',
+                    '/trash/220719-native',
+                ],
             },
             {
                 title: 'DailyTech',
@@ -188,6 +192,7 @@ module.exports = {
                     'react-native/fast',
                     'react-native/220711-layout',
                     'react-native/220712-touch',
+                    'react-native/220719-apploading',
                 ],
             },
             {
