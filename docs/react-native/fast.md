@@ -35,6 +35,27 @@ expo login
 
 설치가 됐으면 VSC에서 해당 폴더를 열어 `npm start` 명령어를 입력해줍니다. 이때 **로컬 서버 위에서 어플리케이션이 동작하기 때문에 동일한 네트워크에서 두 기기를 작동하고 있어야 한다.**
 
+## Native 설치
+
+엑스포 기반이 아닌 네이티브 앱 빌드를 위해서는 환경 세팅을 먼저 진행해야 합니다. [공식 문서](https://reactnative.dev/docs/environment-setup)를 참조하여 기본 세팅을 먼저 진행합니다.
+
+이후 `npx react-native init <프로젝트명>`으로 앱 설치를 진행하면 됩니다. 이는 최소한의 설정만 두고 설치하는 것이므로 밑바닥부터의 구현이 어렵다면 Create React Native App 명령어를 활용해야 합니다.
+
+CRNA는 Expo와 native가 합작하여 만들어진 네이티브 앱 설치 CLI입니다. Expo가 제공하는 다양한 API들을 활용하면서 각 타겟 OS의 네이티브 파일들에도 접근할 수 있게 해줍니다. 설치 명령어는 아래와 같습니다.
+
+```sh
+npx create-react-native-app
+```
+
+위 명령어를 실행하면 앱 이름을 물어본 뒤 설치가 진행됩니다.
+
+```sh
+yarn start # Metro 서버 run
+yarn ios # ios simulator
+```
+
+`yarn start` 명령어를 입력하면 메트로 서버가 돌아가며 어플리케이션 새로고침을 실시간으로 할 수 있게 됩니다. Metro 서버를 켠 후 `yarn ios`를 하게 되면 시뮬레이터에서 작업할 수 있습니다.
+
 ## 구성요소
 
 React Native는 기본적으로 리액트와 유사하지만 **웹 개발이 아니므로 `div`, `span` 등의 일반 HTML 태그들이 사용되지 않습니다.** 대신 어플리케이션에서 사용되는 `View`, `Text` 등의 컴포넌트가 있습니다. 스타일 프로퍼티들도 유사하지만 다른 부분이 많습니다.
