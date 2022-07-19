@@ -86,6 +86,7 @@ module.exports = {
                     '/trash/220715-async.md',
                     '/trash/220717-api.md',
                     '/trash/220719-native',
+                    '/trash/220720-dark',
                 ],
             },
             {
@@ -195,6 +196,7 @@ module.exports = {
                     'react-native/220711-layout',
                     'react-native/220712-touch',
                     'react-native/220719-apploading',
+                    'react-native/220720-navigation',
                 ],
             },
             {
