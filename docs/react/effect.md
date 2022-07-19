@@ -1,90 +1,75 @@
 ---
 title: React useEffect
-
 ---
-## 개요
 
-리액트 `useState`는 이벤트 트리거에 따라 `state`에 등록해둔 `Setter`함수가 호출되면 **함수 종료 후 컴포넌트가 리 렌더링 된다.** 이 말은 즉슨 상태 관리를 함에 있어 **컴포넌트 내부 전체 코드가 매번 재실행된다는 것이다.** 
+## useEffect
 
-컴포넌트가 리 렌더링 됨에 따라 **매번 실행하지 않아도 되는 코드가 있을까?** 바로 `fetch API`와 같은 외부 API 호출 함수들이다. 이러한 함수나 코드들을 컴포넌트 첫 렌더링 때 한 번만 실행할 수 있게 해주는 리액트 훅이 바로 `useEffect`이다.
+리액트 라이브러리가 하는 일은 UI를 렌더링하는 것입니다. 여기서 사이드이펙트라는 용어가 등장하게 되는데 **UI 렌더링 외의 다른 모든 작업들을 통칭하여 사이드이펙트라고 합니다.** (HTTP 요청 보내기, 로컬 스토리지 이용하기 등)
 
-## 코드
+원래라면 사이드이펙트는 컴포넌트 밖에서 처리되어야 하는 것이 맞습니다. 리액트 컴포넌트 함수 안에서 사이드이펙트를 처리하게 되면 자동으로 리 렌더링이 되는 리액트 특성 상 부작용이 많이 발생할 수 있기 때문입니다. 사이드이펙트 처리를 전역적으로 할 수도 없기에 컴포넌트 함수 내부에서 처리하기 위해 `useEffect` 훅을 사용하게 됩니다.
 
-`useEffect` 훅은 두개의 파라미터를 받는다.
-1. 실행 함수
-2. 디펜던시 리스트(Dependency list)
+`useEffect(() => {...}, [dependencies])`
 
-**디펜던시 리스트에 전달된 데이터 상태가 변할 때 마다 인자로 전달된 함수가 실행되는 훅이다.**
+`useEffect`훅은 두 번째 파라미터에 전달된 의존성이 변경될때마다 첫 번째 전달된 함수가 재실행됩니다.
 
 ```javascript
 import { useState, useEffect } from 'react';
 
-function App(){
-  const [counter, setValue] = useState(0);
-  const [keyword, setKeyword] = useEffect("");
-  
-  const onClick = () => setValue((prev) => prev+1);
-  const onChange = () => setKeyword(event.target.value);
-  
-  useEffect( () => {
-    console.log("Run when counter changes!")
-  }, [counter]);
-    
-  useEffect( () => {
-    console.log("Run when keyword changes!")
-  }, [keyword]);
-  
-  return (
-    <div>
-    	<input value={keyword} type="text" onChange={onChange}/>
-    	<button onClick={onClick}>Click me!</button>
-    </div>
-  );
+function App() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        const storedUserLoggedInInformation =
+            localStorage.getItem('isLoggedIn');
+
+        if (storedUserLoggedInInformation === 'LOGGED_IN') {
+            setIsLoggedIn(true);
+        }
+    }, []);
 }
 ```
 
-1. `counter`와 `keyword` 상태를 리액트에 등록한다.
-2. 인풋박스에 텍스트 입력시 해당 값을 인풋박스 내부 값 변화가 `onChange`이벤트를 트리거하여 `onChange`함수가 실행된다. `keyword` 상태가 변화된다. 
-3. `keyword` 상태가 변화되어 원래는 `App`컴포넌트 전체가 리 렌더링 된다. **하지만 useEffect에 등록된 console.log("Run when counter changes!")는 실행되지 않는다.** 디펜던시 리스트에 `keyword`가 없기 때문이다.
-4. `counter`변수도 마찬가지이다. 온클릭 이벤트가 트리거 되어 `App`컴포넌트 전체가 리 렌더링 되더라도 `useEffect`에 등록된 `counter`에 대한 상태 변화 함수만 실행한다.
+위 코드는 컴포넌트 첫 렌더링 시 로컬 스토리지에 유저 로그인 정보가 남아있는지를 확인하여 컴포넌트 로그인 관련 상태값을 변경해줍니다. 이때 사이드이펙트는 로그인 정보를 얻어오는 부분이고 `useEffect`로 처리하지 않을 경우 컴포넌트 자동 렌더링에 따라 매번 로그인 정보를 요청하게 됩니다.
 
-## clean-up function
-`useEffect`훅은 `clean-up function`을 다룰 수 있다. `useEffect`는 리액트 컴포넌트의 라이프사이클을 다루게 되는데, 클린업 함수는 **componentWillUnmount** 단계에서 실행되는 함수이다. 다양한 라이프사이클이 있으며 이에 대한 내용은 [다음 링크를](https://krpeppermint100.medium.com/js-useeffect%EB%A5%BC-%ED%86%B5%ED%95%9C-react-hooks%EC%9D%98-lifecycle-%EA%B4%80%EB%A6%AC-3a65844bcaf8) 참조하자. 
+위 코드는 의존성 주입이 되지 않은 상태이기에 초기 렌더링에만 `useEffect`가 실행되며 이후 컴포넌트 내의 어떠한 부분이 변경되더라도 해당 함수는 실행되지 않게 됩니다.
+
+:::warning 클린업
+`useEffect`로 폼 입력에 대한 사이드이펙트 처리 시에 의존성 주입 후 매 입력마다 함수를 실행하도록 하면 함수 실행의 효율성이 떨어지게 됩니다.
+
+이때 `useEffect`의 클린업 함수를 사용하면 디바운싱이라는 기법을 통해 효율성을 끌어올릴 수 있습니다. 디바운싱에 대한 설명은 [다음 문서를](https://www.geeksforgeeks.org/debouncing-in-javascript/) 참조해주세요.
 
 ```javascript
-function Hello() {
-  function create() {
-    console.log('Created!');
-    return destroy;
-  }
+function App(){
+    useEffect(() => {
+        const identifier = setTimeout(() => {
+            console.log("Checking from validity..");
+            setFormIsValid(....);
+        },500);
 
-  function destroy() {
-    console.log('Destroyed!');
-  }
-  useEffect(create, []); 
-  return <h1>Hello!</h1>;
-}
+        return () => {
+            console.log("CLEANUP...");
+            clearTimeout(identifier);
+        }
 
-function App() {
-  const [showing, setShowing] = useState(false);
-  const onClick = () => setShowing((prev) => !prev);
-  return (
-    <div>
-      {showing ? <Hello /> : null}
-      <button onClick={onClick}>{showing ? 'Hide' : 'Show'}</button>
-    </div>
-  );
+
+    }, [input1, input2]);
+    return (
+        // ...
+    )
 }
 ```
-위 코드에서 버튼 클릭을 통해 `showing` 상태가 변화됨에 따라 `Hello` 컴포넌트가 마운트되고 언마운트 되는데, 마운트 될 때에 컴포넌트 내에 정의된 `useEffect`훅에 따라 `create` 함수가 호출되어 실행되며, 언마운트 될 때에 클로저로 `create`함수에서 리턴된 `destroy`가 호출된다.
 
-이에 따라 `Hello` 컴포넌트 컴포넌트 렌더링 시 `Created!`, 컴포넌트 파괴 시 `Destroyed!`가 콘솔에 출력된다.
+useEffect는 리턴값으로 함수를 지정합니다. 이 함수는 클린업 함수라고 부릅니다. 클린업 함수는 쉽게 말해 `useEffect` 실행 후 첫 번째 파라미터로 전달된 함수들이 실행되기 전에 먼저 실행되는 함수를 의미합니다.
 
+컴포넌트 생명주기 관점에서 이를 바라보면 의존성으로 등록된 상태값 업데이트에 따라 이전의 컴포넌트가 언마운트(Unmount)되기 전 클린업 함수가 실행되는 것입니다.
 
+디바운싱 기법과 함께 이해를 해본다면 폼 내부 값 변경에 따라 의존성에 등록된 상태값이 변경되고 이에 따라 이전 상태값을 갖던 컴포넌트도 언마운트가 됩니다. 이때 컴포넌트 언마운트 시 클린업 함수가 실행되는데 500밀리초 동안 잠시 타이머를 설정해둔 내부 함수가 클린업 함수에 의해 동작하지 않게 되고 다음 컴포넌트를 마운트하게 됩니다.
+
+다음 컴포넌트도 역시 500밀리초를 잠시 대기하게 되는데 이때 사용자가 입력을 500밀리초 이상 멈추고 있었던 상황이라면 내부에서 `console.log`와 `setFormValid`함수가 함께 실행되며 컴포넌트 마운트가 이루어집니다.
+:::
 
 ## Reference
-1. [nomad coders - React로 영화 웹 서비스 만들기](https://nomadcoders.co/react-for-beginners/lobby)
-2. [React hooks stale closures](https://dmitripavlutin.com/react-hooks-stale-closures/)
-3. [Understanding react useEffect cleanup function](https://blog.logrocket.com/understanding-react-useeffect-cleanup-function/)
-4. [React useEffect훅과 라이프사이클](https://krpeppermint100.medium.com/js-useeffect%EB%A5%BC-%ED%86%B5%ED%95%9C-react-hooks%EC%9D%98-lifecycle-%EA%B4%80%EB%A6%AC-3a65844bcaf8)
-5. [React docs - hooks effect](https://ko.reactjs.org/docs/hooks-effect.html)
+
+1. [Debouncing in JavaScript](https://www.geeksforgeeks.org/debouncing-in-javascript/)
+2. [Understanding react useEffect cleanup function](https://blog.logrocket.com/understanding-react-useeffect-cleanup-function/)
+3. [zerocho - React Hooks! useEffect편](https://www.zerocho.com/category/React/post/5f9a6ef507be1d0004347305)

@@ -170,6 +170,7 @@ module.exports = {
                     'react/state',
                     'react/props',
                     'react/cra',
+                    // 'react/effect',
                     'react/effect',
                     'react/fragment',
                     'react/todo',
