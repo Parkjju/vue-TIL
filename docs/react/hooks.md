@@ -1,3 +1,3 @@
 ---
-title: React hooks
+title: React custom hook
 ---
