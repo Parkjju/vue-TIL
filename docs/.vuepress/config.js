@@ -197,6 +197,7 @@ module.exports = {
                     'react-native/220712-touch',
                     'react-native/220719-apploading',
                     'react-native/220720-navigation',
+                    'react-native/220721-styling',
                 ],
             },
             {
