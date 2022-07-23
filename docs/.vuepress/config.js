@@ -199,6 +199,7 @@ module.exports = {
                     'react-native/220719-apploading',
                     'react-native/220720-navigation',
                     'react-native/220721-style',
+                    'react-native/220723-flat',
                 ],
             },
             {
