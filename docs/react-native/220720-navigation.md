@@ -97,6 +97,10 @@ export default function App() {
 5. screenOptions / options - tabBarActiveTintColor / tabBarInactiveTintColor : 탭의 포커스 여부에 따라 컬러를 바꿔줍니다.
 
 더 자세한 내용들은 [다음의 링크](https://reactnavigation.org/docs/material-bottom-tab-navigator/)를 참조하세요.
+
+탭 컴포넌트 내에서 `Tab.Navigator` 컴포넌트를 사용하게 되는데 이때 메모리 관리에 도움을 주는 프롭스가 있습니다. 바로 `unmountOnBlur` 프롭스입니다. 해당 프롭스에 `true` 값을 전달하면 다른 화면으로 전환할 때에 해당 컴포넌트를 언마운트 하게 되어 어플리케이션 내에서 없애게 되고 다시 해당 페이지로 접속하면 초기 상태로 렌더링 되게 됩니다.
+
+메모리 관리를 위해 `unmountOnBlur` 프롭스를 `true`로 설정한 뒤 데이터를 미리 캐싱해두지 않았다면 **API 요청을 다시 진행하게 되어 서버 상에 불필요한 요청을 늘리게 됩니다.** 이를 위해 `React-query`와 같은 라이브러리를 통해 데이터들을 캐싱해두는 것입니다.
 :::
 
 ## TabBar Icons

@@ -119,6 +119,49 @@ const { isLoading, data } = useQuery('queryKey', fetcher, {
 
 :::
 
+## React Query로 리액트 네이티브 앱 새로고침 구현하기
+
+[다음의 문서](https://react-query-v3.tanstack.com/reference/useQuery)를 보면 `useQuery` 훅의 세 번째 파라미터 대한 데이터들을 확인할 수 있습니다.
+
+새로고침의 주요 로직은 데이터들을 `refetch` 해온다는 것입니다. 따라서 `useQuery` 훅의 반환 객체 프로퍼티에 `refetch`를 설정하면 해당 API로의 `refetch`함수를 받을 수 있습니다.
+
+또한 현재 `refetch`중인지 여부를 불리언 값으로 받을 수 있는 `isRefetching` 프로퍼티도 존재합니다.
+
+```javascript
+const { isLoading, data, refetch, isRefetching } = useQuery(['key'], getData);
+```
+
+:::tip queryKey 활용하기
+`useQuery` 훅의 쿼리 키는 배열 또는 문자열 데이터를 사용할 수 있습니다. 이때 쿼리키를 배열 데이터로 선언하게 되면 내부 데이터에 대한 형식은 상관이 없습니다.
+
+쿼리키는 특정 동작을 갖는 것이 아니라 단순히 캐싱 데이터 접근을 위한 열쇠 역할만 하기 때문입니다.
+
+```javascript
+ // An individual todo
+ useQuery(['todo', 5], ...)
+ // queryKey === ['todo', 5]
+
+ // An individual todo in a "preview" format
+ useQuery(['todo', 5, { preview: true }], ...)
+ // queryKey === ['todo', 5, { preview: true }]
+
+ // A list of todos that are "done"
+ useQuery(['todos', { type: 'done' }], ...)
+ // queryKey === ['todos', { type: 'done' }]
+
+```
+
+위와 같이 배열 내에 객체를 선언하더라도 이는 쿼리한 데이터 접근을 위한 열쇠 생김새롤 표현하는 것입니다.
+:::
+
+쿼리키는 카테고리화 할 수가 있습니다. 배열 데이터 선언 후 위의 코드에서처럼 첫 번째 인덱스에 동일한 원소 데이터를 삽입해두는 것입니다.
+
+부분적으로 쿼리 키와 일치하는 모든 API fetcher 함수로 요청을 보낼 수 있는 함수가 바로 `queryClient.refetchQueries(["키값"])` 입니다.
+
+앱의 첫 시작에서 `QueryClientProvider`의 프롭스로 `provider`를 전달하였습니다. 이때 전달된 `queryClient` 객체를 하위 컴포넌트에서 불러와 활용할 수 있게 되는겁니다.
+
+`queryClient` 객체의 함수로 `refetchQueries`가 있고, 이 함수의 파라미터로 전달된 키값을 부분적으로 갖는 모든 API에 요청을 보내는 것입니다.
+
 ## Reference
 
 1. [노경환님의 기억보다 기록을](https://kyounghwan01.github.io/blog/React/react-query/basic/)
