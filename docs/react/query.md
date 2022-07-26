@@ -1,12 +1,13 @@
 ---
 title: React Query
-
 ---
+
 ## React query 초기 설치
 
 리액트 쿼리를 왜 써야할까요? [노경환님의 기억보다 기록을 - react query](https://kyounghwan01.github.io/blog/React/react-query/basic/) 글을 보면 서버에 요청한 데이터를 `state`로써 관리를 하게 되는데 서버 패치 이후 업데이트 된 데이터가 클라이언트에 뿌려지지 않고 예전 데이터가 뿌려지는 문제가 발생하게 된다고 합니다. 이러한 문제 해결을 위해 서버-클라이언트간 분리가 이루어진다고 합니다.
 
 설치를 진행해봅시다.
+
 ```sh
 npm install react-query
 ```
@@ -14,6 +15,7 @@ npm install react-query
 리액트 쿼리 처리를 위해서는 프로바이더 구조를 따르면 됩니다. 이전에 `styled-components`로 테마를 적용해봤었죠. 프로바이더 안에 있는 모든 요소들은 프로바이더가 제공하는 특정 프롭스를 사용할 수 있는 구조입니다.
 
 쿼리클라이언트 프로바이더에는 `client`프로퍼티가 반드시 있어야합니다.
+
 ```javascript
 // index.tsx
 import { QueryClient, QueryClientProvider } from "react-query"; // 추가
@@ -36,19 +38,21 @@ root.render(
 프로바이더 생성 후 컴포넌트에서 리액트 쿼리 훅을 사용하기 전 **fetcher함수를 정의해야 합니다.** 기존 컴포넌트에서 데이터를 비동기 요청하기 위해 사용했던 `useEffect` 속 비동기 코드들을 모두 컴포넌트로부터 분리해야합니다.
 
 API 관리를 위한 타입스크립트 파일 `api.ts`를 먼저 생성합니다. 이곳에는 프라미스 객체에 대한 응답의 `json` 데이터를 리턴하는 함수를 생성하여 익스포트 합니다.
+
 ```javascript
 // api.ts
-export function fetchData(){
-  return fetch('https:// ... ').then((response) => response.json());
+export function fetchData() {
+    return fetch('https:// ... ').then((response) => response.json());
 }
 ```
 
 이후 위의 데이터 요청 함수를 사용할 컴포넌트로 이동하여 `useQuery` 훅을 사용합니다. `useQuery`는 객체를 리턴하며 비동기 요청 처리 여부(로딩중인지)와 fetcher로부터 리턴받은 json 데이터를 프로퍼티로 갖습니다.
 
 또한 `useQuery`의 파라미터로는 `queryKey`, 다른 곳에서 정의해둔 fetcher함수를 전달합니다. 쿼리 키는 쿼리에 대해 유일한 구분값을 사용합니다. (컴포넌트 로직에 따라 판단)
+
 ```javascript
-function Component(){
-  const { isLoading, data } = useQuery('queryKey값', fetcherFunction);
+function Component() {
+    const { isLoading, data } = useQuery('queryKey값', fetcherFunction);
 }
 ```
 
@@ -76,51 +80,46 @@ function App() {
 ```
 
 컴포넌트 속 `fetch` 로직들을 `useQuery`로 수정하려고 하는데 다음과 같은 상황입니다.
-1. 컴포넌트 로직에 따른 쿼리 키가 동일합니다. 
+
+1. 컴포넌트 로직에 따른 쿼리 키가 동일합니다.
 2. fetch를 두번 하는 동안 `useQuery` 구조 분해 프로퍼티가 const로 인해 겹칩니다.
 3. fetcher 함수에 인자를 전달해야합니다.
 
 먼저 첫 번째 상황은 쿼리 키가 배열 형태로 저장되므로 `useQuery(["myId", 유일값], fetcher)` 형태로 배열 원소를 하나 겹치지 않게 추가하면 됩니다.
 
 두 번째 상황은 `isLoading`, `data` 프로퍼티에 데이터 이름을 명시해줍니다.
+
 ```javascript
-const {isLoading: myLoading, data: myData} = useQuery(key, fetcherFunction);
+const { isLoading: myLoading, data: myData } = useQuery(key, fetcherFunction);
 ```
 
 세 번째 상황은 함수를 **호출하면서 인자를 전달하는 것이 아니라, 인자를 받는 함수 자체를 리턴합니다.**
+
 ```javascript
-const {isLoading, data} = useQuery(key, () => fetcher(myArgument));
+const { isLoading, data } = useQuery(key, () => fetcher(myArgument));
 ```
 
 :::tip 3번째 인자
 `useQuery`훅은 세 번째 인자를 전달할 수 있다. 바로 `refetch` 주기를 밀리초 단위로 설정하는 것이다. 객체를 전달하면 되고 `refetchInterval` 프로퍼티에 대한 값을 지정한다.
+
 ```javascript
-const {isLoading, data} = useQuery('queryKey', fetcher, {
-  refetchInterval:5000
-})
+const { isLoading, data } = useQuery('queryKey', fetcher, {
+    refetchInterval: 5000,
+});
 ```
+
 :::
 
-## Outlet Context
+:::warning 리액트 네이티브 useQuery
+현재 리액트 쿼리 버전 `4.0.0`으로 업데이트 되면서 `useQuery`훅의 키값을 문자열로 지정하면 API를 불러오지 못하는 이슈가 있습니다. 배열 데이터 안에 키를 설정하여 활용합시다.
 
-리액트 쿼리에서 우리는 중첩 라우트를 구현했었다. 버전6으로 업데이트 되면서 `Outlet` 컴포넌트를 활용할 수 있게 되어 이를 활용하였었는데 중첩 라우트의 자식 컴포넌트에 프롭스를 전달하기 위해서는 어떻게 해야할까?
-
-컨텍스트 개념이 등장하여 `Outlet` 컴포넌트에 전달할 수 있게 되었다. 나중에 `Outlet`으로 대체될 중첩 라우트에 특정 프롭스가 정의되어 있지 않더라도 `Outlet`이 부착된 컴포넌트에 커스텀 프롭스를 `context`라는 이름으로 정의하면 된다. 
-
-```javascript
-<Outlet context={{myProps: data }}/>
+```sh
+[Unhandled promise rejection: TypeError: undefined is not an object (evaluating '_this.state.children[_this.state.index]')]
 ```
 
-프롭스가 전달되면 중첩 라우트의 자식 컴포넌트에서 `useOutletContext` 훅을 통해 프롭스를 전달받을 수 있게 된다. (타입스크립트 기반이라면 인터페이스를 제네릭으로 전달해야한다.)
-
-```javascript
-import {useOutletContext} from "react-router";
-
-function Component(){
-  const data = useOutletContext<MyGeneric>();
-  return <h1>Hello!</h1>;  
-}
-```
+:::
 
 ## Reference
+
 1. [노경환님의 기억보다 기록을](https://kyounghwan01.github.io/blog/React/react-query/basic/)
+2. [React Query 키 관리](https://www.zigae.com/react-query-key/)

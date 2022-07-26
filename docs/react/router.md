@@ -1,7 +1,7 @@
 ---
 title: React Router
-
 ---
+
 ## Movie API
 
 [다음 링크에는](https://yts.torrentbay.to/api) 각종 영화들에 대한 정보에 접근할 수 있게 API DOCS가 작성되어 있습니다.
@@ -78,7 +78,7 @@ npm install react-router-dom
 리액트 라우터 6.X버전의 경우 `Switch`가 `Routes`로 변경되었습니다. 또한, 컴포넌트를 표기해주는 라우터 프로퍼티 이름이 `component`에서 `element`로 바뀌었습니다. 기존의 홈 스크린 라우팅 코드와 6.X 버전 코드를 비교하면 다음과 같습니다.
 
 ```javascript
-import { BrowserRouter as Router, Switch , Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Home from './routes/Home';
 
 function App() {
@@ -129,7 +129,7 @@ function Movie({ title }) {
     return (
         <div>
             <h2>
-                <Link to='/movie'>{title}</Link> 
+                <Link to='/movie'>{title}</Link>
             </h2>
         </div>
     );
@@ -140,19 +140,17 @@ function Movie({ title }) {
 Link태그에 styled-components를 적용하여 스타일링할 수 있습니다. CSS 프로퍼티인 `text-decoration:none`과 같은 스타일들을 인라인 형태로 처리해도 되지만, 좀 더 많은 스타일링을 하고자 한다면 styled-components의 상속을 활용합니다.
 
 ```javascript
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const MyLink = styled(Link)`
-  text-decoration:none;
-  &:hover{
-    background-color:black;
-  }
-`
+    text-decoration: none;
+    &:hover {
+        background-color: black;
+    }
+`;
 
-function Component(){
-  return(
-    <MyLink to="/"/>
-  )
+function Component() {
+    return <MyLink to='/' />;
 }
 ```
 
@@ -160,6 +158,7 @@ function Component(){
 :::
 
 ## useNavigate
+
 `react-router-dom`에서는 HTML5 history를 기반으로 뒤로가기 기능을 제공해줍니다. v5에서는 `useHistory`라는 훅 네이밍을 갖고 있었지만 v6로 업데이트 되면서 `useNavigate`라는 훅 네이밍으로 바뀌었습니다.
 
 useNavigate를 사용하려면 당연히 Routes (v5에서 Switch컴포넌트)를 통한 페이지 이동 컴포넌트 구조가 구성되어 있어야 합니다. URL을 `/`, `/child`로 구성했다고 할때 다음 코드를 보면,
@@ -167,11 +166,11 @@ useNavigate를 사용하려면 당연히 Routes (v5에서 Switch컴포넌트)를
 ```javascript
 // Home URL '/'
 // Route 구성된 상태
-import {useNavigate} from "react-roouter-dom";
+import { useNavigate } from 'react-roouter-dom';
 
-function Home(){
-  const navigate = useNavigate();
-  return <Link onClick={() => navigate('/child')}>Go To Child!</Link>
+function Home() {
+    const navigate = useNavigate();
+    return <Link onClick={() => navigate('/child')}>Go To Child!</Link>;
 }
 
 export default Home;
@@ -179,10 +178,10 @@ export default Home;
 
 ```javascript
 // Child URL "/child"
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
-function Child(){
-  return <Link onClick={() => navigate(-1)}> Go Back! </Link>
+function Child() {
+    return <Link onClick={() => navigate(-1)}> Go Back! </Link>;
 }
 ```
 
@@ -190,30 +189,33 @@ Home에서 Go To Child! 버튼을 클릭하면 `/child`로 이동하게 되고, 
 
 `navigate()`함수에 -1과 같이 음수값을 전달하면 현재 페이지 기준으로 접속했던 과거 N번째 페이지로 이동하게 되는 것입니다.
 
-
 ## URL parameter
-URL의 구성 요소에는 정적인 파라미터만 있는 것이 아닙니다. 라우트 컴포넌트를 통해 URL 구성이 모듈화되어 있다고 해도, 그 동일한 모듈이 재사용되는 서비스의 경우 고유한 값에 따라 페이지 URL을 다르게 구성해야 하는 것이죠. 
 
-쉽게 말해 우리가 컴포넌트 생성 시 `map()` 메서드로 여러 HTML 엘리먼트들을 생성하였고, 그 엘리먼트를 클릭했을때 이동하는 `Link` 컴포넌트를 생성하는 상황에서 몇 개가 될지 모르는 HTML 엘리먼트에 대해 각각 이름을 다르게 붙여줄 수 있을까요? 
+URL의 구성 요소에는 정적인 파라미터만 있는 것이 아닙니다. 라우트 컴포넌트를 통해 URL 구성이 모듈화되어 있다고 해도, 그 동일한 모듈이 재사용되는 서비스의 경우 고유한 값에 따라 페이지 URL을 다르게 구성해야 하는 것이죠.
+
+쉽게 말해 우리가 컴포넌트 생성 시 `map()` 메서드로 여러 HTML 엘리먼트들을 생성하였고, 그 엘리먼트를 클릭했을때 이동하는 `Link` 컴포넌트를 생성하는 상황에서 몇 개가 될지 모르는 HTML 엘리먼트에 대해 각각 이름을 다르게 붙여줄 수 있을까요?
 
 이럴 때에 URL 동적 파라미터를 사용하게 되는 것입니다. `Link` 컴포넌트의 `path`에 상위 컴포넌트로부터 넘어온 고유값 프롭스를 `to` 프로퍼티에 전달하면 됩니다.
 
 ```javascript
 <Link to={`/movie/${id}`}>{title}</Link>
 ```
-링크 컴포넌트 `to` 프로퍼티에 콧수염 괄호를 열어주고, 상위 컴포넌트로부터 받아온 프롭스 `id`를 전달합니다. 상위 컴포넌트는 현재 map을 통해 `Movie` 컴포넌트를 여러개 생성해주고 있죠. 
+
+링크 컴포넌트 `to` 프로퍼티에 콧수염 괄호를 열어주고, 상위 컴포넌트로부터 받아온 프롭스 `id`를 전달합니다. 상위 컴포넌트는 현재 map을 통해 `Movie` 컴포넌트를 여러개 생성해주고 있죠.
 
 ```javascript
-{movies.map((movie) => (
-    <Movie
-        key={movie.id}
-        id={movie.id}
-        medium_cover_image={movie.medium_cover_image}
-        genres={movie.genres}
-        title={movie.title}
-        summary={movie.summary}
-    />
-))}
+{
+    movies.map((movie) => (
+        <Movie
+            key={movie.id}
+            id={movie.id}
+            medium_cover_image={movie.medium_cover_image}
+            genres={movie.genres}
+            title={movie.title}
+            summary={movie.summary}
+        />
+    ));
+}
 ```
 
 `Link` 컴포넌트를 활용하여 여러 개의 컴포넌트들을 무사히 렌더링할 수 있었습니다. 그렇다면 이번엔 `App.js`, 즉 전체 라우트 컴포넌트들을 관리하는 최상위 컴포넌트로 이동해봅시다.
@@ -230,8 +232,8 @@ function App() {
     );
 }
 ```
-현재 `Route` 컴포넌트 중 영화 디테일 페이지를 렌더링하는 `path`는 `/movie` 라고 되어있습니다. 이곳에 동적 파라미터를 등록하고 싶다면 URL파라미터 이름 앞에 콜론만 붙여주면 됩니다.
 
+현재 `Route` 컴포넌트 중 영화 디테일 페이지를 렌더링하는 `path`는 `/movie` 라고 되어있습니다. 이곳에 동적 파라미터를 등록하고 싶다면 URL파라미터 이름 앞에 콜론만 붙여주면 됩니다.
 
 ```javascript
 <Route path='/movie/:myid' element={<Detail />} />
@@ -250,26 +252,30 @@ function Detail() {
 
 export default Detail;
 ```
+
 `Detail` 컴포넌트를 렌더링하면 `x`에 URL 파라미터 값들이 객체 형태로 전달됩니다.
+
 ```javascript
-x = {myid: '31234'};
+x = { myid: '31234' };
 ```
 
 현재까지의 흐름을 정리하면 다음과 같습니다.
+
 1. `react-router-dom`의 Link 컴포넌트를 통해 HTML `href` 대신 컴포넌트 렌더링 로직으로 대체한다. 정적 리소스 재요청을 막기 위함입니다. 이때 `to` 프로퍼티에는 `to={프롭스값}`과 같은 형태, 즉 동적인 값을 전달해야겠죠.
 2. `Route` 컴포넌트에서 `path`에 콜론을 붙인 URL파라미터 이름을 전달합니다. `<Route path="/movie/:id" element={<Detail/}`과 같은 형태입니다.
 3. 라우트 컴포넌트를 통해 새롭게 렌더링된 `Detail` 컴포넌트에서 다양한 로직 처리를 위해 URL 파라미터의 값들을 받아와야 합니다. 이때 `useParams` 훅을 사용합니다. URL파라미터 전체 값이 객체 형태로 반환됩니다.
 
 다음은 디테일 컴포넌트에서 URL파라미터 값을 추출하여 API요청을 보내는 코드입니다.
+
 ```javascript
 function Detail() {
     const { id } = useParams(); // Params 추출
 
     const getMovie = async () => {
-        const json = await (
-          // Params로 API요청
+        const json = await // Params로 API요청
+        (
             await fetch(
-                `https://yts.mx/api/v2/movie_details.json?movie_id=${id}` 
+                `https://yts.mx/api/v2/movie_details.json?movie_id=${id}`
             )
         ).json();
         console.log(json);
@@ -286,25 +292,26 @@ React Router Dom 사용시 v6 이상이면 useParams 훅 사용시 타입을 특
 :::
 
 ## useLocation
+
 `react-router-dom`의 훅 중에서는 `useLocation`이 있다. 자바스크립트에서의 `location` 객체가 간소화된 형태로 제공된다고 보면 됩니다.
-`useLocation`훅이 `location` 객체를 다룬다는 것 자체에도 의미가 있지만 **이전 페이지 라우터 컴포넌트로부터 프롭스를 받아올 수 있다는 점에서 유용하게 사용되고는 합니다.** 
+`useLocation`훅이 `location` 객체를 다룬다는 것 자체에도 의미가 있지만 **이전 페이지 라우터 컴포넌트로부터 프롭스를 받아올 수 있다는 점에서 유용하게 사용되고는 합니다.**
 
 코드를 보자.
+
 ```javascript
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 // ....
 <Link to={`/${myfile.id}`} state={myfile.name}>
-    <Img
-        src={`${endpoint}/myFile.txt}`}
-        alt='coin'
-    />
+    <Img src={`${endpoint}/myFile.txt}`} alt='coin' />
     {coin.name} &rarr;
-</Link>
+</Link>;
 ```
+
 `Link` 컴포넌트를 통해 특정 API에 요청을 보냅니다. 이때 이 컴포넌트에는 `state` 프로퍼티를 전달할 수 있습니다.
 
 **중요한건 프롭스로 `state`를 받는 컴포넌트에서 인터페이스를 정의해야한다는 것입니다.** 위의 코드에서 만약 `myFile.name`이 `string`타입이었다면 하위 컴포넌트에서의 인터페이스는 다음과 같이 정의되어야 할 것입니다.
+
 ```javascript
 interface FileState{
   state: string;
@@ -317,15 +324,16 @@ function Child(){
 
 `useLocation`으로부터 구조 분해 되어 `state`에는 상위 컴포넌트의 프롭스로부터 전달받은 `myFile.name` 문자열 값이 저장되게 됩니다.
 
-:::warning 
-위 코드의 하위 컴포넌트가 `state`을 사용하기 위해서는 상위 컴포넌트의 프롭스로부터 `state` 값을 전달받아야 합니다. 
+:::warning
+위 코드의 하위 컴포넌트가 `state`을 사용하기 위해서는 상위 컴포넌트의 프롭스로부터 `state` 값을 전달받아야 합니다.
 `Link`를 통해 순서가 있는 접근이 아닌 하위 컴포넌트 URL로 직접 접근하게 되면 `undefined` 값이 저장되게 됩니다. 이는 분명 논리적 오류이며 이를 예외적으로 처리해야합니다.
- 
+
 널 병합 연산자 `??`를 통해 처리하도록 해봅시다.
+
 ```javascript
 function Child(){
   const { state } = useLocation() as FileState;
-  
+
   return (
     <div>
       <span>{state ?? "UNDEFINED!!"}</span>
@@ -335,10 +343,11 @@ function Child(){
 ```
 
 `state`가 객체 형태로 프롭스에 전달되었다면 옵셔널 체이닝으로 깔끔한 코딩을 할 수도 있습니다. `state` 객체의 `name` 프로퍼티가 있다고 가정해봅시다.
+
 ```javascript
 function Child(){
   const { state } = useLocation() as FileState;
-  
+
   return (
     <div>
       <span>{state?.name ?? "UNDEFINED!!"}</span>
@@ -346,29 +355,33 @@ function Child(){
   )
 }
 ```
+
 `state`객체가 undefined가 아니면 해당 객체의 `name` 프로퍼티 값을 출력하고 이 또한 `undefined`면 후에 작성된 `UNDEFINED!!`를 부착합니다.
 :::
 
 ## Nested Router
-라우터가 중첩된 형태를 가지면 `Nested Router`이다. 유용하게 사용될텐데, 바로 **탭 기능 구현에 사용된다.** 
 
-react-router-dom의 `Outelet` 컴포넌트를 사용하면 `Router.tsx`에 정의된 중첩 라우트가 자동으로 삽입된다. 컴포넌트의 구조가 Todos가 있고 완료 여부를 route path에 넘기는 형식이라고 가정하자. 
+라우터가 중첩된 형태를 가지면 `Nested Router`이다. 유용하게 사용될텐데, 바로 **탭 기능 구현에 사용된다.**
+
+react-router-dom의 `Outelet` 컴포넌트를 사용하면 `Router.tsx`에 정의된 중첩 라우트가 자동으로 삽입된다. 컴포넌트의 구조가 Todos가 있고 완료 여부를 route path에 넘기는 형식이라고 가정하자.
 
 이때 Todo 컴포넌트 안에 중첩 라우트를 사용하는 상황이다.
+
 ```javascript
 // Router.tsx
-function Router(){
-  return(
-    //...
-    <Routes>
-      <Route path="/todos" element={<Todos/>}>
-        <Route path="completed" element={<Completed/>}/>
-        <Route path="incompleted" element={<Incompleted/>}/>
-      </Route>
-    </Routes>
-  )
+function Router() {
+    return (
+        //...
+        <Routes>
+            <Route path='/todos' element={<Todos />}>
+                <Route path='completed' element={<Completed />} />
+                <Route path='incompleted' element={<Incompleted />} />
+            </Route>
+        </Routes>
+    );
 }
 ```
+
 위와 같이 한 투두 리스트 안에 완료된 투두 / 완료되지 않은 투두를 고를 수 있도록 중첩 라우트를 구성한 상태에서 URL "/todos/completed"에 접근할 때 중첩 라우트를 분리하여 코드 작성할 필요없이 `Outlet` 컴포넌트를 사용하면 URL 검사와 함께 부모 / 자식 컴포넌트를 비교하여 자동으로 위 구조 컴포넌트를 렌더링해준다.
 
 ```javascript
@@ -383,26 +396,28 @@ function Router(){
   <Route path="incompleted" element={<Incompleted />} />
 </Routes>
 ```
+
 위 처럼 분리하는 것이 아니라,
 
 ```javascript
 // In Router.tsx
-<Route path="/:coinId" element={<Coin />} >
-  <Route path="chart" element={<Chart />} />
-  <Route path="price" element={<Price />} />
+<Route path='/:coinId' element={<Coin />}>
+    <Route path='chart' element={<Chart />} />
+    <Route path='price' element={<Price />} />
 </Route>
 ```
+
 위 처럼 라우터 파일에 중첩 라우트를 구성하고 위의 Coin/Chart&Price 구조의 컴포넌트를 부착할 위치에 `Outlet` 컴포넌트를 부착하면 된다는 것이다.
 
 예시 코드를 살펴보자. 중첩 라우트 구성이 위처럼 `/:coinId/chart`, `/:coinId/price`라고 할 때 Outlet 컴포넌트와 함께 context로 URL을 전달하면 된다.
+
 ```javascript
-function Component(){
-  const selectURL = true; // true or false.. 우선은 하드코딩
-  return (
-    <Outlet context={{url: select ? chart : price}}/>
-  )
+function Component() {
+    const selectURL = true; // true or false.. 우선은 하드코딩
+    return <Outlet context={{ url: select ? chart : price }} />;
 }
 ```
+
 context는 객체 형태로 전달해야한다.
 
 Outlet에 전달된 context의 select 프로퍼티값이 true / false냐에 따라 chart / price로 Outlet이 렌더링 되는 컴포넌트가 달라지게 된다.
@@ -419,6 +434,26 @@ function Component(){
 }
 ```
 
+## Outlet Context
+
+리액트 쿼리에서 우리는 중첩 라우트를 구현했었다. 버전6으로 업데이트 되면서 `Outlet` 컴포넌트를 활용할 수 있게 되어 이를 활용하였었는데 중첩 라우트의 자식 컴포넌트에 프롭스를 전달하기 위해서는 어떻게 해야할까?
+
+컨텍스트 개념이 등장하여 `Outlet` 컴포넌트에 전달할 수 있게 되었다. 나중에 `Outlet`으로 대체될 중첩 라우트에 특정 프롭스가 정의되어 있지 않더라도 `Outlet`이 부착된 컴포넌트에 커스텀 프롭스를 `context`라는 이름으로 정의하면 된다.
+
+```javascript
+<Outlet context={{ myProps: data }} />
+```
+
+프롭스가 전달되면 중첩 라우트의 자식 컴포넌트에서 `useOutletContext` 훅을 통해 프롭스를 전달받을 수 있게 된다. (타입스크립트 기반이라면 인터페이스를 제네릭으로 전달해야한다.)
+
+```javascript
+import {useOutletContext} from "react-router";
+
+function Component(){
+  const data = useOutletContext<MyGeneric>();
+  return <h1>Hello!</h1>;
+}
+```
 
 ## Reference
 
