@@ -162,6 +162,53 @@ const { isLoading, data, refetch, isRefetching } = useQuery(['key'], getData);
 
 `queryClient` 객체의 함수로 `refetchQueries`가 있고, 이 함수의 파라미터로 전달된 키값을 부분적으로 갖는 모든 API에 요청을 보내는 것입니다.
 
+## 쿼리 파라미터 전달하기
+
+API에는 쿼리 파타미터를 함께 전달해야 하는 경우가 많습니다. 단순히 API 키값과 같은 쿼리 파라미터에 대해서만 전달하면 되는 것이 아니라 사용자로부터 입력받은 데이터를 정제하여 쿼리 파라미터로 전달해야되는 경우도 많습니다.
+
+검색기능에 대해 사용자로부터 입력받은 데이터를 검색하고자 한다면 입력 값을 쿼리 파라미터로 담아 보내야 하는 것입니다.
+
+`useQuery` 훅을 호출하는 컴포넌트에 접속할 경우 캐싱된 데이터를 불러오는 등 자동으로 해당 훅에 대해 기능을 사용하게 되는데 검색기능의 경우 `submit` 이벤트가 감지 된 이후에야 쿼리를 실행해야 합니다.
+
+이를 위해 `useQuery` 훅은 세 번째 파라미터로 각종 옵션들을 담을 수 있는 객체를 전달받습니다.
+
+```javascript
+const {
+    isdLoading: moviesLoading,
+    data: moviesData,
+    refetch: searchMovies,
+} = useQuery(['searchMovies', query], moviesAPI.search, {
+    enabled: false,
+});
+```
+
+`enabled` 프로퍼티 값을 `false`로 설정하면 초기 컴포넌트 렌더링 시 쿼리를 사용하지 않게 됩니다.
+
+리액트 네이티브 상에서 쿼리 파라미터 전달 작업을 한다고 가정하면 `TextInput` 컴포넌트에 `onChangeText` 프롭스에 대한 함수와 `onSubmitEditing` 프롭스에 대한 함수를 각각 등록하여 데이터 입력 및 정제 작업을 진행해야 합니다.
+
+이때의 입력값을 리액트 상태값으로 관리하여 해당 텍스트를 쿼리 파라미터로 보내게 되는 것입니다.
+
+이때 쿼리 파라미터는 **`useQuery` 훅의 queryKey에 해당하는 배열 데이터 두 번째 원소가 됩니다.**
+
+쿼리를 위한 `fetcher` 함수는 쿼리키를 파라미터로 받습니다.
+
+```javascript
+export const API = {
+    search: ({ queryKey }) => {
+        const [_, query] = queryKey;
+        return fetch(`${BASE_URL}/query=${query}`).then((response) =>
+            response.json()
+        );
+    },
+};
+```
+
+`useQuery`훅에서 설정한 쿼리키값을 fetcher 함수의 파라미터에서 받은 후 배열 구조분해를 통해 쿼리 파라미터 값을 빼옵니다.
+
+`[_,query] = queryKey` 코드는 위의 예시 코드를 기준으로 쿼리키에 전달 된 `searchMovies`, `query`값에서 `query`값을 변수 `query`에 저장하게 되는 것입니다.
+
+이후 정의한 API에서 `fetcher`함수에 템플릿 리터럴 문법으로 쿼리 파라미터를 전달합니다.
+
 ## Reference
 
 1. [노경환님의 기억보다 기록을](https://kyounghwan01.github.io/blog/React/react-query/basic/)
