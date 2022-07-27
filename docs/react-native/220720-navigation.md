@@ -256,6 +256,100 @@ const Stack = () => (
 탭 스크린 옵션 중 `headerShown`을 false로 지정하면 탭 컴포넌트의 헤더를 숨기게 되어 스택 컴포넌트의 헤더와 겹쳐보이는 문제를 해결할 수 있습니다.
 :::
 
+## 스택에 파라미터 전달하기
+
+영화 목록이 있고 영화 클릭 시 상세 정보를 화면상에 표시한다고 가정해보겠습니다. `useNavigation` 훅의 객체 내에 내장된 함수 `navigate`에는 두 번째 파라미터로 객체를 전달합니다. 이때 프로퍼티는 `Stack.Screen` 컴포넌트의 `name`프롭스로 등록했던 `screen`을 지정할 수 있었습니다. `screen` 프로퍼티 외에 `params` 프로퍼티도 정의할 수 있는데 이 프로퍼티를 통해 화면 네비게이션 화면 전환 시 전달할 값들을 보내줄 수 있습니다.
+
+메인페이지 특정 아이템에서 `TouchableOpacity` `onPress` 프롭스를 통해 터치를 감지하고 스크린 이동이 이루어지는 상황입니다.
+
+```javascript
+function Parent(props) {
+    const navigation = useNavigation();
+    const goToDetail = () => {
+        navigation.navigate('Stack', {
+            screen: 'Detail',
+            params: {props.mydata},
+        });
+    };
+    return (
+        <TouchableOpacity onPress={goToDetail}>
+            <Component></Component>
+        </TouchableOpacity>
+    );
+}
+```
+
+Parent 컴포넌트가 받은 프롭스의 `mydata`값을 디테일 페이지로 보내려고 합니다. 스택상에 등록된 screen을 지정해준 후 params를 통해 해당 데이터를 전달하는 함수를 구현합니다. (goToDetail)
+
+이후 onPress가 감지되면 해당 함수를 호출하는 방식으로 구현합니다.
+
+`navigate` 함수의 파라미터로 `params`에 값을 담아 보냈다면 받는 컴포넌트에서 제대로 받아야 합니다. 리액트의 프롭스 문법으로 받을 수 있으며 `route` 프로퍼티를 통해 `params` 값을 받을 수 있습니다.
+
+```javascript
+const Detail = ({ navigation: { setOptions }, route: { params } }) => {
+    useEffect(() => {
+        setOptions({
+            title: params.myTitle,
+        });
+    }, []);
+
+    return (
+        <Container>
+            <Text>Hello!!!!</Text>
+        </Container>
+    );
+};
+```
+
+## Linking API
+
+현재 앱에서 외부 URL을 열어줄 수 있는 API입니다. 리액트 네이티브 자체적으로 제공하는 API이므로 설치는 필요하지 않습니다.
+
+비동기적으로 동작하기 때문에 `async` - `await` 구문을 사용해야 합니다.
+
+```javascript
+import {Linking} from "react-native";
+
+function Component(){
+    const openYoutube = async () => {
+        await Linking.openURL("유튜브 링크");
+    }
+    <TouchableOpacity onPress{() => openYoutube() }>
+        <Child />
+    </TouchableOpacity>
+}
+```
+
+`Linking`에는 `openURL`외에 설정을 열어줄 수 있는 `openSettings` 함수도 제공합니다.
+
+:::tip 앱 내에서 다른 URL열기
+Linking API는 URL에 상관 없이 외부 브라우저로 연결하여 페이지를 열게 됩니다. 만약 특정 영상에 대한 유튜브 링크를 앱 환경에 덮어씌워 실행하고 싶다면 `expo-web-browser`를 설치합니다.
+
+```sh
+# 설치
+expo install expo-web-browser
+
+# ios기준
+npx pod-install ios
+yarn ios
+```
+
+```javascript
+import * as WebBrowser from "expo-web-browser";
+
+function Component(){
+    const openYoutube = async () => {
+        // 여기
+        await WebBrowser.openBrowserAsync("유튜브 링크");
+    }
+    <TouchableOpacity onPress{() => openYoutube() }>
+        <Child />
+    </TouchableOpacity>
+}
+```
+
+:::
+
 ## Reference
 
 1. [노마드 코더 - 리액트 네이티브 마스터클래스](https://nomadcoders.co/react-native-masterclass/lobby)

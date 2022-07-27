@@ -88,6 +88,7 @@ module.exports = {
                     '/trash/220719-native',
                     '/trash/220720-dark',
                     '/trash/220722-rntypes',
+                    'trash/220727-embed',
                 ],
             },
             {
