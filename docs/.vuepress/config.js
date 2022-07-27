@@ -202,6 +202,7 @@ module.exports = {
                     'react-native/220720-navigation',
                     'react-native/220721-style',
                     'react-native/220723-flat',
+                    'react-native/220727-infinite',
                 ],
             },
             {
