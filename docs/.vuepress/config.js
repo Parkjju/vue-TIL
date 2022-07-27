@@ -89,6 +89,7 @@ module.exports = {
                     '/trash/220720-dark',
                     '/trash/220722-rntypes',
                     'trash/220727-embed',
+                    'trash/220727-share',
                 ],
             },
             {
