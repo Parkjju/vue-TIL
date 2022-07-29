@@ -64,7 +64,7 @@ Weighted DAG의 최종 수행시간은 O(n+m)이 된다.
 
 ## Bellman Ford 알고리즘
 
-Bellman Ford 알고리즘은 그래프 최단 경로 알고리즘 중 하나이다.
+[Bellman Ford 알고리즘](https://www.scaler.com/topics/data-structures/bellman-ford-algorithm/) 그래프 최단 경로 알고리즘 중 하나이다.
 
 아래 그래프를 고려하자.
 
