@@ -209,7 +209,7 @@ module.exports = {
             {
                 title: 'AWS',
                 collapsable: true,
-                children: [],
+                children: ['/aws/220812-IAM', '/aws/220812-start'],
             },
             {
                 title: 'Vue',
