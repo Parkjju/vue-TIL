@@ -1,7 +1,7 @@
 ---
 title: this
-
 ---
+
 ## 자바 this
 
 자바스크립트 `this`는 인스턴스 자신을 가리키는 의미의 `this`가 아니다.
@@ -9,14 +9,14 @@ title: this
 ```java
 public class Person{
 	private String name;
-    
+
     public Person(String name){
     	this.name = name;
     }
 }
 ```
 
-자바에서의 `this`는 객체 인스턴스 자신을 가리킨다. 
+자바에서의 `this`는 객체 인스턴스 자신을 가리킨다.
 
 ## 자바스크립트 this
 
@@ -39,8 +39,8 @@ public class Person{
 var globalVariable = "I'm global";
 console.log(window.globalVariable); // I'm global
 
-function foo(){
-  console.log('bar');
+function foo() {
+    console.log('bar');
 }
 window.foo(); // bar
 ```
@@ -48,13 +48,13 @@ window.foo(); // bar
 `this`는 기본적으로 전역객체에 바인딩 된다. 내부함수(중첩)의 경우에도 전역객체와 바인딩된다.
 
 ```javascript
-function foo(){
-  console.log("foo called : ", this); // window
-  
-  function bar(){
-    console.log("bar called : ",this);
-  }
-  bar();
+function foo() {
+    console.log('foo called : ', this); // window
+
+    function bar() {
+        console.log('bar called : ', this);
+    }
+    bar();
 }
 
 foo();
@@ -63,22 +63,22 @@ foo();
 메서드 **내부함수의 경우에도** 전역객체와 바인딩된다. 메서드의 `this`는 객체 인스턴스를 가리키지만 내부 중첩 함수는 전역 객체를 참조한다.
 
 ```javascript
-var value = "global";
+var value = 'global';
 
 var obj = {
-  value: "local",
-  objectFunction: function (){
-    console.log("foo called: ",this); // object
-    console.log("foo called: ", this.value); // local
-    
-    function bar(){
-      console.log("bar called: ",this); // window
-      console.log("bar called: ", this.value); // global
-    }
-    
-    bar();
-  }
-}
+    value: 'local',
+    objectFunction: function () {
+        console.log('foo called: ', this); // object
+        console.log('foo called: ', this.value); // local
+
+        function bar() {
+            console.log('bar called: ', this); // window
+            console.log('bar called: ', this.value); // global
+        }
+
+        bar();
+    },
+};
 
 obj.objectFunction(); // global
 // 객체 메서드 호출 시 괄호도 붙여야됨
@@ -88,24 +88,24 @@ obj.objectFunction(); // global
 
 ```javascript
 var obj = {
-    value: "local",
-    objectFunction: function (){
+    value: 'local',
+    objectFunction: function () {
         setTimeout(() => {
-            function foo(){
-                console.log("foo method called this : ",this); // window
+            function foo() {
+                console.log('foo method called this : ', this); // window
             }
             foo();
         }, 1000);
         setTimeout(() => {
-            function foo(){
-                console.log("foo method called this.value : ",this.value); // global
+            function foo() {
+                console.log('foo method called this.value : ', this.value); // global
             }
             foo();
-        },1000 );
-    }
-}
+        }, 1000);
+    },
+};
 
-obj.objectFunction(); 
+obj.objectFunction();
 ```
 
 지금까지의 현상을 종합해보면 **내부함수는 함수의 종류에 상관없이 this가 전역객체를 바인딩한다는** 사실을 알 수 있다.
@@ -113,21 +113,30 @@ obj.objectFunction();
 내부함수의 `this`가 전역 객체를 가리키는 이유는 설계 단계에서의 결함으로 인해 외부 함수가 내부 함수에 접근하여 `this`를 통한 값 변경 등의 작업을 완전히 예방하기 위해서이다. 중첩된 함수에서 `this`를 우리가 의도한 대로 사용하기 위해서는 다음과 같이 코드를 작성해야한다.
 
 ```javascript
-var value = "global";
+var value = 'global';
 
 var obj = {
-    value: "local",
-    foo: function(){
+    value: 'local',
+    foo: function () {
         propertyOfLocalThis = this; // 중첩 함수에서의 안전한 this처리
 
-        function bar(){
-            console.log("nested function bar called this without operation : ", this); // window
-            console.log("nested function bar called this with operation : ",propertyOfLocalThis); // Object
-            console.log("nested function bar called this.value with operation : ",propertyOfLocalThis.value); // local
+        function bar() {
+            console.log(
+                'nested function bar called this without operation : ',
+                this
+            ); // window
+            console.log(
+                'nested function bar called this with operation : ',
+                propertyOfLocalThis
+            ); // Object
+            console.log(
+                'nested function bar called this.value with operation : ',
+                propertyOfLocalThis.value
+            ); // local
         }
         bar();
-    }
-}
+    },
+};
 ```
 
 ## 메서드 호출
@@ -136,11 +145,11 @@ var obj = {
 
 ```javascript
 var person = {
-    name: "박경준",
-    sayName: function(){
+    name: '박경준',
+    sayName: function () {
         console.log(this.name);
-    }
-}
+    },
+};
 
 person.sayName();
 ```
@@ -150,15 +159,15 @@ person.sayName();
 프로토타입에 대한 설명은 [작성해둔 문서를](https://parkjju.github.io/vue-TIL/javascript/prototype.html#%E1%84%91%E1%85%B3%E1%86%AF%E1%84%85%E1%85%A1%E1%84%90%E1%85%A9%E1%86%AB%E1%84%80%E1%85%AA-%E1%84%8F%E1%85%B3%E1%86%AF%E1%84%85%E1%85%A2%E1%84%89%E1%85%B3-%E1%84%80%E1%85%B5%E1%84%87%E1%85%A1%E1%86%AB-%E1%84%8B%E1%85%A5%E1%86%AB%E1%84%8B%E1%85%A5) 참조하자.
 
 ```javascript
-function Person(name, age){
-  this.name = name;
+function Person(name, age) {
+    this.name = name;
 } // 생성자 함수
 
-Person.prototype.callNameWithThis = function(){
-  console.log(this.name); // 객체 인스턴스의 name 프로퍼티를 출력
-} // 프토토타입 체인을 통해 name 프로퍼티를 찾는다.
+Person.prototype.callNameWithThis = function () {
+    console.log(this.name); // 객체 인스턴스의 name 프로퍼티를 출력
+}; // 프토토타입 체인을 통해 name 프로퍼티를 찾는다.
 
-var Jun = new Person("Park Gyeong Jun", 25);
+var Jun = new Person('Park Gyeong Jun', 25);
 Jun.callNameWithThis(); // Park Gyeong Jun
 ```
 
@@ -177,14 +186,14 @@ Jun.callNameWithThis(); // Park Gyeong Jun
 메서드 호출에 작성되어 있는 예제 코드만 이해하면 생성자 함수 호출에 대한 `this` 동작은 이해가 어렵지 않을 것이다.
 
 ```javascript
-function Person(name){
-  this.name = name;
-  
-  console.log(this.__proto__); // 생성된 빈 객체의 프로토타입을 가리킨다.
-  // 생성자 함수 Person을 가리키게 된다.
+function Person(name) {
+    this.name = name;
+
+    console.log(this.__proto__); // 생성된 빈 객체의 프로토타입을 가리킨다.
+    // 생성자 함수 Person을 가리키게 된다.
 }
 
-var Jun = new Person("Gyeong Jun");
+var Jun = new Person('Gyeong Jun');
 ```
 
 원래라면 `Person` 생성자 함수 내에 작성된 `this.__proto__`는 글로벌 객체인 `window`의 프로토타입을 참조하는 것이 맞지만, 생성자 함수이기 때문에 특별하게 작동한 것이다.
@@ -199,19 +208,18 @@ var Jun = new Person("Gyeong Jun");
 // new 연산자가 있었으면 그대로 프로퍼티 값을 할당한다.
 // new 연산자가 누락되어 있었으면 new를 사용한 객체 인스턴스를 생성하여 리턴해준다.
 
-function TestNewOperator(arg){
-  if(!(this instanceof arguments.callee)){
-    console.log("new operator Missing!");
-    return new TestNewOperator(arg+"ERROR occurred!");
-  } else
-    this.testResult = arg + "...END!";
+function TestNewOperator(arg) {
+    if (!(this instanceof arguments.callee)) {
+        console.log('new operator Missing!');
+        return new TestNewOperator(arg + 'ERROR occurred!');
+    } else this.testResult = arg + '...END!';
 }
 
-const testWithoutNewOperator = TestNewOperator("testing...");
-console.log("Test Result without New : ",testWithoutNewOperator.testResult);
+const testWithoutNewOperator = TestNewOperator('testing...');
+console.log('Test Result without New : ', testWithoutNewOperator.testResult);
 
-const testWithNewOperator = new TestNewOperator("testing...");
-console.log("Test Result with New : ", testWithNewOperator.testResult);
+const testWithNewOperator = new TestNewOperator('testing...');
+console.log('Test Result with New : ', testWithNewOperator.testResult);
 ```
 
 위 예제코드의 흐름은 다음과 같다. 참고로, `arguments.callee` 프로퍼티는 현재 실행 중인 함수 자체를 가리킨다.
@@ -233,12 +241,12 @@ console.log("Test Result with New : ", testWithNewOperator.testResult);
 2. `arguments.length` : 함수 전달 인수의 개수를 출력한다.
 
 ```javascript
-function foo(a,b,c){
-  console.log("Arguments 호출 함수 이름 : ",arguments.callee);
-  console.log("Arguments 개수 : ",arguments.length);
+function foo(a, b, c) {
+    console.log('Arguments 호출 함수 이름 : ', arguments.callee);
+    console.log('Arguments 개수 : ', arguments.length);
 }
 
-foo(1,2,3);
+foo(1, 2, 3);
 ```
 
 :::
@@ -249,9 +257,9 @@ foo(1,2,3);
 
 ```javascript
 //기본 사용법
-function howToUse(arg1, arg2){
-  this.myArg1 = arg1;
-  this.myArg2 = arg2;
+function howToUse(arg1, arg2) {
+    this.myArg1 = arg1;
+    this.myArg2 = arg2;
 }
 var emptyObject = {};
 
@@ -261,8 +269,8 @@ howToUse.apply(emptyObject, ['arg1 value', 'arg2 value']);
 `new` 연산자를 통한 `this` 바인딩을 직접 해준다고 생각하면 된다. `this` 바인딩은 자바스크립트에서 정의해놓은 규칙에 따라 자동으로 진행되지만, `apply`를 통해 명시적으로 지정하는 것이다. `this` 바인딩 할 객체는 꼭 비어있을 필요가 없다. 프로토타입 체이닝을 통해 동적으로 프로퍼티를 추가/값 수정이 이루어지기 때문이다.
 
 ```javascript
-function Person(name){
-  this.name = name;
+function Person(name) {
+    this.name = name;
 }
 
 foo = {}; // 빈 객체 생성
@@ -274,9 +282,9 @@ console.log(foo.name); // this binding value
 `Person.apply()`는 본질적으로 `Person` 함수의 호출이다. `apply` 메서드 호출 시 별다른 파라미터 전달 없이도 메서드 호출자인 함수는 그대로 실행이 된다는 것이다.
 
 ```javascript
-function printName(name){
-  this.name = name;
-  console.log("my name is : ", this.name);
+function printName(name) {
+    this.name = name;
+    console.log('my name is : ', this.name);
 }
 
 printName.apply(); // 파라미터 없이 printName실행
@@ -286,7 +294,7 @@ printName.apply(); // 파라미터 없이 printName실행
 `apply` 메서드는 `arguments` 객체가 유사배열이기 때문에 사용하지 못하는 `Array` 객체 메서드를 사용하기 위해 주로 사용된다.
 
 ```javascript
-function args(){
+function args() {
     console.log(arguments); // Arguments 관련 메서드,프로퍼티가 출력
     var myargs = Array.prototype.slice.apply(arguments);
     console.log(myargs); // Array 관련 메서드, 프로퍼티가 출력
@@ -295,15 +303,15 @@ function args(){
 
 위 코드는 `Array` 객체들이 상속받는 내부 메서드를 `prototype`으로 접근하여 그 중 `slice` 메서드를 호출한다. `slice` 호출과 동시에 `this`를 `arguments`와 바인딩하게 된다.
 
-간단히 정리하면 **호출자 함수를 apply에 전달된 객체의 메서드인것 처럼 작동하게 되는 것이다.**  `arguments`의 경우 유사 배열이기 때문에 호출하지 못하는 `slice`메서드를 `arguments.slice()` 메서드처럼 사용할 수 있게 된 것이다.
+간단히 정리하면 **호출자 함수를 apply에 전달된 객체의 메서드인것 처럼 작동하게 되는 것이다.** `arguments`의 경우 유사 배열이기 때문에 호출하지 못하는 `slice`메서드를 `arguments.slice()` 메서드처럼 사용할 수 있게 된 것이다.
 
 `call` 메서드의 경우에는 `apply`에 전달되는 파라미터를 콤마로 각각 분리하여 전달한다고 보면 된다. 배열로 전달하게 되면 배열 자체가 파라미터로 전달된다. 자세한 구분은 [What is the difference between call and apply?](https://stackoverflow.com/questions/1986896/what-is-the-difference-between-call-and-apply)를 참조하자.
 
 ```javascript
-function thisTestFunction(firstName, lastName){
-  this.firstName = firstName;
-  this.lastName = lastName;
-  console.log("My name is ", this.firstName, this.lastName);
+function thisTestFunction(firstName, lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    console.log('My name is ', this.firstName, this.lastName);
 }
 
 var foo = {};
@@ -320,19 +328,19 @@ call 메서드는 콜백 함수에서의 this를 바인딩하는 데에도 사�
 생성자 함수의 프로토타입 객체 메서드에서 콜백함수를 호출하는 코드를 살펴보자. 콜백에서 `this`를 사용하면, 호출 결과로 객체가 나타나게 될까?
 
 ```javascript
-function Person(name){
-  this.name = name;
+function Person(name) {
+    this.name = name;
 }
 
-Person.prototype.printName = function(foo){
-  foo(); // 콜백을 호출한다.
+Person.prototype.printName = function (foo) {
+    foo(); // 콜백을 호출한다.
+};
+
+function bar() {
+    console.log(this.name);
 }
 
-function bar(){
-  console.log(this.name);
-}
-
-var jun = new Person("Jun");
+var jun = new Person('Jun');
 jun.printName(bar); // 출력 결과는?
 ```
 
@@ -344,19 +352,19 @@ jun.printName(bar); // 출력 결과는?
 정답은 2번이다. 콜백 함수 호출 시 `this`를 정확하게 이용하려면 값 바인딩을 직접 처리해야한다.
 
 ```javascript
-function Person(name){
-  this.name = name;
+function Person(name) {
+    this.name = name;
 }
 
-Person.prototype.printName = function(foo){
-  foo.apply(this); // apply를 통해 this값을 바인딩한다.
+Person.prototype.printName = function (foo) {
+    foo.apply(this); // apply를 통해 this값을 바인딩한다.
+};
+
+function bar() {
+    console.log(this.name);
 }
 
-function bar(){
-  console.log(this.name);
-}
-
-var jun = new Person("Jun");
+var jun = new Person('Jun');
 jun.printName(bar); // 출력 결과는?
 ```
 
@@ -370,10 +378,10 @@ jun.printName(bar); // 출력 결과는?
 
 ```javascript
 const thisObject = {
-  x: 42,
-  getX: function(){
-    return this.x;
-  }
+    x: 42,
+    getX: function () {
+        return this.x;
+    },
 };
 var unboundResult = thisObject.getX;
 console.log(unboundResult()); // undefined
@@ -390,6 +398,8 @@ console.log(boundResultWithBind); // function{...}
 `apply` 메서드는 위에서 언급했듯, **본질이 함수 호출에 있다.** 따라서 `apply` 메서드의 반환은 **함수 호출 반환값이 된다.** `thisObject`와 `unboundResult`를 바인딩한 뒤 `unboundResult`를 호출하게 되며, `this`는 `thisObject`를 가리키게 되므로 프로퍼티 x의 값인 42가 출력된다.
 
 반면, `bind` 메서드는 **함수값을 반환하지 않고, 바인딩된 함수 자체를 반환한다.** `boundResultWithBind`를 호출하면 함수 객체 자체가 호출되는 것을 볼 수 있다. 확장성 면에서 `bind` 메서드가 더 좋다고 할 수 있다. `bind`메서드를 적용한 함수를 호출하려면 `boundResultWithBind()`, `boundResultWithBind(parameters)`의 형태로 일반 함수처럼 호출하면 된다.
+
+bind 메서드를 활용한 리액트 커스텀 HTTP 리퀘스트 훅 예시를 보려면 [다음의 링크를](../react/hooks.md#bind-메서드-활용)참조해주세요.
 
 ## Reference
 
