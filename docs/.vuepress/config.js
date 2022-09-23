@@ -198,8 +198,8 @@ module.exports = {
                 collapsable: true,
                 children: [
                     'redux/state-manage2',
-                    '220923-reactredux',
-                    '220923-toolkit',
+                    'redux/220923-reactredux',
+                    'redux/220923-toolkit',
                 ],
             },
             {
