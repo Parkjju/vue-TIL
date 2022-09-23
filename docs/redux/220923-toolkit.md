@@ -1,5 +1,5 @@
 ---
-title: [Redux] Redux toolkit
+title: Redux - @reduxjs/toolkit
 ---
 
 ## 리덕스 toolkit
