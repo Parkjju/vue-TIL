@@ -315,18 +315,22 @@ yarn remove redux
 2. `initialState` - 슬라이스에서 관리할 상태값들의 초기 값입니다.
 3. `reducers` - 상태값과 연관된 리듀서들을 정의합니다.
 
-`createSlice`메서드에 전달된 리듀서들은 기존 리덕스 라이브러리에서 액션 타입에 따른 분기의 처리가 필요 없어집니다.
+`createSlice`메서드에 전달된 리듀서들은 기존 리덕스 라이브러리에서 액션 타입에 따른 분기의 처리가 필요 없어집니다. 따라서 리듀서 함수 정의 시 파라미터로 액션 타입 분기를 위한 목적이라면 `action` 파라미터를 받지 않아도 됩니다.
+
+액션 객체의 페이로드 데이터를 가지고 상태값을 업데이트 할 때에만 액션객체를 활용하면 됩니다.
 
 ```javascript
 import { createSlice } from '@redux/toolkit';
 
-createSlice({
+const counterSlice = createSlice({
     name: 'counter',
     initialState,
     reducers: {
+        // action payload 활용 예시
         increase(state, action) {
             state.counter = state.counter + action.amount;
         },
+        // payload가 없을때는 굳이 액션 객체를 받지 않는다.
         toggleCounter(state) {
             state.showCounter = !state.showCounter;
         },
