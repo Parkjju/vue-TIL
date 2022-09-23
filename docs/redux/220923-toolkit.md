@@ -1,5 +1,5 @@
 ---
-title: [Redux] - Redux toolkit
+title: [Redux] Redux toolkit
 ---
 
 ## 리덕스 toolkit

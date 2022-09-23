@@ -1,5 +1,5 @@
 ---
-title: [Redux] - react-redux
+title: [Redux] react-redux
 ---
 
 ## Redux with React

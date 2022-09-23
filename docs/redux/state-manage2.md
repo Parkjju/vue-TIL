@@ -1,5 +1,5 @@
 ---
-title: [Redux] - Redux란?
+title: [Redux] Redux란?
 ---
 
 ## 개요
