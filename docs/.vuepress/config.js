@@ -185,13 +185,21 @@ module.exports = {
                     'react/query',
                     'react/220903-context',
                     'react/state-manage',
-                    'react/state-manage2',
                     'react/hook',
                     'react/hooks',
                     'react/dnd',
                     'react/framer',
                     'react/framer2',
                     'react/220727-Auth',
+                ],
+            },
+            {
+                title: 'Redux',
+                collapsable: true,
+                children: [
+                    'redux/state-manage2',
+                    '220923-reactredux',
+                    '220923-toolkit',
                 ],
             },
             {
