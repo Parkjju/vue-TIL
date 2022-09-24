@@ -191,6 +191,7 @@ module.exports = {
                     'react/framer',
                     'react/framer2',
                     'react/220727-Auth',
+                    'react/220924-deploy',
                 ],
             },
             {
