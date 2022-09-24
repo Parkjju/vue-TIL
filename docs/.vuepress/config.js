@@ -200,6 +200,7 @@ module.exports = {
                     'redux/state-manage2',
                     'redux/220923-reactredux',
                     'redux/220923-toolkit',
+                    'redux/220924-async',
                 ],
             },
             {
