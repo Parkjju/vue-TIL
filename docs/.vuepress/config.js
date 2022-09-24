@@ -121,6 +121,11 @@ module.exports = {
                 ],
             },
             {
+                title: 'Frontend',
+                collapsable: true,
+                children: ['frontend/220924-lint', 'frontend/220924-prettier'],
+            },
+            {
                 title: 'Javascript Fundamental',
                 collapsable: true,
                 children: [
@@ -203,6 +208,11 @@ module.exports = {
                     'redux/220923-toolkit',
                     'redux/220924-async',
                 ],
+            },
+            {
+                title: 'Next JS',
+                collapsable: true,
+                children: ['nextJS/220924-intro'],
             },
             {
                 title: 'React Native',
