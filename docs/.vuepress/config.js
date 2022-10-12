@@ -123,7 +123,11 @@ module.exports = {
             {
                 title: 'Frontend',
                 collapsable: true,
-                children: ['frontend/220924-lint', 'frontend/220924-prettier'],
+                children: [
+                    'frontend/220924-lint',
+                    'frontend/220924-prettier',
+                    'frontend/221011-auth',
+                ],
             },
             {
                 title: 'Javascript Fundamental',
