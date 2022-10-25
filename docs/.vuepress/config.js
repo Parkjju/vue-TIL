@@ -127,6 +127,7 @@ module.exports = {
                     'frontend/220924-lint',
                     'frontend/220924-prettier',
                     'frontend/221011-auth',
+                    'frontend/221025-test',
                 ],
             },
             {
