@@ -123,7 +123,7 @@ module.exports = {
             {
                 title: 'Swift',
                 collapsable: true,
-                children: ['swift/221030-basic'],
+                children: ['swift/221030-basic', 'swift/221102-function'],
             },
             {
                 title: 'Frontend',
