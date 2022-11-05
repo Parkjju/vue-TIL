@@ -127,6 +127,7 @@ module.exports = {
                     'swift/221030-basic',
                     'swift/221101-repeat',
                     'swift/221102-function',
+                    'swift/221104-optional',
                 ],
             },
             {
