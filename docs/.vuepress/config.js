@@ -129,6 +129,7 @@ module.exports = {
                     'swift/221102-function',
                     'swift/221104-optional',
                     'swift/221105-collection',
+                    'swift/221106-enumeration',
                 ],
             },
             {

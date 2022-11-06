@@ -146,3 +146,7 @@ doSomething(name: "박경준"); // 박경준
 함수 파라미터가 옵셔널 타입을 가질때 `nil`로 디폴트값 선언을 해두지 않게 되면 반드시 아규먼트로 `nil`또는 특정 값을 전달해야한다.
 
 옵셔널타입 파라미터에 `nil`로 디폴트값 설정을 해두면 해당 옵셔널 파라미터 자리에는 굳이 아규먼트 전달을 하지 않아도 된다.
+
+## Reference
+
+1. [인프런 - 앨런 swift 문법 마스터 스쿨](https://www.inflearn.com/course/%EC%8A%A4%EC%9C%84%ED%94%84%ED%8A%B8-%EB%AC%B8%EB%B2%95-%EB%A7%88%EC%8A%A4%ED%84%B0-%EC%8A%A4%EC%BF%A8/dashboard)
