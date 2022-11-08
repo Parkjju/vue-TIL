@@ -131,6 +131,7 @@ module.exports = {
                     'swift/221105-collection',
                     'swift/221106-enumeration',
                     'swift/221107-app',
+                    'swift/221108-class',
                 ],
             },
             {
