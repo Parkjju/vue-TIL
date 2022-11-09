@@ -132,6 +132,7 @@ module.exports = {
                     'swift/221106-enumeration',
                     'swift/221107-app',
                     'swift/221108-class',
+                    'swift/221109-inherit',
                 ],
                 sidebarDepth: 2,
             },
