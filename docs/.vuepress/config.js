@@ -286,6 +286,7 @@ module.exports = {
                     '/nodeJS/param',
                     '/nodeJS/template',
                 ],
+                sidebarDepth: 2,
             },
             //   {
             //     title: 'Computer Science',
