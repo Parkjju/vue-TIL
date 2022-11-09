@@ -133,6 +133,7 @@ module.exports = {
                     'swift/221107-app',
                     'swift/221108-class',
                 ],
+                sidebarDepth: 2,
             },
             {
                 title: 'Frontend',
@@ -286,7 +287,6 @@ module.exports = {
                     '/nodeJS/param',
                     '/nodeJS/template',
                 ],
-                sidebarDepth: 2,
             },
             //   {
             //     title: 'Computer Science',
