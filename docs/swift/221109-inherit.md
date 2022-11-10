@@ -280,6 +280,213 @@ class Child{
 
 클래스 인스턴스의 생성은 동적할당 방식으로 이루어진다. (힙 메모리 전체 공간을 뒤진 후 빈 공간에 자동으로 삽입하는 방식)
 
+## 생성자 상속/재정의
+
+상속과 관련된 생성자 정의에 있어서 대원칙은 **생성자는 상속되지 않으며, 재정의가 원칙이다** 라는 것이다.
+
+생성자 상속시에 고려할 규칙은 아래와 같다.
+
+1. 상위클래스의 지정 생성자를 상속하여,
+    1. 하위클래스에서 지정 생성자로 구현(재정의 - override 키워드 필요)
+    2. 하위 클래스에서 편의 생성자로 구현 (재정의 - override 키워드 필요),
+    3. 구현하지 않아도 됨
+2. 상위클래스의 편의 생성자는 상속을 하지 않는게 원칙
+    1. 동일한 이름의 하위클래스 편의생성자는 이름만 동일한 것이지, 상위클래스의 편의생성자와 연관이 있지는 않다.
+
+현 위치 클래스 기준으로 생성자를 구현할때는
+
+1. 자신의 저장속성 모두를 초기화한다.
+2. 부모클래스의 지정생성자를 호출한다. (부모클래스의 저장속성을 모두 초기화한다.)
+3. 편의생성자 내에서는 자신의 지정생성자를 호출해야한다. 멤버 초기화를 직접 하는것은 편의생성자를 활용하는 방법이 아님. (지정생성자를 통해 궁극적인 저장속성 모두를 초기화 가능)
+
+:::warning 지정생성자 편의생성자 상속 예외사항
+지정생성자의 경우 재정의가 필수적으로 고려된다. 하지만 부모클래스를 상속하는 **자식클래스가 새로운 저장 속성을 갖지 않거나 모든 저장 속성에 기본값이 설정되어 있다면 부모클래스 지정생성자를 모두 자동상속받는다.**
+
+편의생성자는 상속받지 않는 것을 원칙으로 했었다. 하지만 위의 지정생성자 모두를 자동상속받는 조건이 만족되었을때 편의생성자를 자동으로 상속받는다.
+
+또는 상위 지정생성자 모두를 재정의한다면 편의생성자를 자동 상속받는다. (부모클래스 지정생성자 모두를 상속받는다는 의미)
+:::
+
+```swift
+class Food {
+    var name: String
+
+    init(name: String) {     // 지정생성자
+        self.name = name
+    }
+
+    convenience init() {     // 편의생성자 ===> 지정생성자 호출
+        self.init(name: "[Unnamed]")
+    }
+}
+
+class RecipeIngredient: Food {
+    var quantity: Int
+
+    init(name: String, quantity: Int) {  // 모든 속성 초기화
+        self.quantity = quantity
+        super.init(name: name)
+    }
+
+    override convenience init(name: String) {    // 상위 지정생성자를 편의생성자로 재정의 ===> 지정생성자 호출
+        self.init(name: name, quantity: 1)
+    }
+
+    // convenience init() { }      // 자동 상속 (예외 규칙)
+}
+```
+
+지정생성자 모두를 상속받아 재정의한다는 것의 의미는 언젠가 자식클래스로부터 부모클래스로 델리게이트 업 되어가는 과정을 자식클래스 내부로 조금 돌린다는 의미이다. (델리게이트 업 -> 하위 클래스에서 상위 클래스 저장속성 데이터를 힙 메모리상에 할당하는 것은 불가능, 따라서 상위 클래스로 위임한다고 하여 델리게이트 업)
+
+위의 Food클래스의 편의생성자 `init`은 지정생성자 `init(name: String)`을 호출하게 된다. 이때 Food클래스를 상속받은 RecipeIngredient 클래스는 `init(name: String)` 클래스를 재정의하고 있고 이 생성자에서 나머지 추가 저장속성인 `quantity`까지 모두 초기화하고 있다.
+
+`quantity`까지 초기화된 이후에는 `super.init(name: name)`을 호출하여 델리게이트 업을 진행하고 있고, 최종적으로 부모클래스의 생성자까지 호출되어 내부 값들이 메모리상에 저장되게 되는 것이다.
+
+## 필수 생성자
+
+필수 생성자는 생성자 앞에 `required` 키워드를 붙인다. 필수 생성자는 반드시 **하위 클래스에서 재정의를 해야하며 override 키워드는 붙이지 않는다.** 상속받는 자식 클래스에서도 `required`를 붙여줘야 한다.
+
+애플 프레임워크 상속시 API문서에 작성해둔대로 필수생성자를 구현해야하는 경우가 있다.
+
+필수생성자는 다른 지정생성자를 구현하지 않으면 자동으로 상속된다.
+
+```swift
+class AView: UIView {
+//    required init?(coder: NSCoder) {         // 구현을 안해도 자동상속
+//        fatalError("init(coder:) has not been implemented")
+//    }
+}
+
+
+class BView: UIView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+```
+
+## 실패 가능 생성자
+
+실패 가능 생성자는 인스턴스 생성 과정에서 심각한 에러를 발생시켜 앱을 종료시키는 것이 아니라 애초에 생성자를 실패 가능하도록 하여 에러를 따로 처리하도록 하게 하는것이다.
+
+실패가능 생성자 정의를 위해서는 `init`키워드 바로 뒤에 `?`물음표를 붙인다.
+
+실패 가능 여부가 오버로딩 기준이 되지는 않는다.
+
+```swift
+enum TemperatureUnit {
+    case kelvin
+    case celsius
+    case fahrenheit
+
+    // 열거형 생성자에 실패가능 생성자 작성
+    init?(symbol: Character) {
+        switch symbol {
+        case "K":
+            self = TemperatureUnit.kelvin
+        case "C":
+            self = TemperatureUnit.celsius
+        case "F":
+            self = TemperatureUnit.fahrenheit
+        default:
+            return nil
+        }
+    }
+}
+
+let f1: TemperatureUnit1? = TemperatureUnit1(rawValue: "F")
+
+// 인스턴스 생성에 실패 -> nil 리턴
+let u: TemperatureUnit1? = TemperatureUnit1(rawValue: "X")
+```
+
+실패에 대해서는 `nil`값을 리턴하도록 하면 된다.
+
+:::tip 실패 가능 생성자 호출관계
+실패 가능 생성자는 실패 불가능 생성자를 호출해도 된다. 반대의 경우는 불가능하다.
+
+```swift
+class Item{
+    var name = ""
+
+    // 실패 불가능 생성자
+    init(){
+        self.init(name: "경준") // ERROR!
+    }
+
+    // 실패 가능 생성자
+    init?(name:String){
+        self.name = name
+    }
+}
+```
+
+옵셔널 타입을 생각해보면 옵셔널 Int는 정수형 범위 + nil이라는 큰 범위를 갖는다. 마찬가지로 실패가능 생성자는 생성자로서 갖는 구현범위 + nil이 붙어있는 것이다.
+
+`super.init()`을 호출하며 델리게이트 업을 할때도 마찬가지이다. 부모클래스의 생성자가 실패 가능한지, 자식클래스의 생성자가 실패가능한지 여부와 범위를 따져가며 호출해야한다.
+
+실패 가능성을 델리게이트 업 할수 있다. (실패 불가능 -> 실패 불가능으로의 호출)
+:::
+
+:::tip 실패 가능 생성자 재정의 관계
+실패 가능 생성자를 실패 불가능 생성자로 재정의 가능하다. 실패 가능 생성자는 실패 불가능 생성자의 모든 경우의 수를 포함한다.
+
+반면 실패 불가능 생성자는 실패 가능 생성자의 `nil`이라는 경우를 포함하지 못하기 때문에 재정의 불가능하다.
+
+```swift
+class Document {
+
+    var name: String?
+
+    init() {}                // 서류 생성 (실패불가능) (이름은 nil로 초기화)
+
+    init?(name: String) {    // 실패가능 생성자 ===> 이름이 "" 빈문자열일때, 초기화 실패(nil)
+        if name.isEmpty { return nil }
+        self.name = name
+    }
+}
+
+
+// 자동으로 이름지어지는 서류
+
+class AutomaticallyNamedDocument: Document {
+
+    override init() {                // 재정의 (상위) 실패불가능 =====> (하위) 실패불가능
+        super.init()
+        self.name = "[Untitled]"
+    }
+
+    override init(name: String) {    // 재정의 (상위) 실패가능 =====> (하위) 실패불가능
+        super.init()                 // 실패불가능 활용가능
+        if name.isEmpty {
+            self.name = "[Untitled]"
+        } else {
+            self.name = name
+        }
+    }
+}
+
+class UntitledDocument: Document {
+
+    override init() {               // 재정의 (상위) 실패가능 =====> (하위) 실패불가능
+        //super.init()
+        super.init(name: "[Untitled]")!    // 강제 언래핑(!)으로 구현 ⭐️
+    }
+}
+
+```
+
+위의 클래스 중 `UntitledDocument`는 `override init()`이 실패 불가능 생성자로 선언되었음에도 `Document`클래스의 실패 가능 생성자를 호출하고 있다.
+
+강제 언래핑을 통해 `nil`이 발생하는 경우를 원천적으로 차단하기 때문이다.
+
+`init?` 실패 가능 생성자는 `init!` 실패 가능 생성자와 거의 유사하므로 크게 고려하지 않아도 된다.
+:::
+
 ## Reference
 
 1. [인프런 - 앨런 swift 문법 마스터 스쿨](https://www.inflearn.com/course/%EC%8A%A4%EC%9C%84%ED%94%84%ED%8A%B8-%EB%AC%B8%EB%B2%95-%EB%A7%88%EC%8A%A4%ED%84%B0-%EC%8A%A4%EC%BF%A8/dashboard)
