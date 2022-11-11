@@ -134,6 +134,7 @@ module.exports = {
                     'swift/221108-class',
                     'swift/221109-inherit',
                     'swift/221110-type',
+                    'swift/221111-extension',
                 ],
                 sidebarDepth: 2,
             },
