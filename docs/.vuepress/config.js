@@ -135,6 +135,7 @@ module.exports = {
                     'swift/221109-inherit',
                     'swift/221110-type',
                     'swift/221111-extension',
+                    'swift/221112-protocol',
                 ],
                 sidebarDepth: 2,
             },
