@@ -82,6 +82,8 @@ struct MyStruct: CanFly{
     }
 }
 
+// 상속도 받고 프로토콜 채택도 해야한다면
+// 클래스 상속 표기를 먼저 진행
 class MyClass: AClass, CanFly{
     func fly(){
         // 구현
@@ -90,3 +92,42 @@ class MyClass: AClass, CanFly{
 ```
 
 `CanFly`라는 프로토콜을 채택한 곳에서는 반드시 `fly`라는 함수를 구현해야한다.
+
+## 프로토콜 문법
+
+### 1. 속성 요구사항 정의
+
+```swift
+protocol RemoteMouse {
+    var id: String { get }
+
+    var name: String { get set }
+
+    static var type: String { get set }
+}
+
+struct TV: RemoteMouse{
+    // let id: String = "안녕" - 이렇게 구현해도 됨
+    var id: String {
+        get{
+            return "HI"
+        }
+        set {
+            // 빈 상태로 놓아도 됨
+        }
+    }
+
+    var name: String = "티비"
+
+    static var type: String = "리모콘"
+    // class var type: String = "??"
+}
+```
+
+프로토콜에서는 최소한의 요구사항만 정의한다. 이러한 대전제에 따라 아래의 규칙들이 생긴다.
+
+1. `var`로 선언해야함 - 채택한 곳에서 `let`으로 재선언 가능
+2. `get`, `set`키워드를 통해 읽기 쓰기 여부를 선택
+3. 저장속성 및 계산속성에 대해 모두 구현 가능
+
+채택 시 `static`선언 후 `class`로 재정의 가능
