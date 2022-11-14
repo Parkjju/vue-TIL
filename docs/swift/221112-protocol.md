@@ -329,6 +329,291 @@ let sbox2: SetTopBox? = electronic[1] as? SetTopBox
 sbox2?.doNetflix()
 ```
 
+## 프로토콜의 상속
+
+프로토콜의 상속은 여러가지 요구사항의 나열일 뿐이다.
+
+```swift
+protocol Remote {
+    func turnOn()
+    func turnOff()
+}
+
+
+protocol AirConRemote {
+    func Up()
+    func Down()
+}
+
+
+protocol SuperRemoteProtocol: Remote, AirConRemote {   // 프로토콜 다중상속
+    // func turnOn()
+    // func turnOff()
+    // func Up()
+    // func Down()
+
+    func doSomething()
+}
+```
+
+실제 프로토콜 상속 내용까지 구현할 경우는 거의 없지만 애플이 만들어놓은 체계 내에 사용되는 경우가 있음.
+
+:::tip AnyObject
+AnyObject는 클래스 전용 프로토콜이다. 따라서 구조체에서는 해당 프로토콜을 채택할 수 없다.
+
+AnyObject는 프로토콜이지만 프로토콜은 타입으로 사용할 수 있기 때문에 인스턴스 타입에 상관 없이 담을 수 있었다.
+:::
+
+:::tip 프로토콜 합성
+일반적인 프로토콜 다중상속의 형태는 아래와 같다.
+
+```swift
+protocol Named {
+    var name: String { get }
+}
+
+protocol Aged {
+    var age: Int { get }
+}
+
+struct Person: Named, Aged {
+    var name: String
+    var age: Int
+}
+```
+
+둘을 다중상속하는 새로운 프로토콜을 작성한다거나 구조체 및 클래스를 정의할 필요 없이 임시적인 타입으로 활용할 수도 있다.
+
+```swift
+// Named & Aged로 프로토콜 합성
+func greet(_ person: Named & Aged){
+    print("HI \(person.name), \(person.age)")
+}
+
+let me = Person(name: "Jun", age: 25)
+greet(me)
+
+// Named & Aged로 프로토콜 합성
+let you: Named & Aged = me
+```
+
+두 프로토콜을 `&`연산자로 묶어 프로토콜 합성이라는 문법을 사용할 수 있다.
+:::
+
+## 프로토콜 선택적 요구사항 구현
+
+:::tip 어트리뷰트 키워드
+
+1. 선언에 대한 추가정보를 제공하는 키워드
+2. 타입에 대한 추가정보를 제공하는 키워드
+
+```swift
+@Attr
+@Attr(args)
+
+// 선언에 추가정보 제공
+@available(iOS 10.0, macOS 10.12 *)
+class SomeType{
+    // 해당 클래스는 iOS버전 이상에서만....
+    // macOS버전 10.12이상에서만...
+}
+
+// 타입에 추가정보 제공
+func doSomething(completion: @escaping() -> ()){
+    // ...
+}
+```
+
+:::
+
+선택적인 멤버를 선언하기 위한 키워드는 `@objc`를 붙여 프로토콜을 선언한다. 이후 선택적 속성 및 메서드는 `@objc optional 속성 또는 메서드`으로 선언한다.
+
+```swift
+@objc protocol Remote {
+    @objc optional var isOn: Bool { get set }
+    func turnOn()
+    func turnOff()
+    @objc optional func doNetflix()
+}
+
+class TV: Remote{
+    // 선택적 멤버로 선언되었기 때문에 구현해도, 안해도 됨
+    var isOn = false
+
+    // 선택적 구현이 아니기 때문에 필수 구현
+    func turnOn(){
+        // ..
+    }
+    func turnOff(){
+        // ..
+    }
+    // func doNetflix(){} - 구현해도되고 안해도됨
+}
+```
+
+선택적 멤버 구현은 오브젝티브C에서 **클래스 전용 프로토콜이기 때문에** 구조체 및 열거형에서는 사용 불가능하다.
+
+## 프로토콜 확장
+
+프로토콜을 채택하여 구현하는 입장에서 동일한 구현 내용을 다시 재사용하는 것이 불편하다. 이때 프로토콜은 기본 구현을 제공한다.
+
+```swift
+protocol Remote {
+    func turnOn()
+    func turnOff()
+}
+
+extension Remote {                         // (요구사항의 메서드 우선순위 적용 - 프로토콜 메서드 테이블 만듦)
+    func turnOn() { print("리모콘 켜기") }    // 1. (채택)구현시 해당 메서드 2. 기본 메서드
+    func turnOff() { print("리모콘 끄기") }   // 1. (채택)구현시 해당 메서드 2. 기본 메서드
+
+    func doAnotherAction() {               // (요구사항 메서드 X - 테이블 만들지 않음)
+        print("Remote Type")            // 타입에 따른 선택 (Direct Dispatch)
+    }
+}
+
+class TV: Remote{
+    // 요구사항을 구현하지 않아도 기본 구현 내용을 그대로 사용함
+    // func turnOn(){ print(...) }
+    // func turnOff(){ print(...) }
+    func doAnotherAction(){
+        print("TV Type")
+    }
+}
+```
+
+프로토콜 메서드 구현 시 우선순위가 적용된다.
+
+1. 프로토콜을 채택하여 구현한 메서드가 우선적으로 적용된다.
+2. 프로토콜 채택 후에 구현하지 않은 메서드는 프로토콜 확장의 기본 메서드를 가져와서 사용한다.
+3. 요구사항 목록에 없지만 확장에만 추가된 내용에 대해서는 **타입 선언에 맞춰 사용된다.**
+
+```swift
+var tv: TV = TV()
+tv.doAnotherAction() // TV Type
+
+var tv2: Remote = TV()
+tv2.doAnotherAction() // Remote Type
+```
+
+**프로토콜 타입으로 선언된 변수는** 구현된 함수에 대하여 해당 함수를 호출하지만 프로토콜 요구사항에 없는 함수는 클래스에 함수가 구현 되어있더라도 프로토콜 확장 내에 구현된 기본 함수를 가져다가 사용한다. 반대로 프로토콜을 채택한 클래스로 선언된 변수는 구현된 함수 호출과 더불어 클래스 내부 메서드들을 그대로 호출하게 된다.
+
+:::tip 테이블
+클래스는 생성과 함께 메서드 묶음이 테이블 형태로 만들어지는데, 이때 테이블을 `Virtual Table`이라고 한다.
+
+`Virtual Table`과 유사한 형태로 프로토콜에서도 생성시 메서드 묶음을 `Witness Table`이라고 한다. 프로토콜 채택시 `Witness Table`상에 등록된 메서드들은 사용자가 커스텀 타입에 채택하여 구현하였으면 해당 구현 내용들을 사용하고 프로토콜 채택 후 따로 구현하지 않았으면 프로토콜 `Witness Table`의 구현 내용을 사용하게 된다.
+
+채택 여부에 따른 경우의 수를 정리하면 다음과 같다.
+
+1. 클래스가 프로토콜을 채택하여 프로토콜 메서드를 전부 구현하는 경우 - 프로토콜 확장 메서드를 호출하더라도 클래스 구현 메서드가 사용됨
+2. 클래스가 프로토콜 채택을 했지만 Witness Table에 등록된 메서드 목록 이외에 프로토콜 확장에 추가 구현된 함수가 있을때 - 타입 캐스팅에 따라 다이렉트 디스패치로 프로토콜 확장 메서드를 호출할지, 인스턴스 내부 메서드를 호출할지 달라짐.
+
+```swift
+class Ipad: Remote {
+    func turnOn() { print("아이패드 켜기") }
+    // Remote 프로토콜을 채택했지만 turnOff 메서드는 구현을 하지 않음
+    // 따라서 WitnessTable의 turnOff 기본 구현이 사용된다.
+    // func turnOff() {}
+    func doAnotherAction() { print("아이패드 다른 동작") }
+}
+
+let ipad: Ipad = Ipad()
+ipad.turnOn()           // 클래스 - V테이블
+// Remote의 Witness Table - turnOff가 실행됨
+ipad.turnOff()          // 클래스 - V테이블
+ipad.doAnotherAction()  // 클래스 - V테이블
+
+let ipad2: Remote = Ipad()
+ipad2.turnOn()           // 프로토콜 - W테이블
+ipad2.turnOff()          // 프로토콜 - W테이블
+// doAnotherAction은 Ipad 클래스에 구현되어 있지만
+// 타입 지정을 Remote 프로토콜로 했음
+// 따라서 Remote 프로토콜의 doAnotherAction이 실행된다
+// 이는 프로토콜 확장으로 doAnotherAction이 구현되어 있기 때문이다.
+
+ipad2.doAnotherAction()  // 프로토콜 - Direct (직접 메서드 주소 삽입)
+```
+
+위의 예시는 클래스이고, 프로토콜을 채택한 구조체에서 어떻게 동작하는 지에 대한 예시는 조금 다르다. 아래 코드를 보자.
+
+```swift
+struct SmartPhone: Remote {
+    func turnOn() { print("스마트폰 켜기") }
+
+    func doAnotherAction() { print("스마트폰 다른 동작") }
+}
+
+var iphone: SmartPhone = SmartPhone()
+iphone.turnOn()             // 구조체 - Direct (직접 메서드 주소 삽입)
+iphone.turnOff()            // 구조체 - Direct (직접 메서드 주소 삽입)
+iphone.doAnotherAction()    // 구조체 - Direct (직접 메서드 주소 삽입)
+```
+
+**구조체는 Virtual Table같은 개념이 존재하지 않는다.** 구조체 인스턴스가 스택에 쌓인 뒤 메서드 호출이 이루어지면 **다이렉트 디스패치 형태로 코드 영역의 함수 코드들을 직접적으로 참조하게 된다.**
+
+타입 인식을 본래 타입이 아닌 채택 프로토콜로 타입을 인식하게 되면 어떻게 될까? 기본적으로 `Remote`라는 프로토콜은 확장 내에서 기본 함수가 구현되어 있고 이들은 `Witness Table`상에 등록되어 있다.
+
+```swift
+var iphone2: Remote = SmartPhone()
+iphone.turnOn() // Witness Table 메서드 호출
+iphone.turnOff() // Witness Table 메서드 호출
+iphone.doAnotherAction() // Direct Dispatch로 Witness Table 메서드 호출
+```
+
+프로토콜 채택 후 프로토콜의 메서드들을 구현하게 되면 **Witness Table**상에 추가적으로 함수 구현 내용들을 올려놓는다.
+
+Witness Table에 등록되는 대상은 **프로토콜 내에 선언된 대상들이며,** 확장에 추가 구현된 메서드는 **변수 타입 선언에 따라 다이렉트 디스패치 될지 인스턴스 메서드를 호출할지 선택하게 된다.**
+
+:::
+
+## 프로토콜 지향 프로그래밍
+
+스위프트는 객체지향 프로그래밍, 프로토콜 지향 프로그래밍, 함수형 프로그래밍 모두를 채택한 언어이다.
+
+객체지향 프로그래밍에서 클래스 상속의 단점은 아래와 같다.
+
+1. 다중 상속이 불가능하다
+2. 클래스에서만 사용 가능하다
+3. 상위클래스 메모리 구조를 반드시 따라야 한다. (불필요 메서드 상속, 불필요 저장속성의 상속)
+
+프로토콜 기반 프로그래밍을 지향함으로써 발생하는 장점들은 아래와 같다.
+
+1. 다중상속과 유사하게 여러 프로토콜을 채택 가능하다
+2. 선택적 구현 가능
+3. 타입으로써 사용 가능하다
+4. 기본기능 제공, 기능 커스터마이징 등이 가능 (확장성 up)
+5. 애플이 제공하는 기능에 대해 소급적 적용 가능 (프로토콜 확장)
+
+## 프로토콜 확장 제한
+
+```swift
+protocol Bluetooth {
+    func blueOn()
+    func blueOff()
+}
+
+extension Bluetooth where Self: Remote {   // 본 확장의 적용을 제한시키는 것 가능 (구체적 구현의 적용범위를 제한)
+    func blueOn() { print("블루투스 켜기") }
+    func blueOff() { print("블루투스 끄기") }
+}
+
+class SmartPhone: Remote, Bluetooth{
+    // ...
+}
+
+class Ipad: Bluetooth{
+    // ...
+}
+```
+
+위 코드를 보면 `Bluetooth` 프로토콜은 확장으로 `blueOn`과 `blueOff` 메서드 둘을 구현하였다. 이때 `where`절을 통해 채택한 타입을 제한하고 있음을 알 수 있다.
+
+`self`는 인스턴스 내에서 자기 자신을 나타낼 때 사용하는 키워드이고 `Self`는 타입 자기 자신을 나타낸다.
+
+위의 `where Self: Remote`는 결국 타입 자기 자신이 `Remote`라는 프로토콜을 채택하고 있는지를 묻는 구문인 것이다.
+
+`SmartPhone` 클래스는 `Remote` 프로토콜을 채택하고 있으므로 `Bluetooth` 프로토콜 확장을 사용할 수 있고 `Ipad` 프로토콜은 `Remote` 프로토콜을 채택하지 않고 있기 때문에 `blueOn`, `blueOff` 메서드를 사용할 수 없다.
+
 ## Reference
 
 1. [인프런 - 앨런 swift 문법 마스터 스쿨](https://www.inflearn.com/course/%EC%8A%A4%EC%9C%84%ED%94%84%ED%8A%B8-%EB%AC%B8%EB%B2%95-%EB%A7%88%EC%8A%A4%ED%84%B0-%EC%8A%A4%EC%BF%A8/dashboard)
