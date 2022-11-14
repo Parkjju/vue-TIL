@@ -614,6 +614,96 @@ class Ipad: Bluetooth{
 
 `SmartPhone` 클래스는 `Remote` 프로토콜을 채택하고 있으므로 `Bluetooth` 프로토콜 확장을 사용할 수 있고 `Ipad` 프로토콜은 `Remote` 프로토콜을 채택하지 않고 있기 때문에 `blueOn`, `blueOff` 메서드를 사용할 수 없다.
 
+:::tip self vs Self
+self 사용처는 다음과 같다.
+
+1. 인스턴스 자기 자신을 가리킬때 사용 (생성자에서 self.props = 파라미터 형태로 활용)
+2. 참조 타입이 아닌 값 타입(구조체, 열거형)에서 자기 자신의 객체 인스턴스를 다른 객체로 치환할때
+3. 타입 멤버에서는 인스턴스가 아닌 타입 자체를 가리킨다.
+4. 외부에서 타입을 타입 인스턴스를 참조하는 경우에 사용 (힙에 생성되는 클래스의 인스턴스가 아닌 클래스 자체에 기본적으로 `static`으로 선언되어 사용되는 인스턴스를 타입 인스턴스라고 함)
+
+```swift
+// self 2번 예시
+struct Calculator{
+    var number: Int = 0
+
+    mutating func reset(){
+        self = Calculator()
+        // 새로운 Calculator 인스턴스를 생성하여
+        // self 인스턴스에 할당
+    }
+}
+```
+
+**위의 패턴은 클래스에서는 사용 불가능한 패턴이다.**
+
+```swift
+// 3번 예시
+struct SomeStruct{
+    static let club = "웹개발 부서"
+
+    // 타입 멤버 club을 가리키기 위함
+    static func doSomething(){
+        print("\(self.club)")
+    }
+
+    // func doSomething(){
+    //      print("\(self.club)")
+    // }
+    // -> SomeStruct의 인스턴스 속성 중에는 club 속성이 없으므로 에러
+    // 따라서 기본 메서드에서는 SomeStruct.club으로 접근해야함.
+}
+```
+
+```swift
+// 4번 예시
+class SomeClass {
+    static let name = "SomeClass"
+}
+
+// SomeClass.Type => 메타타입이라는 새로운 개념 등장
+let myClass: SomeClass.Type = SomeClass.self
+
+Someclass.name
+SomeClass.self.name // SomeClass.name과 동일한 코드이다.
+```
+
+self가 아닌 `Self`의 사용처는 다음과 같다.
+
+1. 타입 선언 위치에서 사용한다.
+2. 타입 속성 및 타입 메서드에서 타입을 지칭할때 사용
+3. 프로토콜에서의 Self 사용 - 프로토콜은 타입 상관없이 채택 가능하다는 점에서 착안
+
+```swift
+extension Int{
+    static let zero: Self = 0
+    // static let zero: Int = 0
+
+    var zero: Self{
+        return 0
+    }
+
+    // 현재 toZero 메서드가 선언될때 Self가 Int타입이라는 것을
+    // 명확하게 인지 가능하기 때문에 사용 가능하다.
+    static func toZero() -> Self{
+        return Self.zero
+    }
+}
+```
+
+```swift
+// 프로토콜의 확장
+// 이때 Self는 프로토콜을 채택한 타입 자체를 가리키게 된다.
+// 확장성 있는 설계 가능
+extension BinaryInteger{
+    func squared() -> Self {
+        return self * self
+    }
+}
+```
+
+:::
+
 ## Reference
 
 1. [인프런 - 앨런 swift 문법 마스터 스쿨](https://www.inflearn.com/course/%EC%8A%A4%EC%9C%84%ED%94%84%ED%8A%B8-%EB%AC%B8%EB%B2%95-%EB%A7%88%EC%8A%A4%ED%84%B0-%EC%8A%A4%EC%BF%A8/dashboard)
