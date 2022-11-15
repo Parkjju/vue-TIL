@@ -419,6 +419,25 @@ func someFunction(closure: @autoclosure () -> Bool){
 
 따라서 리턴 타입에 맞는 값만 전달하면 된다. 잘 사용하지 않음
 
+:::tip UI제작 코드 예시
+
+```swift
+    let emailTextField: UITextField = {
+        let tf = UITextField()
+        tf.placeholder = "email"
+        tf.backgroundColor = UIColor(white: 0, alpha: 0.3)
+        tf.borderStyle = .roundedRect
+        tf.font = UIFont.systemFont(ofSize: 14)
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        //view.addSubview(tf)    // 뷰컨트롤러의 view에 접근 못함
+        return tf
+    }()
+```
+
+클로저를 활용하여 컴포넌트 제작 후에 클로저 함수를 바로 실행하여 내부 설정들을 변수에 저장하게 된다
+
+:::
+
 ## Reference
 
 1. [인프런 - 앨런 swift 문법 마스터 스쿨](https://www.inflearn.com/course/%EC%8A%A4%EC%9C%84%ED%94%84%ED%8A%B8-%EB%AC%B8%EB%B2%95-%EB%A7%88%EC%8A%A4%ED%84%B0-%EC%8A%A4%EC%BF%A8/dashboard)
