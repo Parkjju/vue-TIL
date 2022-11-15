@@ -138,6 +138,7 @@ module.exports = {
                     'swift/221112-protocol',
                     'swift/221114-nested',
                     'swift/221115-closure',
+                    'swift/221115-higher',
                 ],
                 sidebarDepth: 2,
             },
