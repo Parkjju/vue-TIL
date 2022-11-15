@@ -137,6 +137,7 @@ module.exports = {
                     'swift/221111-extension',
                     'swift/221112-protocol',
                     'swift/221114-nested',
+                    'swift/221115-closure',
                 ],
                 sidebarDepth: 2,
             },
