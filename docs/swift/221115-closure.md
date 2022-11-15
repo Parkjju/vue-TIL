@@ -193,7 +193,7 @@ performClosure(){ $0.count } // 트레일링 클로저 적용
 
 클로저에서 `$0`는 클로저 함수의 0번째 파라미터를 의미한다.
 
-:::tip 문법 축약 연습하기
+:::tip 문법 축약 연습하기 1
 
 아래 함수들을 축약하여 호출해보자
 
@@ -212,6 +212,8 @@ let closureType1 = { $0 % 2 == 0 }
 
 :::
 
+:::tip 문법 축약 연습하기 2
+
 ```swift
 let closureType2 = { (a: Int, b: Int) -> Int in
     return a * b
@@ -228,8 +230,6 @@ let closureType2: (Int, Int) -> Int = {(a, b) in
 
 let closureType2:(Int, Int) -> Int = { $0 * $1 }
 ```
-
-:::
 
 :::
 
