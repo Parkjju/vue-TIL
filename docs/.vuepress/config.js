@@ -139,6 +139,7 @@ module.exports = {
                     'swift/221114-nested',
                     'swift/221115-closure',
                     'swift/221115-higher',
+                    'swift/221116-arc',
                 ],
                 sidebarDepth: 2,
             },
