@@ -140,6 +140,7 @@ module.exports = {
                     'swift/221115-closure',
                     'swift/221115-higher',
                     'swift/221116-arc',
+                    'swift/221117-error',
                 ],
                 sidebarDepth: 2,
             },
