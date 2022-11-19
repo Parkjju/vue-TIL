@@ -141,6 +141,7 @@ module.exports = {
                     'swift/221115-higher',
                     'swift/221116-arc',
                     'swift/221117-error',
+                    'swift/221119-network',
                 ],
                 sidebarDepth: 2,
             },
