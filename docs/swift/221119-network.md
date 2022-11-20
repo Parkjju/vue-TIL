@@ -48,3 +48,73 @@ task.resume()
 // 또는 태스크 생성과 동시에 resume() 메서드 호출하기도 함
 session.dataTask(...).resume()
 ```
+
+응답코드 검사를 위한 태스크 예시 코드도 있다.
+
+```swift
+session.dataTask(with: url){ (data , response, error) in
+    // 에러처리
+
+    guard let response = response as? HTTPURLResponse, (200 ..< 299) ~=
+
+    response.statusCode else{
+        print("ERROR: HTTP request failed")
+        return
+    }
+
+}
+```
+
+## JSON Parsing
+
+[다음 사이트](https://app.quicktype.io/)를 이용하면 JSON 데이터를 클래스로 만드는 작업을 편하게 진행할 수 있다.
+
+```swift
+// 사용하려는 구조체 형태
+struct MovieData: Codable {
+    let boxOfficeResult: BoxOfficeResult
+}
+
+struct BoxOfficeResult: Codable {
+    let dailyBoxOfficeList: [DailyBoxOfficeList]
+}
+
+struct DailyBoxOfficeList: Codable {
+    let rank: String
+    let movieNm: String
+    let audiCnt: String
+    let audiAcc: String
+    let openDt: String
+}
+
+func parseJSON(_ movieData: Data) -> [DailyBoxOfficeList]? {
+
+    do {
+        // 스위프트5
+        // 자동으로 원하는 클래스/구조체 형태로 분석
+        // JSONDecoder
+        let decoder = JSONDecoder()
+
+        let decodedData = try decoder.decode(MovieData.self, from: movieData)
+
+        return decodedData.boxOfficeResult.dailyBoxOfficeList
+
+    } catch {
+
+        return nil
+    }
+}
+```
+
+JSONDecoder 객체를 사용하여 데이터를 조정한다. 서버와 데이터를 주고받기 위해서는 프로토콜을 채택해야 하는데, 데이터 -> 클래스/구조체로 파싱할때에는 Decodable, 클래스/구조체 -> 데이터로 파싱할때는 Encodable 프로토콜을 채택해야 하고, 위의 개념 둘 다를 포함하는 프로토콜이 **Codable**이다.
+
+또한 Codable 프로토콜이 채택된 클래스/구조체에 대한 인스턴스만 `JSONDecoder()`에서 다룰 수 있다.
+
+:::tip dump
+콘솔에 출력시 print보다 dump를 사용하면 더 깔끔하게 정리된 형태를 볼 수 있다.
+:::
+
+## Reference
+
+1. [인프런 - 앨런 swift 문법 마스터 스쿨](https://www.inflearn.com/course/%EC%8A%A4%EC%9C%84%ED%94%84%ED%8A%B8-%EB%AC%B8%EB%B2%95-%EB%A7%88%EC%8A%A4%ED%84%B0-%EC%8A%A4%EC%BF%A8/dashboard)
+2. [Side Table in Swift](https://sihyungyou.github.io/iOS-side-table/)
