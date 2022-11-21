@@ -142,6 +142,7 @@ module.exports = {
                     'swift/221116-arc',
                     'swift/221117-error',
                     'swift/221119-network',
+                    'swift/221121-async',
                 ],
                 sidebarDepth: 2,
             },
