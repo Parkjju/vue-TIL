@@ -145,6 +145,7 @@ module.exports = {
                     'swift/221121-async',
                     'swift/221122-generic',
                     'swift/221123-result',
+                    'swift/221123-date',
                 ],
                 sidebarDepth: 2,
             },
