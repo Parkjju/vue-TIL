@@ -144,6 +144,7 @@ module.exports = {
                     'swift/221119-network',
                     'swift/221121-async',
                     'swift/221122-generic',
+                    'swift/221123-result',
                 ],
                 sidebarDepth: 2,
             },
