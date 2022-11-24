@@ -146,6 +146,7 @@ module.exports = {
                     'swift/221122-generic',
                     'swift/221123-result',
                     'swift/221123-date',
+                    'swift/221124-access',
                 ],
                 sidebarDepth: 2,
             },
