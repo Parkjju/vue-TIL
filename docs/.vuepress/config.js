@@ -147,6 +147,7 @@ module.exports = {
                     'swift/221123-result',
                     'swift/221123-date',
                     'swift/221124-access',
+                    'swift/221128-string',
                 ],
                 sidebarDepth: 2,
             },
