@@ -148,7 +148,8 @@ module.exports = {
                     'swift/221123-date',
                     'swift/221124-access',
                     'swift/221128-string',
-                    'swift/221214-operator'
+                    'swift/221214-operator',
+                    'swift/221214-advance',
                 ],
                 sidebarDepth: 2,
             },
