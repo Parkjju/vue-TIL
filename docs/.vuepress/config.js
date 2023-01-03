@@ -150,6 +150,7 @@ module.exports = {
                     'swift/221128-string',
                     'swift/221214-operator',
                     'swift/221214-advance',
+                    'swift/221220-draw',
                 ],
                 sidebarDepth: 2,
             },
