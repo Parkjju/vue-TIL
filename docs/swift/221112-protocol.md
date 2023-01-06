@@ -121,11 +121,17 @@ struct TV: RemoteMouse{
     // class var type: String = "??"
 
     // 프로토콜 함수 정의
-    func random() -> Int
-    static func reset()
+    func random() -> Int{
+        return 0
+    }
+    static func reset(){
+
+    }
 
     // 구조체에서도 채택하여 저장속성을 변경 가능하도록 하게 함
-    mutating func doSomething()
+    mutating func doSomething(){
+        id = "안녕!!"
+    }
 }
 ```
 
@@ -198,7 +204,7 @@ class SomeSubClass: SomeClass{
 
 클래스에서 반드시 지정생성자로 구현할 필요는 없다. 편의생성자로 구현해도 됨. 단 편의생성자도 `required`로 구현해야함
 
-구조체는 상속이 필요없기 때문에 `required` 키워드는 사용하지 않는다.
+구조체는 상속이라는 개념이 없기 때문에 `required` 키워드는 사용하지 않는다.
 
 :::tip 생성자 상속과 요구사항 구현이 겹칠때
 상위 클래스의 생성자 상속을 받아 `override`로 구현을 하고, 프로토콜 요구사항 구현을 위해 `required`로 선언을 한다. `required override init()`
@@ -207,7 +213,6 @@ class SomeSubClass: SomeClass{
 실패가능 생성자의 경우 범위가 더 넓어지게 구현하면 안됨.
 
 1. init?() -> init() 가능
-2. init() -> init?() 불가능
 
 ### 서브스크립트 요구사항
 
@@ -346,7 +351,7 @@ protocol AirConRemote {
 }
 
 
-protocol SuperRemoteProtocol: Remote, AirConRemote {   // 프로토콜 다중상속
+protocol SuperRemoteProtocol: Remote, AirConRemote {   // 프로토콜 다중채택
     // func turnOn()
     // func turnOff()
     // func Up()
@@ -365,7 +370,7 @@ AnyObject는 프로토콜이지만 프로토콜은 타입으로 사용할 수 �
 :::
 
 :::tip 프로토콜 합성
-일반적인 프로토콜 다중상속의 형태는 아래와 같다.
+일반적인 프로토콜 다중채택의 형태는 아래와 같다.
 
 ```swift
 protocol Named {
@@ -382,7 +387,7 @@ struct Person: Named, Aged {
 }
 ```
 
-둘을 다중상속하는 새로운 프로토콜을 작성한다거나 구조체 및 클래스를 정의할 필요 없이 임시적인 타입으로 활용할 수도 있다.
+둘을 다중채택하는 새로운 프로토콜을 작성한다거나 구조체 및 클래스를 정의할 필요 없이 임시적인 타입으로 활용할 수도 있다.
 
 ```swift
 // Named & Aged로 프로토콜 합성
@@ -509,6 +514,20 @@ tv2.doAnotherAction() // Remote Type
 2. 클래스가 프로토콜 채택을 했지만 Witness Table에 등록된 메서드 목록 이외에 프로토콜 확장에 추가 구현된 함수가 있을때 - 타입 캐스팅에 따라 다이렉트 디스패치로 프로토콜 확장 메서드를 호출할지, 인스턴스 내부 메서드를 호출할지 달라짐.
 
 ```swift
+protocol Remote {
+    func turnOn()
+    func turnOff()
+}
+
+extension Remote {                         // (요구사항의 메서드 우선순위 적용 - 프로토콜 메서드 테이블 만듦)
+    func turnOn() { print("리모콘 켜기") }    // 1. (채택)구현시 해당 메서드 2. 기본 메서드
+    func turnOff() { print("리모콘 끄기") }   // 1. (채택)구현시 해당 메서드 2. 기본 메서드
+
+    func doAnotherAction() {               // (요구사항 메서드 X - 테이블 만들지 않음)
+        print("Remote Type")            // 타입에 따른 선택 (Direct Dispatch)
+    }
+}
+
 class Ipad: Remote {
     func turnOn() { print("아이패드 켜기") }
     // Remote 프로토콜을 채택했지만 turnOff 메서드는 구현을 하지 않음
@@ -520,6 +539,7 @@ class Ipad: Remote {
 let ipad: Ipad = Ipad()
 ipad.turnOn()           // 클래스 - V테이블
 // Remote의 Witness Table - turnOff가 실행됨
+// witness table상의 turnOff 함수이더라도 클래스로 코드영역의 메서드 주소를 가져온 뒤 V-Table에 등록한다.
 ipad.turnOff()          // 클래스 - V테이블
 ipad.doAnotherAction()  // 클래스 - V테이블
 
@@ -560,7 +580,7 @@ iphone.turnOff() // Witness Table 메서드 호출
 iphone.doAnotherAction() // Direct Dispatch로 Witness Table 메서드 호출
 ```
 
-프로토콜 채택 후 프로토콜의 메서드들을 구현하게 되면 **Witness Table**상에 추가적으로 함수 구현 내용들을 올려놓는다.
+프로토콜 채택 후 프로토콜의 메서드들을 구현하게 되면 **Witness Table**상에 추가적으로 함수 구현 내용들을 올려놓는다. iphone2 인스턴스의 doAnotherAction은
 
 Witness Table에 등록되는 대상은 **프로토콜 내에 선언된 대상들이며,** 확장에 추가 구현된 메서드는 **변수 타입 선언에 따라 다이렉트 디스패치 될지 인스턴스 메서드를 호출할지 선택하게 된다.**
 
@@ -620,7 +640,7 @@ self 사용처는 다음과 같다.
 1. 인스턴스 자기 자신을 가리킬때 사용 (생성자에서 self.props = 파라미터 형태로 활용)
 2. 참조 타입이 아닌 값 타입(구조체, 열거형)에서 자기 자신의 객체 인스턴스를 다른 객체로 치환할때
 3. 타입 멤버에서는 인스턴스가 아닌 타입 자체를 가리킨다.
-4. 외부에서 타입을 타입 인스턴스를 참조하는 경우에 사용 (힙에 생성되는 클래스의 인스턴스가 아닌 클래스 자체에 기본적으로 `static`으로 선언되어 사용되는 인스턴스를 타입 인스턴스라고 함)
+4. 외부에서 타입 인스턴스를 참조하는 경우에 사용 (힙에 생성되는 클래스의 인스턴스가 아닌 클래스 자체에 기본적으로 `static`으로 선언되어 사용되는 인스턴스를 타입 인스턴스라고 함)
 
 ```swift
 // self 2번 예시
