@@ -151,6 +151,7 @@ module.exports = {
                     'swift/221214-operator',
                     'swift/221214-advance',
                     'swift/221220-draw',
+                    'swift/230108-move',
                 ],
                 sidebarDepth: 2,
             },
