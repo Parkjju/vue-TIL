@@ -152,6 +152,7 @@ module.exports = {
                     'swift/221214-advance',
                     'swift/221220-draw',
                     'swift/230108-move',
+                    'swift/230109-pattern',
                 ],
                 sidebarDepth: 2,
             },
