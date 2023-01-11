@@ -154,6 +154,7 @@ module.exports = {
                     'swift/230108-move',
                     'swift/230109-pattern',
                     'swift/230111-lifecycle',
+                    'swift/230112-navigation',
                 ],
                 sidebarDepth: 2,
             },
