@@ -153,6 +153,7 @@ module.exports = {
                     'swift/221220-draw',
                     'swift/230108-move',
                     'swift/230109-pattern',
+                    'swift/230111-lifecycle',
                 ],
                 sidebarDepth: 2,
             },
