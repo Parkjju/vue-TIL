@@ -128,6 +128,89 @@ var bmiManager = BMICalculatorManager()
 
 모델의 형태를 어떻게 보느냐에 따라 bgColor와 comment 속성도 bmi와 관련된 데이터로 볼 수 있다. 이들을 휘발성으로 관리하지 않겠다고 한다면 모델에 대해 데이터만을 담는 구조체를 새로 정의한 뒤, 멤버와이즈 생성자를 통한 리팩토링을 한번 더 진행할 수 있다.
 
+## 코드로 만든 UI를 MVC로 리팩토링하기
+
+코드로 만든 로그인 화면 프로젝트에서는 비밀번호 또는 아이디와 관련된 비즈니스 로직이 없기 때문에 뷰와 컨트롤러 사이의 분리만 하면 된다. 뷰와 관련된 인스턴스를 뷰컨트롤러 내에 저장속성으로 마련했다면 이들을 모두 View 그룹으로 이동시키면 된다.
+
+`UIView` 클래스를 상속한 커스텀 클래스로 묶어 관리하면 된다.
+
+:::warning present MVC
+
+UI를 코드로 만들때 addTarget 메서드와 같이 present로직이 필요한 코드는 `View` 클래스가 아닌 `ViewController` 클래스에 위치해야한다. 이때 addTarget의 셀렉터로 실제 동작하는 함수를 연결해야 하는데, 이러한 문제로 인해 `addTarget`또한 ViewController 클래스 내에 위치시켜야 한다.
+
+뷰를 상속한 상태에서 텍스트필드 델리게이트 등과 같은 프로토콜은 채택 가능하므로 이에 해당하는 셀렉터 함수들은 분리하여 그대로 구현해도 문제가 없다.
+
+뷰와 뷰 컨트롤러를 분리한 뒤 셀렉터를 연결하는 방법은 아래와 같다.
+
+```swift
+private let loginView = LoginView()
+
+override func loadView() {
+    view = loginView
+}
+
+override func viewDidLoad() {
+    super.viewDidLoad()
+    // Do any additional setup after loading the view.
+}
+```
+
+뷰 컨트롤러에는 `loadView`라는 함수가 존재하는데 이때 뷰컨트롤러의 저장속성으로 초기화 되어 있는 뷰 관련 객체를 최상위 `view` 객체에 집어넣어주는 것이다.
+
+이때 `LoginView` 내의 UI요소 중 뷰 컨트롤러에서 접근해야할 요소들은 private하게 선언하면 당연히 접근이 안되고 셀렉터 연결도 불가능하므로 주의하자.
+
+:::
+
+`LoginView`와 같은 클래스 내에서 각종 UIView 요소들의 오토레이아웃 설정을 할 때에 기존에는 아래와 같은 코드를 작성했었다.
+
+```swift
+passwordResetButton.translatesAutoresizingMaskIntoConstraints = false
+NSLayoutConstraint.activate([
+    passwordResetButton.topAnchor.constraint(equalTo: view.bottomAnchor, constant: 10),
+    passwordResetButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+    passwordResetButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30)
+])
+```
+
+버튼을 최상위 view객체를 기준으로 좌표 정렬을 할 때에 `view.Anchor요소`를 통해 정렬을 진행했었다. 하지만 클래스를 분리했으므로 좌표 정렬을 `LoginView`를 기준으로 하게 되는데 이때 `present` 메서드를 사용하기 위해 `loadView`메서드에서 뷰 컨트롤러와 뷰를 연결했던 것처럼 `LoginView`객체를 뷰 컨트롤러와 연결하게 되면 `LoginView` 클래스 내에서 `self` 키워드는 최종적으로 뷰컨트롤러의 최상위 view를 가리키게 된다.
+
+이때 LoginView 클래스 내에서 equalTo에 대한 파라미터로 `self.bottomAnchor`라고 전달해도 되지만 어차피 클래스 인스턴스 자기 자신을 가리킬 것이 자명하기 때문에 해당 키워드는 생략하여 아래와 같이 나타내도 된다.
+
+```swift
+passwordResetButton.translatesAutoresizingMaskIntoConstraints = false
+NSLayoutConstraint.activate([
+    passwordResetButton.topAnchor.constraint(equalTo: bottomAnchor, constant: 10),
+    passwordResetButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30),
+    passwordResetButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30)
+])
+```
+
+또한 뷰와 뷰컨트롤러를 분리했을때 필요한 것은 생성자 함수 오버라이딩이다.
+
+```swift
+override init(frame: CGRect) {
+    super.init(frame: frame)
+
+    emailTextField.delegate = self
+    passwordTextField.delegate = self
+
+    setupUI()
+}
+
+required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+}
+```
+
+**반드시 뷰 클래스 내에 위 두 함수를 구현해야 한다.** `override init(frame:)` 함수는 커스텀 UIView에 대한 생성자 함수이고 기존 뷰 컨트롤러의 `override viewDidLoad()` 메서드와 동일한 역할을 한다고 보면 된다.
+
+또한 `UIView`가 어딘가로부터 상속받는 필수생성자 `required init?(coder: NSCoder)`를 구현해줘야 하는데 이는 FatalError가 xcode상에 발생했을때 Fix버튼을 클릭하면 위와 같은 코드가 자동으로 삽입된다.
+
+init(coder: NSCoder)에 대해서는 [다음 문서](https://medium.com/@b9d9/required-init-coder-nscoder-%EC%97%90-%EB%8C%80%ED%95%B4%EC%84%9C-b67ddfc628)를 참조해보자.
+
+init(coder: NSCoder)는 스토리보드로 UI를 구성할때 사용되는 생성자인데, UIView 상속을 통해 커스텀 뷰 클래스를 코드로 작성할때 명시적으로 이를 나타내기 위한 방편이라고 이해하면 될 것 같다.
+
 ## Reference
 
 1. [앨런 Swift 문법 마스터스쿨](https://www.inflearn.com/course/%EC%8A%A4%EC%9C%84%ED%94%84%ED%8A%B8-%EB%AC%B8%EB%B2%95-%EB%A7%88%EC%8A%A4%ED%84%B0-%EC%8A%A4%EC%BF%A8-%EC%95%B1%EB%A7%8C%EB%93%A4%EA%B8%B0/dashboard)
+2. [required init?(coder: NSCoder) 에 대해서](https://medium.com/@b9d9/required-init-coder-nscoder-%EC%97%90-%EB%8C%80%ED%95%B4%EC%84%9C-b67ddfc628)
