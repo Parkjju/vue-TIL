@@ -332,6 +332,7 @@ module.exports = {
                     '/algorithm/backtrack',
                     '/algorithm/220701-pattern',
                     '/algorithm/220714-recursion',
+                    '/algorithm/230112-swift',
                 ],
             },
             {
