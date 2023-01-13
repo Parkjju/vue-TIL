@@ -323,6 +323,7 @@ module.exports = {
                 children: [
                     '/algorithm/baekjoon',
                     '/algorithm/method',
+                    '/algorithm/230112-swift',
                     '/algorithm/bigO',
                     '/algorithm/dp',
                     '/algorithm/greedy',
@@ -332,7 +333,6 @@ module.exports = {
                     '/algorithm/backtrack',
                     '/algorithm/220701-pattern',
                     '/algorithm/220714-recursion',
-                    '/algorithm/230112-swift',
                 ],
             },
             {
