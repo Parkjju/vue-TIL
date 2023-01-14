@@ -77,6 +77,27 @@ title: Swift - 네비게이션, 탭 바
 
 :::
 
+:::tip 네비게이션 바 설정
+스토리보드가 아닌 코드 기반으로 네비게이션 바 관련 설정을 하기 위해서는 아래와 같은 코드가 필요하다.
+
+```swift
+override func viewDidLoad(){
+    super.viewDidLoad()
+
+    // ...
+
+    let appearance = UINavigationBarAppearance()
+
+    navigationController?.navigationBar.tintColor = .blue
+    navigationController?.navigationBar.standardAppearance = appearance
+    // ...
+}
+```
+
+자세한 내용은 [다음 공식 문서를](https://developer.apple.com/documentation/uikit/uinavigationcontroller/customizing_your_app_s_navigation_bar) 참조하자.
+
+:::
+
 ## 로그인 예제
 
 다음 조건을 따르는 로그인 앱을 간단하게 제작해보자.
@@ -250,3 +271,4 @@ let vc3 = ThirdViewController()
 2. [Understanding Scene Delegate & App Delegate](https://medium.com/@kalyan.parise/understanding-scene-delegate-app-delegate-7503d48c5445)
 3. [presentingViewController와 presentedViewController의 사용](https://yoojin99.github.io/app/presentedViewController,-presentingViewController/)
 4. [stackoverflow - Difference between navigation controller and viewcontroller?](https://stackoverflow.com/questions/28751457/difference-between-navigation-controller-and-viewcontroller)
+5. [Apple document - Customizing your app's Navigation Bar](https://developer.apple.com/documentation/uikit/uinavigationcontroller/customizing_your_app_s_navigation_bar)
