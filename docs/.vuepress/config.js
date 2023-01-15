@@ -324,6 +324,7 @@ module.exports = {
                     '/algorithm/baekjoon',
                     '/algorithm/method',
                     '/algorithm/230112-swift',
+                    '/algorithm/230115-swift-algorithm-club',
                     '/algorithm/bigO',
                     '/algorithm/dp',
                     '/algorithm/greedy',
