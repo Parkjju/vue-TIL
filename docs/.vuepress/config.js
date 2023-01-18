@@ -156,6 +156,7 @@ module.exports = {
                     'swift/230111-lifecycle',
                     'swift/230112-navigation',
                     'swift/230112-table',
+                    'swift/230118-picker',
                 ],
                 sidebarDepth: 2,
             },
