@@ -265,6 +265,38 @@ let vc3 = ThirdViewController()
 
 :::
 
+:::tip 네비게이션 컨트롤러 인덱싱
+
+네비게이션 컨트롤러에서 특정 화면에 접근할때에 서브스크립트 형태로도 접근할 수 있다.
+
+스토리보드 기반으로 네비게이션 컨트롤러를 제작할때에 화면의 순서는 아래와 같이 이루어진다.
+
+1. 네비게이션 컨트롤러
+2. 네비게이션 컨트롤러의 루트 뷰 컨트롤러
+3. 나머지 서브 뷰 컨트롤러
+
+뷰 컨트롤러에서는 `navigationController`라는 객체를 자동으로 제공하는데 이때 현재 뷰 컨트롤러 기준으로 루트 위치에 네비게이션 컨트롤러가 이미 등록된 상태라면 위의 객체가 사용 가능하게 된다.
+
+위 객체 내부 속성 중 `viewControllers`라는 속성은 `var viewControllers: [UIViewController] { get set }`과 같은 선언을 갖는다. `UIViewController`로 이루어진 배열 타입임을 알 수 있는데, 이때 네비게이션 컨트롤러를 기준으로 루트 뷰 컨트롤러가 0번째 인덱스에 위치하고 + 나머지 서브 뷰 컨트롤러들이 배열 형태로 저장되어 있다.
+
+> The root view controller is at index 0 in the array, the back view controller is at index n-2, and the top controller is at index n-1, where n is the number of items in the array. [Apple document]
+
+:::
+
+:::tip BarButtonItem
+
+스크린 상단 바의 왼쪽 및 오른쪽에서 아이템을 선택할때에 사용할 버튼은 일반적인 `UIButton` 인스턴스가 아니다. `UIBarButtonItem`이라는 요소를 사용해야한다.
+
+```swift
+lazy var plusButton: UIBarButtonItem = {
+    let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(plusButtonTapped))
+    return button
+}()
+```
+
+일반적으로 시스템 버튼을 등록하여 사용하고 나머지는 UIButton과 동일하다. (셀렉터 및 타겟 등록)
+:::
+
 ## Reference
 
 1. [앨런 Swift 문법 마스터스쿨](https://www.inflearn.com/course/%EC%8A%A4%EC%9C%84%ED%94%84%ED%8A%B8-%EB%AC%B8%EB%B2%95-%EB%A7%88%EC%8A%A4%ED%84%B0-%EC%8A%A4%EC%BF%A8-%EC%95%B1%EB%A7%8C%EB%93%A4%EA%B8%B0/dashboard)
