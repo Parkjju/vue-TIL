@@ -210,6 +210,30 @@ init(coder: NSCoder)에 대해서는 [다음 문서](https://medium.com/@b9d9/re
 
 init(coder: NSCoder)는 스토리보드로 UI를 구성할때 사용되는 생성자인데, UIView 상속을 통해 커스텀 뷰 클래스를 코드로 작성할때 명시적으로 이를 나타내기 위한 방편이라고 이해하면 될 것 같다.
 
+:::tip 서브뷰 버튼 타겟을 상위 컨트롤러에 등록하기
+
+MVC패턴에 따라 뷰컨트롤러에 커스텀뷰 인스턴스를 등록한 상황에서 커스텀 뷰의 버튼 액션중 화면 전환을 위한 present 등의 메서드가 UIView 클래스에서는 사용이 불가능하다.
+
+따라서 커스텀뷰 내의 버튼 액션을 뷰 컨트롤러에 연결해야 한다.
+
+뷰 컨트롤러의 `loadView` 시점에 `view = CustomViewInstance`로 뷰를 교체해주고 난 뒤 뷰컨트롤러 안에서 **뷰 인스턴스 버튼에 직접 접근하여 addTarget을 설정한다.**
+
+```swift
+override func loadView() {
+    view = detailView
+}
+
+// ...
+
+func setupButtonAction(){
+    // 1. 뷰 인스턴스에 접근
+    // 2. 뷰 인스턴스 내의 버튼 UI에 직접 접근 후 addTarget을 뷰 컨트롤러로 지정
+    detailView.updateButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
+}
+```
+
+:::
+
 ## Reference
 
 1. [앨런 Swift 문법 마스터스쿨](https://www.inflearn.com/course/%EC%8A%A4%EC%9C%84%ED%94%84%ED%8A%B8-%EB%AC%B8%EB%B2%95-%EB%A7%88%EC%8A%A4%ED%84%B0-%EC%8A%A4%EC%BF%A8-%EC%95%B1%EB%A7%8C%EB%93%A4%EA%B8%B0/dashboard)
