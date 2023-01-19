@@ -1,5 +1,5 @@
 ---
-title: ES6 프로토타입 문법적 접근 (2)
+title: JavaScript - ES6 프로토타입 문법적 접근 (2)
 ---
 
 [ES6 프로토타입 객체 문법적 접근 (1)로부터](./prototypeReal.md) 이어지는 내용입니다.
@@ -11,8 +11,8 @@ title: ES6 프로토타입 문법적 접근 (2)
 ```js
 // 객체 리터럴
 const animal = {
-  name: "tiger",
-  age: 20,
+    name: 'tiger',
+    age: 20,
 };
 ```
 
@@ -28,21 +28,21 @@ const animal = {
 
 ```js
 function Animal(name, age) {
-  this.name = name;
-  this.age = age;
+    this.name = name;
+    this.age = age;
 }
 
-let myAnimal = new Animal("고양아", 2);
+let myAnimal = new Animal('고양아', 2);
 ```
 
 ## 생성자 함수의 내부 실행과정
 
 ```js
 function Person(name, age) {
-  // this = {}
-  this.name = name;
-  this.age = age;
-  // return this
+    // this = {}
+    this.name = name;
+    this.age = age;
+    // return this
 }
 ```
 
@@ -54,27 +54,27 @@ function Person(name, age) {
 
 ```js
 function Animal(name, age) {
-  this.name = name;
-  this.age = age;
+    this.name = name;
+    this.age = age;
 }
 
 Animal.prototype.printA = function () {
-  console.log("A");
+    console.log('A');
 };
 
 function Person(name, age) {
-  this.name = name;
-  this.age = age;
+    this.name = name;
+    this.age = age;
 }
 
 Person.prototype.printB = function () {
-  console.log("B");
+    console.log('B');
 };
 
-let animalObject = new Animal("tiger", 20);
+let animalObject = new Animal('tiger', 20);
 animalObject.printA(); // A
 
-let personObject = new Person("Park", 30);
+let personObject = new Person('Park', 30);
 personObject.printB(); // B
 ```
 
@@ -124,14 +124,14 @@ console.log(A.prototype.__proto__);
 
 ```js
 function Person(name, age) {
-  this.name = name;
-  this.age = age;
+    this.name = name;
+    this.age = age;
 }
 
-const personObject = new Person("홍길동", 20);
+const personObject = new Person('홍길동', 20);
 const literalObject = {
-  name: "홍길동",
-  age: 20,
+    name: '홍길동',
+    age: 20,
 };
 
 console.log(personObject instanceof Person); // true
@@ -148,7 +148,7 @@ console.log(literalObject instanceof Person); // true
 또한 리터럴 객체이더라도 `Object` 원형을 상속하므로 `literalObject instanceof Object`의 결과는 `true`가 된다. `instanceof` 연산자 이외에도 `isPrototypeOf()` 메서드도 있다.
 
 ```js
-let p = new Person("Park", 20);
+let p = new Person('Park', 20);
 Person.prototype.isPrototypeOf(p); // true
 // Person.prototype - Person 생성자 함수의 프로토타입 객체
 ```
@@ -159,30 +159,30 @@ Person.prototype.isPrototypeOf(p); // true
 
 ```js
 const apt = {
-  color: "red",
-  rooms: 4,
-  toilet: 1,
-  turnon() {
-    console.log("turn on...");
-  },
+    color: 'red',
+    rooms: 4,
+    toilet: 1,
+    turnon() {
+        console.log('turn on...');
+    },
 };
 
 const villa = {
-  color: "black",
-  rooms: 3,
-  toilet: 1,
-  turnon() {
-    console.log("turn on...");
-  },
+    color: 'black',
+    rooms: 3,
+    toilet: 1,
+    turnon() {
+        console.log('turn on...');
+    },
 };
 
 const oneroom = {
-  color: "blue",
-  rooms: 1,
-  toilet: 1,
-  turnon() {
-    console.log("turn on...");
-  },
+    color: 'blue',
+    rooms: 1,
+    toilet: 1,
+    turnon() {
+        console.log('turn on...');
+    },
 };
 ```
 
@@ -193,24 +193,24 @@ const oneroom = {
 
 ```js
 const apt = {
-  color: "red",
-  rooms: 4,
+    color: 'red',
+    rooms: 4,
 };
 
 const villa = {
-  color: "black",
-  rooms: 3,
+    color: 'black',
+    rooms: 3,
 };
 
 const oneroom = {
-  color: "blue",
-  rooms: 1,
+    color: 'blue',
+    rooms: 1,
 };
 const house = {
-  toilet: 1,
-  turnon() {
-    console.log("turn on...");
-  },
+    toilet: 1,
+    turnon() {
+        console.log('turn on...');
+    },
 };
 ```
 
@@ -229,8 +229,8 @@ oneroom.__proto__ = house;
 
 ```js
 const riverView = {
-  name: "한강뷰 아파트",
-  price: "10억",
+    name: '한강뷰 아파트',
+    price: '10억',
 };
 
 riverView.__proto__ = apt;
@@ -254,7 +254,7 @@ console.log(riverView.rooms); // 4
 
 ```js
 for (let i in riverView) {
-  console.log(i);
+    console.log(i);
 }
 // 부모 프로퍼티까지 모두 순회한다.
 ```
@@ -273,17 +273,17 @@ for (let i in riverView) {
 
 ```js
 const makeHouse = function (name, color, rooms) {
-  this.name = name;
-  this.color = color;
-  this.rooms = rooms;
+    this.name = name;
+    this.color = color;
+    this.rooms = rooms;
 }; // name, color, rooms는 모두 객체마다 다른 값을 가진다.
 makeHouse.prototype.toilet = 1; // toilet은 공통 속성
 makeHouse.prototype.turnon = function () {
-  // turnon은 공통속성
-  console.log("turn on...");
+    // turnon은 공통속성
+    console.log('turn on...');
 };
 
-const apt = new makeHouse("riverView", "white", 4);
+const apt = new makeHouse('riverView', 'white', 4);
 ```
 
 new 연산자가 붙은 뒤에 빈 객체를 생성, `toilet`과 `turnon`과 같은 공통 프로퍼티를 먼저 할당하고 `makeHouse`내에 전달된 값들을 할당한다.
@@ -303,12 +303,12 @@ new 연산자가 붙은 뒤에 빈 객체를 생성, `toilet`과 `turnon`과 같
 
 ```js
 const makeHouse = function (inputName, color, rooms) {
-  const name = inputName;
-  this.getName = () => console.log(name);
-  this.color = color;
-  this.rooms = rooms;
+    const name = inputName;
+    this.getName = () => console.log(name);
+    this.color = color;
+    this.rooms = rooms;
 };
 
-apt = new makeHouse("riverView", "white", 3);
+apt = new makeHouse('riverView', 'white', 3);
 apt.getName(); // riverView
 ```

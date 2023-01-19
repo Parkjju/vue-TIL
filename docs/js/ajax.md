@@ -1,7 +1,7 @@
 ---
-title: AJAX
-
+title: JavaScript - AJAX
 ---
+
 ## 시작하며
 
 AJAX는 `Asynchronous JavaScript and XML`의 약자로, 서버사이드 렌더링과 관련된 개념이 명확하지 않으면 이해하기 어려울 수 있다.
@@ -51,25 +51,25 @@ POST 요청을 이루는 주요 요소로 세 가지가 존재한다.
 햄버거와 감자튀김을 서버에 요청하는 URL은 주방 기능에 따라 완전히 달라진다. 다음 코드는 서로 다른 유저가 포스팅한 글 정보를 받아오는 코드이다. 다음 코드에 대한 자세한 설명은 [axios 글을](./axios.md) 참조하자.
 
 ```javascript
-xhr.open('POST', "https://jsonplaceholder.typicode.com/users/1/posts");
+xhr.open('POST', 'https://jsonplaceholder.typicode.com/users/1/posts');
 xhr.setRequestHeader('Content-type', 'application/json');
 
-xhr.send(JSON.stringify(data))
+xhr.send(JSON.stringify(data));
 
-xhr.onload = function(){
+xhr.onload = function () {
     console.log(xhr.response);
-}
+};
 ```
 
 ```javascript
-xhr.open('POST',  "https://jsonplaceholder.typicode.com/users/2/posts")
+xhr.open('POST', 'https://jsonplaceholder.typicode.com/users/2/posts');
 xhr.setRequestHeader('Content-type', 'application/json');
 
-xhr.send(JSON.stringify(data))
+xhr.send(JSON.stringify(data));
 
-xhr.onload = function(){
+xhr.onload = function () {
     console.log(xhr.response);
-}
+};
 ```
 
 위 코드는 모두 POST 메서드로, 내부 구성 요소가 `URL`, `Data`, `Params`, `callback`으로 동일하다.
@@ -82,12 +82,12 @@ xhr.onload = function(){
 
 ```javascript
 const order = {
-  menu: "cheeseBurger",
-  size: "large",
-  price: 6
-}
+    menu: 'cheeseBurger',
+    size: 'large',
+    price: 6,
+};
 
-xhr.open("POST", "https://mcdonald/burger");
+xhr.open('POST', 'https://mcdonald/burger');
 xhr.send(JSON.stringify(order));
 ```
 
@@ -98,31 +98,32 @@ xhr.send(JSON.stringify(order));
 `XMLHttpRequest`객체는 `onreadystatechange` 메서드를 등록함으로써 콜백함수를 트리거할 수 있다.
 
 ```javascript
-const xhr = new XMLHttpRequest()
+const xhr = new XMLHttpRequest();
 
-const data = { // 전달 데이터 정의
-    title: "Title",
-    body: "Hello!",
-}
+const data = {
+    // 전달 데이터 정의
+    title: 'Title',
+    body: 'Hello!',
+};
 
 // Request 오픈
-xhr.open('POST', 'https://jsonplaceholder.typicode.com/posts'); 
+xhr.open('POST', 'https://jsonplaceholder.typicode.com/posts');
 
 // stateChange 이벤트 리스닝
-xhr.onreadystatechange = function(){
+xhr.onreadystatechange = function () {
     // Request 제출 완료되었을 때
-    if(xhr.readyState == 4){
-        console.log("Request Completed!");
+    if (xhr.readyState == 4) {
+        console.log('Request Completed!');
         callback(xhr.responseText); // 다음 손님 오세요! 와 같은 이치
     } else {
-        console.log("Processing...")
+        console.log('Processing...');
     }
-}
-xhr.setRequestHeader("Content-type", "application/json")
+};
+xhr.setRequestHeader('Content-type', 'application/json');
 
 xhr.send(JSON.stringify(data));
 
-function callback(responseText){
+function callback(responseText) {
     console.log(JSON.parse(responseText));
 }
 ```
@@ -131,11 +132,12 @@ function callback(responseText){
 
 ### 2. GET
 
-GET요청은 조리된 음식에 대해 손님에게 포장 및 전달하는 과정과 유사하다. HTTP GET 요청시 **Query string, Path value** 방식으로 특정 URL 데이터를 요청할 수 있는데, 레스토랑 비유에 적용해보자면 **자신이 요청한 주문에 따른 음식을 받는 것이다.** 
+GET요청은 조리된 음식에 대해 손님에게 포장 및 전달하는 과정과 유사하다. HTTP GET 요청시 **Query string, Path value** 방식으로 특정 URL 데이터를 요청할 수 있는데, 레스토랑 비유에 적용해보자면 **자신이 요청한 주문에 따른 음식을 받는 것이다.**
 
 POST가 음식 제작을 요청하는 것이라면, GET은 POST로 제작된 음식을 딜리버리 받는다 라고 생각하자.
 
 또한 GET에는 두 가지 방식으로 파라미터를 전달하여 더 구체화된 데이터를 받아올 수 있다.
+
 1. **Query String** 방식 : `/burger?menu=cheeseBurger`
 2. **Path value** 방식 : `/mcdonald/fries`
 
@@ -149,17 +151,20 @@ Jsonplaceholer 투두 리스트 유저 아이디가 1값인 리소스를 쿼리 
 const xhr = new XMLHttpRequest();
 const id = 1;
 
-xhr.open('GET',`https://jsonplaceholder.typicode.com/todos?userId=${id}`);
+xhr.open('GET', `https://jsonplaceholder.typicode.com/todos?userId=${id}`);
 
-xhr.onreadystatechange = function(){
-  if(xhr.readyState == 4){
-    console.log("Completed!");
-    console.log("This is Todo Data with User 1 : ",JSON.parse(xhr.response));
-  } else {
-    console.log("Current state: ", xhr.readyState);
-    console.log("Processing....");
-  }
-}
+xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) {
+        console.log('Completed!');
+        console.log(
+            'This is Todo Data with User 1 : ',
+            JSON.parse(xhr.response)
+        );
+    } else {
+        console.log('Current state: ', xhr.readyState);
+        console.log('Processing....');
+    }
+};
 
 xhr.send();
 ```

@@ -1,5 +1,5 @@
 ---
-title: ES6 제너레이터
+title: JavaScript - ES6 제너레이터
 ---
 
 ## 제너레이터란?
@@ -16,10 +16,10 @@ title: ES6 제너레이터
 
 ```js
 function* testGenerator() {
-  yield 1;
-  yield 2;
-  yield 3;
-  return 4;
+    yield 1;
+    yield 2;
+    yield 3;
+    return 4;
 }
 ```
 
@@ -48,10 +48,10 @@ iteratorObject.next();
 
 ```js
 function* testGenerator() {
-  const a = yield 1;
-  const b = yield a * 1;
-  const c = yield b + 2;
-  return a * b * c;
+    const a = yield 1;
+    const b = yield a * 1;
+    const c = yield b + 2;
+    return a * b * c;
 }
 ```
 

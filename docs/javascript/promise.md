@@ -1,5 +1,5 @@
 ---
-title: ES6 비동기 처리 (2)
+title: JavaScript - ES6 비동기 처리 (2)
 ---
 
 ## 비동기 처리
@@ -14,32 +14,32 @@ title: ES6 비동기 처리 (2)
 
 ```js
 setTimeout(
-  (x) => {
-    let result = x;
-
-    console.log(result);
-
-    setTimeout(
-      (x) => {
-        result *= x;
+    (x) => {
+        let result = x;
 
         console.log(result);
 
         setTimeout(
-          (x) => {
-            result *= x;
-            console.log(result);
-          },
-          1000,
-          30
+            (x) => {
+                result *= x;
+
+                console.log(result);
+
+                setTimeout(
+                    (x) => {
+                        result *= x;
+                        console.log(result);
+                    },
+                    1000,
+                    30
+                );
+            },
+            1000,
+            20
         );
-      },
-      1000,
-      20
-    );
-  },
-  1000,
-  10
+    },
+    1000,
+    10
 );
 // 콜 백 지 옥
 ```
@@ -67,30 +67,30 @@ A 함수를 실행하는 흐름 속에 B 함수를 실행하고, 그 속에서 C
 
 ```js
 new Promise((resolve, reject) => {
-  setTimeout(
-    (x) => {
-      let result = x;
-      console.log(x);
-
-      resolve(result); // resolve 메서드의 인자값이 then 메서드로 전달된다.
-    },
-    1000,
-    10
-  );
-}).then((result) => {
-  return new Promise((resolve, reject) => {
     setTimeout(
-      (x) => {
-        console.log(x);
-        result *= x;
-        console.log(result);
+        (x) => {
+            let result = x;
+            console.log(x);
 
-        resolve(result);
-      },
-      1000,
-      20
+            resolve(result); // resolve 메서드의 인자값이 then 메서드로 전달된다.
+        },
+        1000,
+        10
     );
-  });
+}).then((result) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(
+            (x) => {
+                console.log(x);
+                result *= x;
+                console.log(result);
+
+                resolve(result);
+            },
+            1000,
+            20
+        );
+    });
 });
 ```
 
@@ -107,8 +107,8 @@ new Promise((resolve, reject) => {
 
 ```js
 function* testGenerator() {
-  const a = yield 1;
-  console.log(a);
+    const a = yield 1;
+    console.log(a);
 }
 
 const iter = testGenerator();
@@ -130,20 +130,20 @@ iter.next();
 const iter = testGenerator(); // global 스코프
 
 function calculator(a, b) {
-  setTimeout(() => {
-    iter.next(a * b);
-  }, 1000);
+    setTimeout(() => {
+        iter.next(a * b);
+    }, 1000);
 }
 
 function* testGenerator() {
-  const a = yield calculator(1, 10);
-  console.log(a);
+    const a = yield calculator(1, 10);
+    console.log(a);
 
-  const b = yield calculator(a, 20);
-  console.log(b);
+    const b = yield calculator(a, 20);
+    console.log(b);
 
-  const c = yield calculator(b, 30);
-  console.log(c);
+    const c = yield calculator(b, 30);
+    console.log(c);
 }
 
 // 출력 시작

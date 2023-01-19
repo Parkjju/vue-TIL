@@ -1,19 +1,19 @@
 ---
-title: Scope
-
+title: JavaScript - Scope
 ---
+
 ## 스코프란?
 
 아무개가 묻는다. 스코프가 뭐니?
 
 이에 대한 대답을 3초만 생각해보자. 범위? 엄밀한 의미를 따져보기 위해 다음의 코드를 살펴보자.
 
-``` javascript
+```javascript
 var x = 'hello';
 
-function foo(){
-  var x = 'bar';
-  console.log(x);
+function foo() {
+    var x = 'bar';
+    console.log(x);
 }
 
 foo(); // bar
@@ -43,10 +43,10 @@ console.log(x); // hello
 int main(void){
 	if(1){
     	int x = 5;
-        printf("%d\n",x); 
+        printf("%d\n",x);
     }
     printf("x = %d\n", x); // undeclared Error!
-    
+
     return 0;
 }
 ```
@@ -54,8 +54,8 @@ int main(void){
 위의 c 코드에서 조건문 내에 선언된 x는 조건문 밖에서 호출해도 컴파일러가 인식하지 못한다. 하지만 자바스크립트에서는 어떨까?
 
 ```javascript
-function functionScope(){
-    if(true){
+function functionScope() {
+    if (true) {
         var functionScopeVariable = 1;
         console.log(functionScopeVariable);
     }
@@ -68,13 +68,13 @@ functionScope(); // 1이 두번 출력된다.
 조건문 블록 내에서 선언된 `x` 변수가 조건문 블록 밖에서도 유효한 상태로 존재한다. 위 변수를 함수 레벨 스코프가 아닌 블록 레벨 스코프로 제한하기 위해서는 `let` 키워드를 사용하면 된다.
 
 ```javascript
-function blockScope(){
-  if(true){
-    let blockScopeVariable = 1;
-    console.log(blockScopeVariable);
-  }
-  
-  console.log(blockScopeVariable); // ReferenceError!
+function blockScope() {
+    if (true) {
+        let blockScopeVariable = 1;
+        console.log(blockScopeVariable);
+    }
+
+    console.log(blockScopeVariable); // ReferenceError!
 }
 
 blockScope();
@@ -90,8 +90,8 @@ blockScope();
 var globalScopeVariable = 1; // 전역 선언
 console.log(window.globalScopeVariable); // 1
 
-function foo(){
-  console.log(globalScopeVariable); // 1
+function foo() {
+    console.log(globalScopeVariable); // 1
 }
 foo();
 ```
@@ -109,12 +109,12 @@ C에서의 블록레벨 스코프를 생각하면 된다. 함수 안과 밖은 �
 ```javascript
 var scopeTest = 'global!';
 
-function foo(){
-  var scopeTest = 'local!';
-  console.log(scopeTest);
+function foo() {
+    var scopeTest = 'local!';
+    console.log(scopeTest);
 }
 
-console.log(scopeTest);  // global!
+console.log(scopeTest); // global!
 foo(); // local!
 ```
 
@@ -125,15 +125,15 @@ foo(); // local!
 ```javascript
 var scopeTest = 'global!';
 
-function foo(){
-  var scopeTest = 'local!';
-  console.log(scopeTest);
-  
-  function bar(){
-    var scopeTest = 'local in local!';
+function foo() {
+    var scopeTest = 'local!';
     console.log(scopeTest);
-  }
-  bar();
+
+    function bar() {
+        var scopeTest = 'local in local!';
+        console.log(scopeTest);
+    }
+    bar();
 }
 
 console.log(scopeTest); // global !
@@ -151,17 +151,17 @@ foo(); // local! / local in local!
 ```javascript
 var scopeTest = 'global state..';
 
-function foo(){
-  var scopeTest = 'local state..';
-  console.log(scopeTest); // local state..
-  
-  function bar(){
-    scopeTest = 'local in local state..?';
-    console.log(scopeTest);
-  }
-  bar();
-  
-  console.log(scopeTest); // local in local state..?
+function foo() {
+    var scopeTest = 'local state..';
+    console.log(scopeTest); // local state..
+
+    function bar() {
+        scopeTest = 'local in local state..?';
+        console.log(scopeTest);
+    }
+    bar();
+
+    console.log(scopeTest); // local in local state..?
 }
 
 console.log(scopeTest); // global state..
@@ -178,28 +178,29 @@ foo();
 6. `bar()` 함수 호출이 끝난 뒤 `bar()`함수 입장에서의 외부 스코프 범위의 변수인 `scopeTest`를 출력하게 되는데, 이는 `bar()` 함수 내에서 이미 `local in local state..?` 값으로 새롭게 초기화된 상태이다.
 7. `local in local state..?`를 최종적으로 출력하며 `foo()` 함수가 종료된다.
 
-
 ## 렉시컬 스코프
+
 우선 코드를 보고 출력결과를 예측해보자.
 
 ```javascript
 var scopeTest = 'global scope';
 
-function foo(){
-  var scopeTest = 'local scope';
-  
-  bar();
+function foo() {
+    var scopeTest = 'local scope';
+
+    bar();
 }
 
-function bar(){
-  console.log(scopeTest);
+function bar() {
+    console.log(scopeTest);
 }
 
 foo(); // ?
 bar(); // ?
 ```
 
-처음에 생각했던 나의 흐름은 다음과 같았다. 
+처음에 생각했던 나의 흐름은 다음과 같았다.
+
 1. `foo()` 호출 후 로컬 스코프에서 `scopeTest`가 새로 선언된다. 로컬 스코프 우선으로 인해 `scopeTest`에는 `local scope` 값이 할당된다.
 2. `foo()` 내에서 `bar()` 가 호출된다.
 3. 호출된 `bar()` 스코프 내에 `scopeTest`가 선언되지 않아 스코프 체인으로 선언된 곳을 찾는다.
@@ -213,19 +214,20 @@ bar(); // ?
 함수가 **호출된 위치에 따라** 상위 스코프가 변하는 개념을 **동적 스코프(Dynamic scope)** 라고 하며 자바스크립트에서처럼 함수가 **선언된 위치에 따라** 상위 스코프가 변하는 개념을 **렉시컬 스코프(Lexical scope), 정적 스코프(Static scope)** 라고 한다.
 
 ## 암묵적 전역
+
 코드부터 보자.
 
 ```javascript
-var scopeQuiz = "quiz! - ";
+var scopeQuiz = 'quiz! - ';
 
-function foo(){
-  whatScope = "Is it local?";
-  console.log(scopeQuiz + whatScope);
+function foo() {
+    whatScope = 'Is it local?';
+    console.log(scopeQuiz + whatScope);
 }
 
 foo();
-if(whatScope != undefined){
-  console.log("Global object property!");
+if (whatScope != undefined) {
+    console.log('Global object property!');
 }
 ```
 
@@ -240,10 +242,10 @@ if(whatScope != undefined){
 console.log(hoistingTestX); // undefined
 console.log(hoistingTestY); // ReferenceError
 
-var hoistingTestX = "Hello!";
+var hoistingTestX = 'Hello!';
 
-function foo(){
-  hoistingTestY = "implicit Global Scope";
+function foo() {
+    hoistingTestY = 'implicit Global Scope';
 }
 ```
 
@@ -253,13 +255,15 @@ function foo(){
 전역 객체로 추가된 프로퍼티는 `delete` 연산자를 통해 삭제할 수 있다. **delete는 객체 프로퍼티 삭제에만 이용 가능하고 변수 삭제에는 이용 불가능하다.**
 
 ## 전역변수 최소화
+
 전역변수 사용의 최소화를 위해 사용 시 전역 스코프에 무분별한 선언이 아니라 **한 객체에 묶어서 관리한다.**
+
 ```javascript
 var GLOBALVAR = {};
 
 GLOBALVAR.myConstants = {
-  prefix: 1,
-  suffix: 2
+    prefix: 1,
+    suffix: 2,
 };
 
 console.log(GLOBALVAR.myConstants.prefix);
@@ -267,35 +271,35 @@ console.log(GLOBALVAR.myConstants.suffix);
 ```
 
 ## 즉시실행함수를 통한 전역변수 사용 억제
-IIFE라고 불리는 즉시실행함수는 주로 전역스코프의 오염을 방지하기 위해 사용된다. 함수를 즉시실행함수로 선언하기 위한 방법은 일반적인 함수 선언을 괄호로 감싸면 된다. 이 외에도 다양한 방법이 있는데 이에 대해서는 [다음의 자료를](https://velog.io/@doondoony/javascript-iife) 참조하자. 
+
+IIFE라고 불리는 즉시실행함수는 주로 전역스코프의 오염을 방지하기 위해 사용된다. 함수를 즉시실행함수로 선언하기 위한 방법은 일반적인 함수 선언을 괄호로 감싸면 된다. 이 외에도 다양한 방법이 있는데 이에 대해서는 [다음의 자료를](https://velog.io/@doondoony/javascript-iife) 참조하자.
 
 IIFE의 특징은 다음과 같다.
+
 1. 함수 선언 시 이름은 작성하지 않는다.
 2. 즉시 실행 함수에서 선언하는 변수는 외부에서 접근이 불가능하다.
 3. 즉시실행함수를 변수에 할당할 시 함수 블록이 담기는 것이 아닌 리턴값만 담긴다.
 4. 파라미터의 전달은 `(function (param){ //...block }(paramValue))`의 형태로 전달한다.
 
-
 ```javascript
 // IIFE 파라미터 전달
-(function (printParam){
-  console.log(printParam);
-}('printVal'));
+(function (printParam) {
+    console.log(printParam);
+})('printVal');
 ```
-
 
 ```javascript
 // IIFE와 전역변수 감추기 예시
-(function() {
+(function () {
     var globalObject = {};
 
     globalObject.propOne = {
-        name: "hello",
-        value: "prop one!!"
+        name: 'hello',
+        value: 'prop one!!',
     };
 
     console.log(globalObject.propOne.name);
-}());
+})();
 
 console.log(globalObject);
 ```

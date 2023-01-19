@@ -1,5 +1,5 @@
 ---
-title: ES6 Symbol
+title: JavaScript - ES6 Symbol
 ---
 
 ## ES6 심볼(Symbol) 타입
@@ -26,7 +26,7 @@ ar.length = 50; // ar배열에 length라는 이름의 속성을 새롭게 추가
 ```js
 // 심볼 사용
 let ar = [1, 2, 3, 4, 5];
-const length = Symbol("length"); // new 연산자 사용 안함.
+const length = Symbol('length'); // new 연산자 사용 안함.
 
 ar[length] = 50; // 심볼 변수 length를 다음의 형식으로 집어넣는다.
 
@@ -45,8 +45,8 @@ console.log(ar[length]); // 50
 따라서 description 인자는 심볼의 고유값을 구분하지 못한다. **심볼은 매번 심볼함수 호출 시 새로운 심볼 값을 생성해내기 때문이다.**
 
 ```js
-let symbol1 = Symbol("name1");
-let symbol2 = Symbol("name1");
+let symbol1 = Symbol('name1');
+let symbol2 = Symbol('name1');
 
 symbol1 == symbol2; // false
 ```
@@ -57,7 +57,7 @@ symbol1 == symbol2; // false
 `console.log` 함수에 전달하면 다음과 같은 형태로 출력된다. `Symbol(description)`
 
 ```js
-let symbol = Symbol("a");
+let symbol = Symbol('a');
 alert(symbol); //Uncaught TypeError: Cannot convert a Symbol value to a string
 console.log(symbol); //Symbol(a)
 ```
@@ -71,16 +71,16 @@ let a = [1, 2, 3];
 a.someProperty = 10;
 
 for (let i in a) {
-  console.log(i); // 0,1,2,someProperty
+    console.log(i); // 0,1,2,someProperty
 }
 
 // 심볼타입 사용 - 은닉화가 적용된다.
 
-let symbolProperty = Symbol("symbolProperty");
+let symbolProperty = Symbol('symbolProperty');
 a[symbolProperty] = 10;
 
 for (let i in a) {
-  console.log(i);
+    console.log(i);
 } // 0,1,2,someProperty으로 위와 같은 결과가 출력되지만
 console.log(a); //[1, 2, 3, someProperty: 10, Symbol(symbolProperty): 10] 이와같은 결과가 나타난다.
 console.log(a[symbolProperty]); // 프로퍼티의 값만 출력 10

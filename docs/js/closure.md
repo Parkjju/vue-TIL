@@ -1,7 +1,7 @@
 ---
-title: closure
-
+title: JavaScript - closure
 ---
+
 ## 클로저
 
 클로저 이해를 위해서는 실행 컨텍스트에 대한 선행 지식이 필요하다. 필수적이므로 꼭 다른 자료나 이전에 작성해둔 [문서](https://parkjju.github.io/vue-TIL/js/execution.html#%E1%84%89%E1%85%B5%E1%86%AF%E1%84%92%E1%85%A2%E1%86%BC-%E1%84%8F%E1%85%A5%E1%86%AB%E1%84%90%E1%85%A6%E1%86%A8%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3)를 참조하자.
@@ -19,12 +19,12 @@ title: closure
 ```javascript
 let prefix = 1;
 
-function Calculate(){
-  function Add(a,b){
-    let result = a+b;
-    return result;
-  }
-  return Add; // Add 함수를 반환한다.
+function Calculate() {
+    function Add(a, b) {
+        let result = a + b;
+        return result;
+    }
+    return Add; // Add 함수를 반환한다.
 }
 
 let myCalculator = Calculate();
@@ -35,15 +35,15 @@ console.log(calculatedResult); // 3
 
 위 코드를 실행 컨텍스트 측면에서 이해해보자. (실행단계까지 진행되었다고 가정)
 
- 1. **line 1**  글로벌 실행 컨텍스트가 생성되고 `prefix` 변수가 VO 프로퍼티로 추가된 후 1로 값이 초기화된다. (`undefined` 초기화 과정은 설명에서 생략한다.)
- 2. **line 3\~9** - 함수 명과 표현식이 VO 프로퍼티에 추가된다.
- 3. **line 11** - `myCalculator` 변수가 우선 `undefined`로 초기화된다.
- 4. **line 11** - `Calculate`함수 호출 후 새로운 함수 실행 컨텍스트가 생성되고 스택에 쌓인다.
- 5. **line 4\~7** - 새로 생성된 함수 실행 컨텍스트에 진입한다. 진입 후에 `Add`함수 선언부를 만나게 되는데 현재 함수 실행 컨텍스트의 프로퍼티로 함수명,표현식을 프로퍼티에 추가한다.
- 6. **line 8** - `Add`함수를 반환하고 `Calculate`함수는 종료된다. `Calculate`함수 실행 컨텍스트는 소멸된다.
- 7. **line 11** - 함수 실행 컨텍스트에서의 `Add` 변수는 `Calculate` 함수 실행 컨텍스트의 소멸과 함께 사라지지만 `Add`로 선언했던 함수의 정의부는 유지되어 호출자인 글로벌 실행 컨텍스트로 넘어가게 된다.
- 8. **line 11** - `undefined`로 초기화 되어 있던 `myCalculator` 변수는 함수 정의부가 넘어와 해당 함수로 새롭게 초기화된다.
- 9. **line 12** - `myCalculator`함수 호출과 동시에 현재 실행 컨텍스트 객체(글로벌 실행 컨텍스트) 내의 프로퍼티에 `myCalculator`라는 프로퍼티가 있는지 검색한다. 12라인에서 리턴받은 함수 `myCalculator`를 호출한다.
+1.  **line 1** 글로벌 실행 컨텍스트가 생성되고 `prefix` 변수가 VO 프로퍼티로 추가된 후 1로 값이 초기화된다. (`undefined` 초기화 과정은 설명에서 생략한다.)
+2.  **line 3\~9** - 함수 명과 표현식이 VO 프로퍼티에 추가된다.
+3.  **line 11** - `myCalculator` 변수가 우선 `undefined`로 초기화된다.
+4.  **line 11** - `Calculate`함수 호출 후 새로운 함수 실행 컨텍스트가 생성되고 스택에 쌓인다.
+5.  **line 4\~7** - 새로 생성된 함수 실행 컨텍스트에 진입한다. 진입 후에 `Add`함수 선언부를 만나게 되는데 현재 함수 실행 컨텍스트의 프로퍼티로 함수명,표현식을 프로퍼티에 추가한다.
+6.  **line 8** - `Add`함수를 반환하고 `Calculate`함수는 종료된다. `Calculate`함수 실행 컨텍스트는 소멸된다.
+7.  **line 11** - 함수 실행 컨텍스트에서의 `Add` 변수는 `Calculate` 함수 실행 컨텍스트의 소멸과 함께 사라지지만 `Add`로 선언했던 함수의 정의부는 유지되어 호출자인 글로벌 실행 컨텍스트로 넘어가게 된다.
+8.  **line 11** - `undefined`로 초기화 되어 있던 `myCalculator` 변수는 함수 정의부가 넘어와 해당 함수로 새롭게 초기화된다.
+9.  **line 12** - `myCalculator`함수 호출과 동시에 현재 실행 컨텍스트 객체(글로벌 실행 컨텍스트) 내의 프로퍼티에 `myCalculator`라는 프로퍼티가 있는지 검색한다. 12라인에서 리턴받은 함수 `myCalculator`를 호출한다.
 10. **line 13** - 일반적인 함수 호출처럼 과정이 이루어져 `calculatedResult`에 3이 할당된다. (새로운 함수 실행 컨텍스트의 실행, 인자들의 프로퍼티 등록 등의 과정 등이 이루어진다.)
 
 위 과정에서 주목해야할 점이 몇 가지 있다.
@@ -58,8 +58,8 @@ console.log(calculatedResult); // 3
 ```javascript
 let counter = 0; // 전역 변수로 관리
 
-function increment(){
-  counter += 1;
+function increment() {
+    counter += 1;
 }
 
 increment(); // counter 1 증가
@@ -72,7 +72,7 @@ console.log(counter); // 1
 ```javascript
 let counter = 0;
 
-function increment(){
+function increment() {
     var localCounter = 0;
     localCounter += 1;
     return localCounter;
@@ -88,14 +88,14 @@ counter = increment();
 클로저가 적용된 다음 코드를 살펴보자.
 
 ```javascript
-function createCounter(){
-  let counter = 0;
-  const myFunction = function(){
-    counter = counter + 1;
-    return counter;
-  }
-  
-  return myFunction;
+function createCounter() {
+    let counter = 0;
+    const myFunction = function () {
+        counter = counter + 1;
+        return counter;
+    };
+
+    return myFunction;
 }
 
 const increment = createCounter();
@@ -103,18 +103,18 @@ const c1 = increment();
 const c2 = increment();
 const c3 = increment();
 
-console.log("c1, c2, c3: ", c1, c2, c3);
+console.log('c1, c2, c3: ', c1, c2, c3);
 ```
 
- 1. **line 1\~9** - `createCounter` 함수의 선언부이다. 글로벌 실행 컨텍스트에 프로퍼티로 저장된다.
- 2. **line 11** - `increment` 변수선언과 함께 `undefined`값으로 초기화된다.
- 3. **line 11** - `createCounter`함수 호출과 함께 실행 컨텍스트가 스택에 하나 쌓인다.
- 4. **line 2** - `counter`변수가 함수 실행 컨텍스트에 프로퍼티로 저장된다.
- 5. **line 3\~6** - 변수 `myFunction`이 함수 정의부와 함께 실행 컨텍스트의 프로퍼티로 저장된다.
- 6. **line 8** - 함수 반환과 함께 실행 컨텍스트가 소멸된다.
- 7. **line 11** - `undefined`로 초기화 되어 있던 `increment`변수에 `myFunction`의 정의부가 들어온다.
- 8. **line 12** - **(이후 과정 중요)** `c1` 변수 선언과 함께 `undefined`로 초기화된다.
- 9. **line 12** - `increment`함수 호출 후 글로벌 실행 컨텍스트 객체에서 `increment` 프로퍼티가 있는지 검색한다. `createCounter`함수 호출 이후에 `myFunction`의 정의부가 프로퍼티 값으로 저장되어 있으므로 정상적으로 함수 호출이 진행된다.
+1.  **line 1\~9** - `createCounter` 함수의 선언부이다. 글로벌 실행 컨텍스트에 프로퍼티로 저장된다.
+2.  **line 11** - `increment` 변수선언과 함께 `undefined`값으로 초기화된다.
+3.  **line 11** - `createCounter`함수 호출과 함께 실행 컨텍스트가 스택에 하나 쌓인다.
+4.  **line 2** - `counter`변수가 함수 실행 컨텍스트에 프로퍼티로 저장된다.
+5.  **line 3\~6** - 변수 `myFunction`이 함수 정의부와 함께 실행 컨텍스트의 프로퍼티로 저장된다.
+6.  **line 8** - 함수 반환과 함께 실행 컨텍스트가 소멸된다.
+7.  **line 11** - `undefined`로 초기화 되어 있던 `increment`변수에 `myFunction`의 정의부가 들어온다.
+8.  **line 12** - **(이후 과정 중요)** `c1` 변수 선언과 함께 `undefined`로 초기화된다.
+9.  **line 12** - `increment`함수 호출 후 글로벌 실행 컨텍스트 객체에서 `increment` 프로퍼티가 있는지 검색한다. `createCounter`함수 호출 이후에 `myFunction`의 정의부가 프로퍼티 값으로 저장되어 있으므로 정상적으로 함수 호출이 진행된다.
 10. **line 12** - `increment`함수 실행컨텍스트를 새로 생성한 뒤 내부를 보니 `counter`변수가 존재한다. 실행 컨텍스트 내에 선언된 `counter` 변수가 없고, 스코프 체인으로 변수를 찾아봐도 선언되어 있지 않다.
 11. **line 12** - `counter = counter + 1`은 결국 `counter = undefined + 1`로 처리되며 `counter`변수에는 1이 저장된다.
 
@@ -144,20 +144,20 @@ console.log("c1, c2, c3: ", c1, c2, c3);
 다음 코드를 스스로 분석해봄으로써 클로저에 대한 정리를 마무리해보자.
 
 ```javascript
-let c = 4
+let c = 4;
 function addX(x) {
-  return function(n) {
-     return n + x // 이 함수가 리턴될 때의 x는 클로저에 저장되어 있는 상태이다.
-  }
+    return function (n) {
+        return n + x; // 이 함수가 리턴될 때의 x는 클로저에 저장되어 있는 상태이다.
+    };
 }
-const addThree = addX(3)
-let d = addThree(c)
-console.log('example partial application', d)
+const addThree = addX(3);
+let d = addThree(c);
+console.log('example partial application', d);
 ```
 
 ## 정리
 
-> The way I will always remember closures is through the backpack analogy. When a function gets created and passed around or returned from another function, it carries a backpack with it. And in the backpack are all the variables that were in scope when the function was declared. (출처 - \[medium - I never understood javascript closure\]([https://medium.com/dailyjs/i-never-understood-javascript-closures-9663703368e8](https://medium.com/dailyjs/i-never-understood-javascript-closures-9663703368e8 "https://medium.com/dailyjs/i-never-understood-javascript-closures-9663703368e8")) )
+> The way I will always remember closures is through the backpack analogy. When a function gets created and passed around or returned from another function, it carries a backpack with it. And in the backpack are all the variables that were in scope when the function was declared. (출처 - \[medium - I never understood javascript closure\]([https://medium.com/dailyjs/i-never-understood-javascript-closures-9663703368e8](https://medium.com/dailyjs/i-never-understood-javascript-closures-9663703368e8 'https://medium.com/dailyjs/i-never-understood-javascript-closures-9663703368e8')) )
 
 클로저에 대한 개념을 기억하기 위해 **백팩 비유에 대해서 생각하자.** 함수 선언 후 또 다른 함수에 넘어갈 때에는 백팩에 담겨 넘어가며, 백팩에는 변수들이 담겨있으며 이 백팩이 바로 클로저이다.
 

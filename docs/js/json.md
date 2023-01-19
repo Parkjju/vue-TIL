@@ -1,5 +1,5 @@
 ---
-title: JSON
+title: JavaScript - JSON
 ---
 
 ## JSON
@@ -20,10 +20,10 @@ response_data['message'] = 'Some error message'
 
 ```json
 {
-  "name": "Park",
-  "gender": "male",
-  "age": 25,
-  "alive": true
+    "name": "Park",
+    "gender": "male",
+    "age": 25,
+    "alive": true
 }
 ```
 
@@ -34,12 +34,12 @@ JSON에서 사용되는 메서드를 알아보자.
 
 ```javascript
 let user = {
-  name: 'Park',
-  age: 25,
+    name: 'Park',
+    age: 25,
 
-  toString() {
-    return `{name: ${this.name}, age: ${this.age}}`;
-  },
+    toString() {
+        return `{name: ${this.name}, age: ${this.age}}`;
+    },
 };
 
 alert(user);
@@ -57,8 +57,8 @@ alert(user);
 
 ```javascript
 let user = {
-  name: 'Park',
-  age: 25,
+    name: 'Park',
+    age: 25,
 };
 
 let json = JSON.stringify(user);
@@ -89,14 +89,14 @@ JSON에서는 백틱이나 작은따옴표를 사용할 수 없다. 객체 프�
 
 ```javascript
 const jsonObject = {
-  arr: [1, 2],
-  none: null,
-  num: 1,
-  bool: true,
-  str: 'Hello',
-  method: () => console.log('Hello'),
-  symbol: Symbol('Symbol'),
-  undefine: undefined,
+    arr: [1, 2],
+    none: null,
+    num: 1,
+    bool: true,
+    str: 'Hello',
+    method: () => console.log('Hello'),
+    symbol: Symbol('Symbol'),
+    undefine: undefined,
 };
 
 console.log(JSON.stringify(jsonObject));
@@ -108,10 +108,10 @@ console.log(JSON.stringify(jsonObject));
 
 ```javascript
 let jsonObject = {
-  park: {
-    age: 25,
-    stack: 'JavaScript',
-  },
+    park: {
+        age: 25,
+        stack: 'JavaScript',
+    },
 };
 console.log(JSON.stringify(jsonObject));
 // {"park":{"age":25,"stack":"JavaScript"}}
@@ -122,13 +122,13 @@ console.log(JSON.stringify(jsonObject));
 
 ```javascript
 const jsonObject = {
-  name: 'park',
-  age: 25,
+    name: 'park',
+    age: 25,
 };
 
 const refObject = {
-  name: 'Jun',
-  age: 24,
+    name: 'Jun',
+    age: 24,
 };
 jsonObject.reference = refObject;
 refObject.reference = jsonObject;
@@ -147,13 +147,13 @@ refObject.reference = jsonObject;
 
 ```javascript
 let room = {
-  number: 23,
+    number: 23,
 };
 
 let meetup = {
-  title: 'Conference',
-  participants: [{ name: 'John' }, { name: 'Alice' }],
-  place: room, // meetup은 room을 참조합니다.
+    title: 'Conference',
+    participants: [{ name: 'John' }, { name: 'Alice' }],
+    place: room, // meetup은 room을 참조합니다.
 };
 
 room.occupiedBy = meetup; // room references meetup
@@ -176,9 +176,9 @@ JSON.stringify(meetup, ['title', 'participants', 'place', 'name', 'number']);
 ```javascript
 // .. 순환참조 객체
 console.log(
-  JSON.stringify(meetup, function replacer(key, value) {
-    return key == 'occupiedBy' ? undefined : value;
-  })
+    JSON.stringify(meetup, function replacer(key, value) {
+        return key == 'occupiedBy' ? undefined : value;
+    })
 );
 // 프로퍼티가 occupiedBy일 경우 undefined
 ```
@@ -189,8 +189,8 @@ console.log(
 
 ```javascript
 let user = {
-  name: 'Park',
-  age: 25,
+    name: 'Park',
+    age: 25,
 };
 
 console.log(JSON.stringify(user, null, 2));
@@ -238,9 +238,9 @@ console.log(decodedObject.getDay()); // 에러 발생, getDay 메서드가 없�
 
 ```javascript
 const decodedObjectWithReviver = JSON.parse(jsonDate, (key, value) => {
-  if (key == 'date') return new Date(value);
+    if (key == 'date') return new Date(value);
 
-  return value;
+    return value;
 });
 
 console.log(decodedObjectWithReviver.date.getDay()); // 정상 출력!

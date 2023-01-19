@@ -1,5 +1,5 @@
 ---
-title: AJAX Todo
+title: JavaScript - AJAX Todo
 ---
 
 ## 개요
@@ -80,15 +80,15 @@ XHR 객체는 응답에 대한 이벤트를 리스닝한다.
 ```javascript
 let xhr = new XMLHttpRequest();
 xhr.onload = () => {
-  if (xhr.status === 201) {
-    console.log(JSON.parse(xhr.responseText));
-  } else {
-    console.log('Server response: ', xhr.status);
-  }
+    if (xhr.status === 201) {
+        console.log(JSON.parse(xhr.responseText));
+    } else {
+        console.log('Server response: ', xhr.status);
+    }
 };
 
 xhr.onerror = () => {
-  console.log('An error occurred, not able to process the request.');
+    console.log('An error occurred, not able to process the request.');
 };
 ```
 
@@ -145,13 +145,13 @@ console.log(xhr.response); // xml이 출력된다.
 
 ```javascript
 xhr.onreadystatechange = () => {
-  if (xhr.readyState == 2) {
-    console.log('HEADERS_REACEIVED!');
-  } else if (xhr.readyState == 3) {
-    console.log('LOADING!');
-  } else if (xhr.readyState == 4) {
-    console.log('DONE!');
-  }
+    if (xhr.readyState == 2) {
+        console.log('HEADERS_REACEIVED!');
+    } else if (xhr.readyState == 3) {
+        console.log('LOADING!');
+    } else if (xhr.readyState == 4) {
+        console.log('DONE!');
+    }
 };
 xhr.send();
 ```
@@ -176,9 +176,9 @@ xhr.send();
 ```javascript
 let xhr = new XMLHttpRequest();
 const data = {
-  title: 'foo',
-  body: 'bar',
-  userId: 1,
+    title: 'foo',
+    body: 'bar',
+    userId: 1,
 };
 
 xhr.open('POST', 'https://jsonplaceholder.typicode.com/posts');
@@ -196,11 +196,11 @@ xhr.open('GET', 'https://jsonplaceholder.typicode.com/todos/1');
 xhr.send();
 
 xhr.onload = (e) => {
-  if (xhr.status == 200) {
-    console.log(xhr.response);
-  } else {
-    console.log('Error!');
-  }
+    if (xhr.status == 200) {
+        console.log(xhr.response);
+    } else {
+        console.log('Error!');
+    }
 };
 ```
 
@@ -211,152 +211,161 @@ Axios 라이브러리를 활용하여 투두 리스트 데이터를 비동기적
 ```html
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>JS Axios Demo</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
-      integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="container">
-      <div class="panel panel-primary">
-        <div class="panel-heading">GET Request</div>
-        <div class="panel-body">
-          <button class="btn btn-primary" id="get">Get Todos</button>
-          <button class="btn btn-warning" onclick="clearOutput(this)">
-            Clear
-          </button>
-          <div class="alert alert-primary" id="getResult1"></div>
-        </div>
-      </div>
-
-      <div class="panel panel-default">
-        <div class="panel-heading">GET Request with Param</div>
-        <div class="panel-body">
-          <input
-            type="text"
-            class="form-control"
-            id="todoId"
-            placeholder="Todo ID ..."
-          />
-          <button class="btn btn-primary" onclick="performGetRequest2()">
-            Get Todos
-          </button>
-          <button class="btn btn-warning" onclick="clearOutput(this)">
-            Clear
-          </button>
-          <div class="alert alert-primary" id="getResult2"></div>
-        </div>
-      </div>
-
-      <div class="panel panel-default">
-        <div class="panel-heading">POST Request</div>
-        <div class="panel-body">
-          <form class="form-inline" id="todoInputForm">
-            <div class="form-group">
-              <div>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="todoTitle"
-                  placeholder="Todo Title ..."
-                />
-              </div>
-              <div>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="todoId"
-                  placeholder="Todo number ..."
-                />
-              </div>
-              <div>
-                <input id="todoCheck" type="checkbox" class="form-control" />
-                <button type="submit" class="btn btn-primary">Send</button>
-              </div>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>JS Axios Demo</title>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+            integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
+            crossorigin="anonymous"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="container">
+            <div class="panel panel-primary">
+                <div class="panel-heading">GET Request</div>
+                <div class="panel-body">
+                    <button class="btn btn-primary" id="get">Get Todos</button>
+                    <button class="btn btn-warning" onclick="clearOutput(this)">
+                        Clear
+                    </button>
+                    <div class="alert alert-primary" id="getResult1"></div>
+                </div>
             </div>
-          </form>
-          <br />
-          <button class="btn btn-warning" onclick="clearOutput(this)">
-            Clear
-          </button>
-          <div class="alert alert-primary" id="postResult"></div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">GET Request with Param</div>
+                <div class="panel-body">
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="todoId"
+                        placeholder="Todo ID ..."
+                    />
+                    <button
+                        class="btn btn-primary"
+                        onclick="performGetRequest2()"
+                    >
+                        Get Todos
+                    </button>
+                    <button class="btn btn-warning" onclick="clearOutput(this)">
+                        Clear
+                    </button>
+                    <div class="alert alert-primary" id="getResult2"></div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">POST Request</div>
+                <div class="panel-body">
+                    <form class="form-inline" id="todoInputForm">
+                        <div class="form-group">
+                            <div>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="todoTitle"
+                                    placeholder="Todo Title ..."
+                                />
+                            </div>
+                            <div>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="todoId"
+                                    placeholder="Todo number ..."
+                                />
+                            </div>
+                            <div>
+                                <input
+                                    id="todoCheck"
+                                    type="checkbox"
+                                    class="form-control"
+                                />
+                                <button type="submit" class="btn btn-primary">
+                                    Send
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <br />
+                    <button class="btn btn-warning" onclick="clearOutput(this)">
+                        Clear
+                    </button>
+                    <div class="alert alert-primary" id="postResult"></div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <script
-      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="./index.js"></script>
-  </body>
+        <script
+            src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
+            crossorigin="anonymous"
+        ></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="./index.js"></script>
+    </body>
 </html>
 ```
 
 ```css
 .container {
-  padding-top: 100px;
+    padding-top: 100px;
 }
 .panel {
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  margin-bottom: 100px;
-  padding: 30px;
-  border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    margin-bottom: 100px;
+    padding: 30px;
+    border-radius: 5px;
 }
 .panel-heading {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .panel-body > input {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .alert {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 
 .alert p {
-  font-size: 15px;
-  font-weight: bold;
+    font-size: 15px;
+    font-weight: bold;
 }
 
 .todo-title {
-  font-size: 20px !important;
+    font-size: 20px !important;
 }
 .todo-body {
-  padding: 5px;
-  background-color: white;
-  border-radius: 10px;
-  width: 70%;
+    padding: 5px;
+    background-color: white;
+    border-radius: 10px;
+    width: 70%;
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column !important;
-  align-items: flex-start !important;
+    display: flex;
+    flex-direction: column !important;
+    align-items: flex-start !important;
 }
 
 .form-group div {
-  margin-bottom: 5px;
+    margin-bottom: 5px;
 }
 .form-group div:last-child {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
 }
 ```
 
@@ -379,22 +388,22 @@ const input = document.querySelector('#todoInputForm');
 btn.addEventListener('click', performGetRequest1);
 
 function performGetRequest1() {
-  var resultElement = document.getElementById('getResult1');
-  resultElement.innerHTML = '';
+    var resultElement = document.getElementById('getResult1');
+    resultElement.innerHTML = '';
 
-  axios.get('https://jsonplaceholder.typicode.com/todos/1').then((result) => {
-    const { id, title, completed } = result.data;
-    resultElement.innerHTML = `<p class="todo-title">Todo no.<p class="todo-body">${id}</p><p><p class="todo-title">Title <p class="todo-body">${title}</p></p><p class="todo-title">Checked</p>`;
+    axios.get('https://jsonplaceholder.typicode.com/todos/1').then((result) => {
+        const { id, title, completed } = result.data;
+        resultElement.innerHTML = `<p class="todo-title">Todo no.<p class="todo-body">${id}</p><p><p class="todo-title">Title <p class="todo-body">${title}</p></p><p class="todo-title">Checked</p>`;
 
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    if (completed == true) {
-      checkbox.checked = true;
-    } else {
-      checkbox.checked = false;
-    }
-    resultElement.appendChild(checkbox);
-  });
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        if (completed == true) {
+            checkbox.checked = true;
+        } else {
+            checkbox.checked = false;
+        }
+        resultElement.appendChild(checkbox);
+    });
 }
 ```
 
@@ -404,32 +413,32 @@ function performGetRequest1() {
 
 ```javascript
 function performGetRequest2() {
-  var resultElement = document.getElementById('getResult2');
-  resultElement.innerHTML = '';
-  const input = document.querySelector('#todoId');
-  const value = input.value;
+    var resultElement = document.getElementById('getResult2');
+    resultElement.innerHTML = '';
+    const input = document.querySelector('#todoId');
+    const value = input.value;
 
-  axios
-    .get('https://jsonplaceholder.typicode.com/todos', {
-      params: {
-        id: value,
-      },
-    })
-    .then((result) => {
-      console.log(result.data);
-      const { id, title, completed } = result.data[0];
+    axios
+        .get('https://jsonplaceholder.typicode.com/todos', {
+            params: {
+                id: value,
+            },
+        })
+        .then((result) => {
+            console.log(result.data);
+            const { id, title, completed } = result.data[0];
 
-      resultElement.innerHTML = `<p class="todo-title">Todo no.<p class="todo-body">${id}</p><p><p class="todo-title">Title <p class="todo-body">${title}</p></p><p class="todo-title">Checked</p>`;
+            resultElement.innerHTML = `<p class="todo-title">Todo no.<p class="todo-body">${id}</p><p><p class="todo-title">Title <p class="todo-body">${title}</p></p><p class="todo-title">Checked</p>`;
 
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      if (completed == true) {
-        checkbox.checked = true;
-      } else {
-        checkbox.checked = false;
-      }
-      resultElement.appendChild(checkbox);
-    });
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            if (completed == true) {
+                checkbox.checked = true;
+            } else {
+                checkbox.checked = false;
+            }
+            resultElement.appendChild(checkbox);
+        });
 }
 ```
 
@@ -441,31 +450,31 @@ URL파라미터를 통해 GET요청을 보내는 코드이다. `axios.get` 메�
 
 ```javascript
 function performPostRequest(e) {
-  e.preventDefault();
-  const inputTitle = document.querySelector('#todoTitle');
-  const inputId = document.querySelector('#todoId');
-  const inputCheck = document.querySelector('#todoCheck');
+    e.preventDefault();
+    const inputTitle = document.querySelector('#todoTitle');
+    const inputId = document.querySelector('#todoId');
+    const inputCheck = document.querySelector('#todoCheck');
 
-  const title = inputTitle.value;
-  const id = inputId.value;
-  const checked = inputCheck.checked;
-  axios
-    .post('https://jsonplaceholder.typicode.com/posts', {
-      title: title,
-      id: id,
-      completed: checked,
-    })
-    .then((result) => {
-      const resultElement = document.querySelector('#postResult');
-      const { id, title, completed } = result.data;
-      resultElement.innerHTML = `<p class="todo-title">Todo no.<p class="todo-body">${id}</p><p><p class="todo-title">Title <p class="todo-body">${title}</p></p><p class="todo-title">Checked</p>`;
+    const title = inputTitle.value;
+    const id = inputId.value;
+    const checked = inputCheck.checked;
+    axios
+        .post('https://jsonplaceholder.typicode.com/posts', {
+            title: title,
+            id: id,
+            completed: checked,
+        })
+        .then((result) => {
+            const resultElement = document.querySelector('#postResult');
+            const { id, title, completed } = result.data;
+            resultElement.innerHTML = `<p class="todo-title">Todo no.<p class="todo-body">${id}</p><p><p class="todo-title">Title <p class="todo-body">${title}</p></p><p class="todo-title">Checked</p>`;
 
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.checked = checked;
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = checked;
 
-      resultElement.appendChild(checkbox);
-    });
+            resultElement.appendChild(checkbox);
+        });
 }
 ```
 

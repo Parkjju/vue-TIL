@@ -1,5 +1,5 @@
 ---
-title: ES6 프로토타입 문법적 접근 (1)
+title: JavaScript - ES6 프로토타입 문법적 접근 (1)
 ---
 
 ## 자바스크립트 프로토타입(Prototype)
@@ -9,16 +9,16 @@ title: ES6 프로토타입 문법적 접근 (1)
 프로토타입 객체는 `new`연산자에 의해 생성된 객체이며 공유 프로퍼티, 메서드 등을 제공하기 위해 사용된다.
 
 ```js
-const fruit = { name: "apple" };
+const fruit = { name: 'apple' };
 console.log(fruit.name); // apple
 
 // 속성 추가
-fruit.expiration = "20241231";
+fruit.expiration = '20241231';
 console.log(fruit.expiration); // 20241231
 
 // 속성이 있는지 없는지 체크하는 메서드
-console.log(fruit.hasOwnProperty("expiration")); // true
-console.log(fruit.hasOwnProperty("country")); // false
+console.log(fruit.hasOwnProperty('expiration')); // true
+console.log(fruit.hasOwnProperty('country')); // false
 ```
 
 `expiration`이라는 프로퍼티를 추가한 것은 맞지만 애초에 `fruit`객체를 생성할 때 `hasOwnProperty`라는 메서드를 정의한 적이 없다. 그럼에도 `true`,`false`가 정상적으로 출력된다는 것은 `fruit` 객체가 `hasOwnProperty` 메서드를 사용할 권한이 있다는 것이다.
@@ -33,11 +33,11 @@ console.log(fruit); // [[prototype]]: Object라는 것이 함께 출력된다. _
 
 ```js
 const fruit2 = {
-  name: "apple",
-  expiration: "20241231",
-  hasOwnProperty: function () {
-    console.log("Hello");
-  },
+    name: 'apple',
+    expiration: '20241231',
+    hasOwnProperty: function () {
+        console.log('Hello');
+    },
 };
 
 fruit2.hasOwnProperty(); // Hello
@@ -96,7 +96,7 @@ console.log(lion.__proto__); // {constructor: f} > f Animal()
 ```js
 function Animal() {}
 Animal.prototype.Run = function () {
-  return "후다닥";
+    return '후다닥';
 };
 
 let tiger = new Animal();
@@ -111,7 +111,7 @@ tiger, lion 객체 내에 메서드를 직접 정의하려면 다음과 같이 �
 
 ```js
 tiger.Run = function () {
-  return "타이거 후다닥";
+    return '타이거 후다닥';
 };
 
 console.log(tiger.Run()); // tiger에 정의된 Run 호출, 타이거 후다닥
@@ -153,11 +153,11 @@ console.log(lion.Leg); // 2
 
 ```js
 function Calculate(first, last) {
-  this.first = first;
-  this.last = last;
-  this.Plus = function () {
-    return this.first + this.last;
-  };
+    this.first = first;
+    this.last = last;
+    this.Plus = function () {
+        return this.first + this.last;
+    };
 }
 
 let Calculator = new Calculate(100, 20);
@@ -176,12 +176,12 @@ Calculate 함수는 new연산자와 함께 사용될 때 프로토타입 객체�
 
 ```js
 function Calculate(a, b) {
-  this.a = a;
-  this.b = b;
+    this.a = a;
+    this.b = b;
 }
 
 Calculate.prototype.Plus = function () {
-  return this.a + this.b;
+    return this.a + this.b;
 };
 
 let Calculator = new Calculate(1, 2);
@@ -201,15 +201,15 @@ console.log(Calculator.Plus()); // 3
 
 ```js
 let object1 = {
-  name: "홍길동",
-  age: 20,
-  sayHi: function () {
-    console.log("Hi~" + this.name);
-  },
+    name: '홍길동',
+    age: 20,
+    sayHi: function () {
+        console.log('Hi~' + this.name);
+    },
 };
 
 let object2 = {
-  name: "이순신",
+    name: '이순신',
 };
 
 console.log(object2.__proto__); // Object 프로토타입에 대한 정보들 표시
@@ -233,11 +233,11 @@ object2.sayHi(); // Hi~이순신
 
 ```js
 let object1 = {
-  name: "홍길동",
-  age: 20,
-  sayHi: function () {
-    console.log("Hi~" + this.name);
-  },
+    name: '홍길동',
+    age: 20,
+    sayHi: function () {
+        console.log('Hi~' + this.name);
+    },
 };
 
 let EmptyObject = {};
@@ -288,12 +288,12 @@ console.log(A.prototype); // {constructor: ƒ}, f A()
 
 ```js
 function Calculator(a, b) {
-  this.a = a;
-  this.b = b;
+    this.a = a;
+    this.b = b;
 }
 
 Calculator.prototype.plus = function () {
-  return this.a + this.b;
+    return this.a + this.b;
 };
 
 let plusResult = new Calculator(1, 2);
@@ -306,7 +306,7 @@ plusResult.plus(); // 3
 2. `Calculator.prototype.plus`를 통해 `Calculator` 프로토타입 객체에 `plus` 메서드를 새로 정의한다.
 3. `plusResult` 객체 선언 후 `new` 연자를 통해 `Calculator` 객체를 생성 및 할당한다.
 4. `plusResult` 객체를 출력해보면 `a,b`라는 프로퍼티에 1,2값이 저장되어 있음을 확인할 수 있다. 이에 대한 동작을 더 자세히 들여다보자.
-   - plusResult는 빈 객체로 생성된 이후에 `Calculator` 프로토타입 객체를 가리키게 된다. 이때 생성된 `Calculator` 프로토타입 객체에는 a,b라는 이름의 프로퍼티가 각각 1과 2라는 값으로 초기화 되어있는 상태이다. 헷갈리면, 변수에 객체 할당없이 `new Calculator(1,2)`만 찍어보자. 이후 `plusResult` 객체는 각각 1,2로 초기화된 프로퍼티 a,b를 갖는 `Calculator`프로토타입 객체를 `__proto__`를 통해 가리키게 된다.
+    - plusResult는 빈 객체로 생성된 이후에 `Calculator` 프로토타입 객체를 가리키게 된다. 이때 생성된 `Calculator` 프로토타입 객체에는 a,b라는 이름의 프로퍼티가 각각 1과 2라는 값으로 초기화 되어있는 상태이다. 헷갈리면, 변수에 객체 할당없이 `new Calculator(1,2)`만 찍어보자. 이후 `plusResult` 객체는 각각 1,2로 초기화된 프로퍼티 a,b를 갖는 `Calculator`프로토타입 객체를 `__proto__`를 통해 가리키게 된다.
 
 ```js
 let plusResult = new Calculator(1, 2);

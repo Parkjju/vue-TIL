@@ -1,5 +1,5 @@
 ---
-title: ES6 set
+title: JavaScript - ES6 set
 ---
 
 ## set
@@ -36,8 +36,8 @@ let ar1 = new Set(); // 공집합 하나 생성
 console.log(ar1); // object set 객체를 반환, Set(0) {size: 0}, set은 length가 아닌 size이다.
 
 // 추가
-ar1.add("A");
-ar1.add("B");
+ar1.add('A');
+ar1.add('B');
 console.log(ar1); // Set(2) {'A', 'B'}
 ```
 
@@ -47,7 +47,7 @@ console.log(ar1); // Set(2) {'A', 'B'}
 
 ```js
 let ar1 = new Set();
-ar1.add("a");
+ar1.add('a');
 console.log(ar1[0]); // undefined
 ```
 
@@ -57,8 +57,8 @@ set데이터에 값을 집어넣고 **인덱스로 접근을 시도하면 undefi
 
 ```js
 let ar1 = new Set();
-ar1.add("a");
-ar1.add("a");
+ar1.add('a');
+ar1.add('a');
 console.log(ar1.size); // 1
 ```
 
@@ -69,10 +69,10 @@ set데이터에 중복된 값을 삽입하면 해당 원소가 추가될 뿐만 
 ```js
 // 하나만 삭제
 let ar1 = new Set();
-ar1.add("A");
-ar1.add("B");
+ar1.add('A');
+ar1.add('B');
 
-ar1.delete("A");
+ar1.delete('A');
 console.log(ar1); // delete메서드는 Boolean을 리턴한다. Set(1) {'B'}
 
 // 전체 삭제
@@ -86,11 +86,11 @@ Set 자료구조의 데이터 생성과 동시에 값을 추가하는 방법은 
 
 ```js
 // 생성과 동시에 값을 추가
-let ar = new Set().add("a").add("b");
+let ar = new Set().add('a').add('b');
 console.log(ar); //Set(2) {'a', 'b'}
 
 // ar과 동일한 원소를 지님
-let ar1 = new Set(["a", "b"]);
+let ar1 = new Set(['a', 'b']);
 ```
 
 스프레드 연산자를 이용하여 Set을 출력하는 방법은 다음과 같다.
@@ -99,18 +99,18 @@ let ar1 = new Set(["a", "b"]);
 Spread(펼침) 연산자는 이터러블 객체(Iterable Object)의 요소를 하나씩 분리하여 전개하는 연산자를 의미한다.
 
 ```js
-let testArr = ["k", "o", "r", "e", "a"];
+let testArr = ['k', 'o', 'r', 'e', 'a'];
 console.log(...testArr); //k o r e a
 console.log([...testArr]); // ['k', 'o', 'r', 'e', 'a']
 
-console.log(..."hello"); //h e l l o
-console.log([..."hello"]); //  ['h', 'e', 'l', 'l', 'o']
+console.log(...'hello'); //h e l l o
+console.log([...'hello']); //  ['h', 'e', 'l', 'l', 'o']
 ```
 
 :::
 
 ```js
-let mySet = new Set().add("a").add("b");
+let mySet = new Set().add('a').add('b');
 console.log(...mySet); // a b
 console.log([...mySet]); // ['a', 'b']
 ```
@@ -125,8 +125,8 @@ console.log([...mySet]); // ['a', 'b']
 ```js
 // 기존 함수 정의방식
 let ar = [1, 2, 3];
-ar.forEach(function(x) {
-  console.log(x);
+ar.forEach(function (x) {
+    console.log(x);
 }); // 1,2,3
 
 // 화살표함수 이용
@@ -139,7 +139,7 @@ ar.forEach((val) => console.log(val)); // 1,2,3
 ```js
 let ar = [1, 2, 3];
 for (let i in ar) {
-  console.log(i); // 1,2,3
+    console.log(i); // 1,2,3
 }
 ```
 
@@ -156,10 +156,10 @@ for in 반복문은 열거형 속성(Enumerable)이 있는 객체에 대해서�
 :::
 
 ```js
-let ar = ["a", "b", "c"];
+let ar = ['a', 'b', 'c'];
 
 for (let i of ar) {
-  console.log(i);
+    console.log(i);
 } // a,b,c
 
 // 스프레드 연산자를 통해 배열로 바꿔 출력
@@ -173,7 +173,7 @@ set의 메서드로 **keys(), values()가** 존재하는데 이들이 반환하�
 이터레이터 객체는 next() 메서드를 갖는다. next메서드를 통해 반복자 객체 각 원소에 순차적으로 접근할 수 있다.
 
 ```js
-let ar = new Set(["a", "b", "c"]);
+let ar = new Set(['a', 'b', 'c']);
 console.log(ar.keys().next()); // {value: 'a', done: false}
 
 let arKey = ar.keys();
@@ -190,6 +190,6 @@ set의 `entries()` 메서드는 각 원소를 배열 쌍으로 만들어준다.
 
 ```js
 for (i of ar.entries()) {
-  console.log(i);
+    console.log(i);
 } // ['a', 'a'], ['b', 'b']
 ```

@@ -157,6 +157,7 @@ module.exports = {
                     'swift/230112-navigation',
                     'swift/230112-table',
                     'swift/230118-picker',
+                    'swift/230119-network',
                 ],
                 sidebarDepth: 2,
             },

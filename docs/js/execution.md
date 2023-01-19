@@ -1,7 +1,7 @@
 ---
-title: Execution Context
-
+title: JavaScript - Execution Context
 ---
+
 ## 실행 컨텍스트
 
 > Execution context (EC) is defined as the environment in which the JavaScript code is executed. By environment, I mean the value of this, variables, objects, and functions JavaScript code has access to at a particular time. - 출처: [medium - Execution context, Scope chain and JavaScript internals](https://medium.com/@happymishra66/execution-context-in-javascript-319dd72e8e2c)
@@ -9,7 +9,6 @@ title: Execution Context
 (직역)자바스크립트의 실행 컨텍스트(EC)는 자바스크립트 코드가 실행되는 환경을 의미한다. 여기서 환경이라 함은, 자바스크립트의 변수, `this`, 객체, 함수의 특정 시간(particular time)에 접근할 수 있는 값을 의미한다.
 
 > ECMAScript 스펙에 따르면 실행 컨텍스트를 실행 가능한 코드를 형상화하고 구분하는 추상적인 개념이라고 정의한다. 좀 더 쉽게 말하자면 실행 컨텍스트는 실행 가능한 코드가 실행되기 위해 필요한 환경 이라고 말할 수 있겠다. - 출처: [Poimeweb - Execution Context](https://poiemaweb.com/js-execution-context)
-
 
 우선 이론적인 부분을 쭉 알아보자. 실행 컨텍스트의 타입은 세 가지로 나눠진다.
 
@@ -35,25 +34,25 @@ title: Execution Context
 
 ```javascript
 // global scope
-var globalValue = "Global!";
+var globalValue = 'Global!';
 
-function stackOne(){
-  var stackOneValue = "Stack One!";
-  
-  function stackTwo(){
-    var stackTwoValue = "Stack Two!";
-    
-    console.log("GEC : ", globalValue);
-    console.log("FEC one : ", stackOneValue);
-    console.log("FEC two : ", stackTwoValue);
-  }
-  
-  stackTwo();
+function stackOne() {
+    var stackOneValue = 'Stack One!';
+
+    function stackTwo() {
+        var stackTwoValue = 'Stack Two!';
+
+        console.log('GEC : ', globalValue);
+        console.log('FEC one : ', stackOneValue);
+        console.log('FEC two : ', stackTwoValue);
+    }
+
+    stackTwo();
 }
 
 stackOne();
 
-console.log("End");
+console.log('End');
 ```
 
 <figure>
@@ -94,16 +93,15 @@ console.log("End");
 
 ```javascript
 //출처 - https://medium.com/@happymishra66/execution-context-in-javascript-319dd72e8e2c
-function funA (a, b) {
-  var c = 3;
-  
-  var d = 2;
-  
-  d = function() {
-    return a - b;
-  }
-}
+function funA(a, b) {
+    var c = 3;
 
+    var d = 2;
+
+    d = function () {
+        return a - b;
+    };
+}
 
 funA(3, 2);
 ```
@@ -120,16 +118,16 @@ executionContextObj = {
 
 ```javascript
 variableObject = {
-  argumentObject: {
-    0: a,
-    1: b,
-    length: 2
-  },
-  a: 3,
-  b: 2,
-  c: undefined,
-  d: undefined
-}
+    argumentObject: {
+        0: a,
+        1: b,
+        length: 2,
+    },
+    a: 3,
+    b: 2,
+    c: undefined,
+    d: undefined,
+};
 ```
 
 변수 객체 (Variable Object/VO)는 자바스크립트 엔진에 의해 다음의 프로퍼티들로 구성된다.
@@ -148,16 +146,16 @@ variableObject = {
 
 ```javascript
 variableObject = {
-  argumentObject: {
-    0: a,
-    1: b,
-    length: 2
-  },
-  a: 3,
-  b: 2,
-  c: 3,
-  d: undefined
-}
+    argumentObject: {
+        0: a,
+        1: b,
+        length: 2,
+    },
+    a: 3,
+    b: 2,
+    c: 3,
+    d: undefined,
+};
 ```
 
 `d` 프로퍼티는 이후 힙 메모리에 저장되어 있는 `function() {return a - b;}` 함수를 참조하게 된다.
@@ -171,18 +169,18 @@ a = 1;
 
 var b = 2;
 
-cFunc = function(e) {
-  var c = 10;
-  var d = 15;
-  
-  a = 3
-  
-  function dFunc() {
-    var f = 5;
-  }
-  
-  dFunc();
-}
+cFunc = function (e) {
+    var c = 10;
+    var d = 15;
+
+    a = 3;
+
+    function dFunc() {
+        var f = 5;
+    }
+
+    dFunc();
+};
 
 cFunc(10);
 ```
@@ -191,7 +189,7 @@ cFunc(10);
 
 ```javascript
 executionContextObj = {
-  variableObject: {}, 
+  variableObject: {},
   scopeChain: [],
   this
 }
@@ -219,7 +217,7 @@ globalExecutionContextObj = {
   },
   scopeChain: [global execution context variable object],
   this: value of this
-} 
+}
 ```
 
 이후 실행 단계에서의 처리는 다음과 같은 단계로 이루어진다.
@@ -243,7 +241,7 @@ globalExecutionContextObj = {
   },
   scopeChain: [global execution context variable object],
   this: value of this
-} 
+}
 ```
 
 ### 2. cFunc 함수 실행 컨텍스트
@@ -333,7 +331,8 @@ dFuncExecutionContextObj = {
 ```
 
 위의 과정을 정리하면 다음과 같다. (반드시 다음의 순서를 따른다.)
-1. VO의 인자 프로퍼티 목록을 `argumentObject` 프로퍼티로 추가한다. 
+
+1. VO의 인자 프로퍼티 목록을 `argumentObject` 프로퍼티로 추가한다.
 2. 함수명을 VO의 프로퍼티로, 함수 정의부에 대한 힙 메모리 포인터값을 해당 프로퍼티 값으로 추가한다. (함수 호이스팅)
 3. 실행중인 컨텍스트 내의 변수들을 VO프로퍼티로 추가하고 `undefined`로 초기화한다. (변수 호이스팅)
 
@@ -342,8 +341,8 @@ dFuncExecutionContextObj = {
 ```javascript
 foo(); // Hello!
 
-function foo(){
-  console.log("Hello!");
+function foo() {
+    console.log('Hello!');
 }
 ```
 
@@ -362,18 +361,18 @@ a = 1;
 
 var b = 2;
 
-cFunc = function(e) {
-  var c = 10;
-  var d = 15;
-  
-  a = 3
-  
-  function dFunc() {
-    var f = 5;
-  }
-  
-  dFunc();
-}
+cFunc = function (e) {
+    var c = 10;
+    var d = 15;
+
+    a = 3;
+
+    function dFunc() {
+        var f = 5;
+    }
+
+    dFunc();
+};
 
 cFunc(10);
 ```
@@ -389,16 +388,16 @@ scopeChain = [cFunc execution context VO, global execution context VO]
 `cFunc`함수 실행 컨텍스트 기준으로 스코프체인은 `cFunc execution context VO`, `global exeuction VO`밖에 없기 때문에 `dFunc`함수 내의 변수에는 접근할 수 없게 되는 것이다.
 
 :::tip
-스코프 체인 프로퍼티를 보고싶으면 함수 생성 후 `console.dir(func)`를 통해 확인하면 된다. `console.dir`은 출력대상 객체를 JSON 트리 형태로 출력해주는 함수이다. 
+스코프 체인 프로퍼티를 보고싶으면 함수 생성 후 `console.dir(func)`를 통해 확인하면 된다. `console.dir`은 출력대상 객체를 JSON 트리 형태로 출력해주는 함수이다.
 
 출력한 뒤 `[[Scope]]` 프로퍼티를 보면 된다.
 :::
 
 ## 정리
+
 > 자바스크립트 엔진은 코드를 실행하기 위하여 실행에 필요한 여러가지 정보를 알고 있어야 한다. (변수, 함수 선언, 변수 스코프, this) 이와 같이 실행에 필요한 정보를 형상화하고 구분하기 위해 자바스크립트 엔진은 실행 컨텍스트를 물리적 객체의 형태로 관리한다. - ([Poimeweb - Execution Context](https://poiemaweb.com/js-execution-context))
 
-자바스크립트 엔진이 코드를 읽고 실행하기 위한 정보들을 객체 형태로 저장하며, 이를 **실행 컨텍스트라고 부르는 것이다.** 실행 컨텍스트의 프로퍼티들로 코드에 대한 정보들을 저장한다. 
-
+자바스크립트 엔진이 코드를 읽고 실행하기 위한 정보들을 객체 형태로 저장하며, 이를 **실행 컨텍스트라고 부르는 것이다.** 실행 컨텍스트의 프로퍼티들로 코드에 대한 정보들을 저장한다.
 
 ## Reference
 
