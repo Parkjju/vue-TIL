@@ -22,7 +22,7 @@ func getMethod() {
     URLSession.shared.dataTask(with: request) { data, response, error in
 
         // 에러가 없어야 넘어감
-        if error == nil else {
+        if error != nil else {
             print("Error: error calling GET")
             print(error?.localizedDescription)
             return
@@ -179,7 +179,142 @@ getMethod{ response in
 }
 ```
 
+:::tip 네임스페이스
+네트워크 요청 URL이나 각종 UI 요소 `identifier`값들을 저장할때 네임스페이스 패턴을 활용하게 된다.
+
+프로젝트 루트에 `Helpers`폴더를 생성하고 (이름은 상관 없음) `constant.swift` 파일을 생성한 뒤 구조체 또는 열거형 타입을 정의한다. 각 속성들을 타입 속성으로 정의한다.
+
+구조체 정의시에는 생성자를 프라이빗으로 생성해둠으로써 인스턴스를 외부에서 생성하지 못하도록 억제한다. 타입 속성만 활용할 것이기 때문이다.
+
+```swift
+// 열거형의 경우 case를 만드는 것이 아님.
+// case를 갖고 외부에서 MusicApi.case로 접근하게 되는 경우 인스턴스가 생성되기 때문이다.
+public enum MusicApi{
+    static let requestURL = "https://..."
+    static let musicParam = "파라미터"
+}
+
+public struct Cell{
+    static let musicCellIdentifier = "MusicCell"
+    static let musicCollectionViewIdentifier = "MusicCollectionViewCell"
+    private init() {}
+}
+
+public struct CVCell{
+    static let spacingWidth: CGFloat = 1
+    static let cellColumns: CGFloat = 3
+    private init() {}
+}
+```
+
+:::
+
+위의 예시로 제시된 코드는 분리가 필요하다. url을 관리하는 부분과 실제 데이터를 fetch해오는 부분을 분리하여 코드를 작성한다.
+
+```swift
+import Foundation
+
+//MARK: - 네트워크에서 발생할 수 있는 에러 정의
+
+enum NetworkError: Error {
+    case networkingError
+    case dataError
+    case parseError
+}
+
+//MARK: - Networking (서버와 통신하는) 클래스 모델
+
+final class NetworkManager {
+
+    // 여러화면에서 통신을 한다면, 일반적으로 싱글톤으로 만듦
+    static let shared = NetworkManager()
+    // 여러객체를 추가적으로 생성하지 못하도록 설정
+    private init() {}
+
+    //let musicURL = "https://itunes.apple.com/search?media=music"
+
+    typealias NetworkCompletion = (Result<[Music], NetworkError>) -> Void
+
+    // 네트워킹 요청하는 함수 (음악데이터 가져오기)
+    func fetchMusic(searchTerm: String, completion: @escaping NetworkCompletion) {
+        let urlString = "\(MusicApi.requestUrl)\(MusicApi.mediaParam)&term=\(searchTerm)"
+        print(urlString)
+
+        performRequest(with: urlString) { result in
+            // result에 대한 처리는 switch를 통해 추가 처리를 할 수 있다.
+            switch result{
+            case .success:
+                completion(result)
+            case .failure(let error):
+                switch error{
+                case .networkingError:
+                // ....
+                }
+            }
+        }
+
+    }
+
+    // 실제 Request하는 함수 (비동기적 실행 ===> 클로저 방식으로 끝난 시점을 전달 받도록 설계)
+    private func performRequest(with urlString: String, completion: @escaping NetworkCompletion) {
+        //print(#function)
+        guard let url = URL(string: urlString) else { return }
+
+        let session = URLSession(configuration: .default)
+
+        let task = session.dataTask(with: url) { (data, response, error) in
+            if error != nil {
+                print(error!)
+                completion(.failure(.networkingError))
+                return
+            }
+
+            guard let safeData = data else {
+                completion(.failure(.dataError))
+                return
+            }
+
+            // 메서드 실행해서, 결과를 받음
+            if let musics = self.parseJSON(safeData) {
+                print("Parse 실행")
+                completion(.success(musics))
+            } else {
+                print("Parse 실패")
+                completion(.failure(.parseError))
+            }
+        }
+        task.resume()
+    }
+
+    // 받아본 데이터 분석하는 함수 (동기적 실행)
+    private func parseJSON(_ musicData: Data) -> [Music]? {
+        //print(#function)
+
+        // 성공
+        do {
+            // 우리가 만들어 놓은 구조체(클래스 등)로 변환하는 객체와 메서드
+            // (JSON 데이터 ====> MusicData 구조체)
+            let musicData = try JSONDecoder().decode(MusicData.self, from: musicData)
+            return musicData.results
+        // 실패
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
+    }
+}
+```
+
+네트워크 콜백 함수 설계시 `Result` 타입을 사용한다.
+
+1. fetchMusic 메서드를 호출한다.
+2. fetchMusic 내에서 performRequest를 다시 호출한다. 이때 타입 앨리어스 선언된 `NetworkCompletion`에 따라 클로저를 작성하게 된다. 클로저 내에서 `fetchMusic`호출시 데이터 통신 성공 함수로 전달된 클로저를 다시 전달한다.
+3. `performRequest`의 `completion`파라미터로 전달된 클로저 함수는 데이터 통신 성공에 따라 Result의 열거형 케이스인 `.success`를 파라미터에 담아 `completion` 콜백을 호출하거나 `.failure`를 파라미터에 담아 `completion` 콜백을 호출하게 된다.
+
+Result 타입 복습을 위해 [다음 페이지](https://parkjju.github.io/vue-TIL/swift/221123-result.html)를 참조하자.
+
 ## Reference
 
 1. [앨런 Swift 문법 마스터스쿨](https://www.inflearn.com/course/%EC%8A%A4%EC%9C%84%ED%94%84%ED%8A%B8-%EB%AC%B8%EB%B2%95-%EB%A7%88%EC%8A%A4%ED%84%B0-%EC%8A%A4%EC%BF%A8-%EC%95%B1%EB%A7%8C%EB%93%A4%EA%B8%B0/dashboard)
 2. [What is @escaping in Swift?](https://www.codingem.com/escaping-in-swift/)
+3. [Swift - Result 타입](https://parkjju.github.io/vue-TIL/swift/221123-result.html)
