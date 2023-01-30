@@ -305,6 +305,36 @@ final class NetworkManager {
 }
 ```
 
+```swift
+// 네트워크 매니저 인스턴스를 호출하여 실질적으로 비동기 동작이 시작되는 구간
+func setupData(){
+    networkManager.fetchMusic(searchTerm: "jazz") { result in
+        switch result{
+        case .success(let musicData):
+            dump(musicData)
+            self.musicArrays = musicData
+
+            DispatchQueue.main.async {
+                self.musicTableView.reloadData()
+            }
+
+        case .failure(let error):
+            dump(error)
+        }
+    }
+}
+```
+
+:::warning reloadData
+스위프트에서 **클로버 기반의 URLSession** 네트워크 통신 코드를 작성하면 자동으로 비동기적인 동작이 이루어진다. (추후 async await 문법도 적용이 가능하다.)
+
+> Traditionally, when we want to make a network request, we must use the closure-based URLSession APIs to perform the request asynchronously so that our apps can be responsive while waiting for it to complete... [SWIFT SENPAI - Making Network Requests with Async/await in Swift]
+
+UI와 관련된 코드로 테이블뷰의 기존 데이터를 업데이트하는 reloadData 메서드도 있는데, 이를 호출할때 네트워크통신 코드 내에서 호출하게 되면 오류가 발생한다. 엄밀히 따지면 UI를 업데이트해주는 코드를 **메인 쓰레드에 위치시켜야 한다.**
+
+위의 비동기 실제 호출 예시코드에서 `Result.success` 케이스로 `completion`파라미터에 전달한 콜백함수를 통해 데이터의 전달 결과가 인스턴스 속성으로 저장되고 나면 `DispatchQueue.main.async` 클로저를 통해 어떤 UI요소를 업데이트 할지 지정해야한다. 위의 예시 코드에서는 테이블 뷰를 리로딩해주었다.
+:::
+
 네트워크 콜백 함수 설계시 `Result` 타입을 사용한다.
 
 1. fetchMusic 메서드를 호출한다.
@@ -318,3 +348,4 @@ Result 타입 복습을 위해 [다음 페이지](https://parkjju.github.io/vue-
 1. [앨런 Swift 문법 마스터스쿨](https://www.inflearn.com/course/%EC%8A%A4%EC%9C%84%ED%94%84%ED%8A%B8-%EB%AC%B8%EB%B2%95-%EB%A7%88%EC%8A%A4%ED%84%B0-%EC%8A%A4%EC%BF%A8-%EC%95%B1%EB%A7%8C%EB%93%A4%EA%B8%B0/dashboard)
 2. [What is @escaping in Swift?](https://www.codingem.com/escaping-in-swift/)
 3. [Swift - Result 타입](https://parkjju.github.io/vue-TIL/swift/221123-result.html)
+4. [SWIFT SENPAI - Making Network Requests with Async/await in Swift](https://swiftsenpai.com/swift/async-await-network-requests/)
