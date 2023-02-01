@@ -80,6 +80,42 @@ func getImage(){
 }
 ```
 
+위와 같은 비동기통신 코드를 셀에서 컬렉션뷰나 테이블뷰 셀에서 사용한다고 가정하면 위의 비동기통신 코드는 잘못 설계된 것이다.
+
+```swift
+extension ViewController: UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return musicArrays.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = musicTableView.dequeueReusableCell(withIdentifier: Cell.musicCellIdentifier, for: indexPath) as! MusicCell
+
+        cell.imageUrl = musicArrays[indexPath.row].previewUrl
+        cell.songNameLabel.text = musicArrays[indexPath.row].trackName!.count > 15 ? "\(musicArrays[indexPath.row].trackName)..." : musicArrays[indexPath.row].trackName
+        cell.artistNameLabel.text = musicArrays[indexPath.row].artistName
+        cell.albumNameLabel.text = musicArrays[indexPath.row].collectionName
+        cell.releaseDateLabel.text = musicArrays[indexPath.row].releaseDateString
+
+        cell.selectionStyle = .none
+
+
+        return cell
+    }
+}
+```
+
+예를 들어 `func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell` 함수에서 셀 인스턴스에 대해 `url`을 통한 접근이 아닌 실제 이미지 데이터를 델리게이트 메서드에서 즉각 비동기통신하도록 설계하면 안된다는 것이다.
+
+그 이유는 바로 `dequeueReusableCell` 메서드에 있다. 테이블뷰, 컬렉션뷰는 각 셀이 재사용되기 때문에 큐의 front에서 pop된 셀이 tail에서 재사용되어 push된다. 이때 데이터 초기화 과정이 제대로 이루어지지 않게 되면 재사용되는 데이터가 그대로 셀에 포함되는 경우가 생긴다.
+
+위 코드에서 재사용하는 셀을 정의함에 있어서 `imageUrl` 속성을 사용하는 것이 아닌 실제 로우데이터를 얻기위한 비동기통신 코드를 삽입하게 된다면 내부 스케줄링에 따라 front 또는 tail에서 pop된 이미지가 나중에서야 재사용되어 push되고, 결국 엉뚱한 데이터를 화면상에 표기하게 되는 문제가 발생한다.
+
+테이블 뷰나 컬렉션 뷰 셀에 대한 정의 안에 비동기 통신 코드를 포함하면 안된다는 것이다! 또한, 이에 더하여 셀 정의시 기존 데이터들은 빈 데이터, 즉 메타데이터에 맞는 초기값으로 설정해주는 코드도 추가해주는게 바람직하다. 자세한 내용은 [다음 문서를](https://sihyungyou.github.io/iOS-dequeueReusableCell/) 참조하자.
+
+이를 개선하기 위해서는 이미지 셀 클래스의 `url` 속성감시자 `didSet`을 구현하고, URL 속성값이 세팅된 이후 이미지를 로드하면 된다.
+
 ## Reference
 
 1. [앨런 Swift 문법 마스터스쿨](https://www.inflearn.com/course/%EC%8A%A4%EC%9C%84%ED%94%84%ED%8A%B8-%EB%AC%B8%EB%B2%95-%EB%A7%88%EC%8A%A4%ED%84%B0-%EC%8A%A4%EC%BF%A8-%EC%95%B1%EB%A7%8C%EB%93%A4%EA%B8%B0/dashboard)
+2. [유셩장 - dequeueReusableWithIdentifier](https://sihyungyou.github.io/iOS-dequeueReusableCell/)
