@@ -115,6 +115,60 @@ extension ViewController: UITableViewDataSource{
 
 이를 개선하기 위해서는 이미지 셀 클래스의 `url` 속성감시자 `didSet`을 구현하고, URL 속성값이 세팅된 이후 이미지를 로드하면 된다.
 
+```swift
+import UIKit
+
+final class MusicCollectionViewCell: UICollectionViewCell {
+
+    @IBOutlet private weak var mainImageView: UIImageView!
+
+    // 이미지 URL을 전달받는 속성
+    // imageUrl 저장속성이 세팅되면 loadImage 메서드를 실행한다.
+    var imageUrl: String? {
+        didSet {
+            loadImage()
+        }
+    }
+
+    // URL ===> 이미지를 셋팅하는 메서드
+    private func loadImage() {
+        guard let urlString = self.imageUrl, let url = URL(string: urlString)  else { return }
+
+        DispatchQueue.global().async {
+            guard let data = try? Data(contentsOf: url) else { return }
+
+            guard self.imageUrl! == url.absoluteString else { return }
+
+            DispatchQueue.main.async {
+                self.mainImageView.image = UIImage(data: data)
+            }
+        }
+    }
+
+    // 셀이 재사용되기 전에 호출되는 메서드
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        // 일반적으로 이미지가 바뀌는 것처럼 보이는 현상을 없애기 위해서 실행 ⭐️
+        self.mainImageView.image = nil
+    }
+}
+
+```
+
+위 코드에서 `loadImage` 메서드가 실행되면 인스턴스의 imageUrl 저장속성을 옵셔널 바인딩하여 문자열을 추출하고, 추출한 URL 문자열을 URL 객체로 생성한다.
+
+이미지 객체를 생성하는 코드가 비동기적으로 직접 URL에 데이터를 전달받고 `UIImage(data: data)` 생성자 함수를 통해 만들어진 이미지 인스턴스를 리턴하는 방식도 가능하지만 더 간단하게 `Data`라는 타입의 `contentsOf` 생성자 함수를 사용하면 된다.
+
+`try ~ catch`문을 통해 `Data` 객체의 생성을 시도하면, UIImage타입의 객체에 대해서 url에 접속 후 만들어진 이미지 로우데이터를 반환받을 수 있게 된다.
+
+이때 `Data` 객체 생성자 함수 자체는 동기적으로 동작하기 때문에 반드시 디스패치큐 작업목록 아래에 전달해야한다.
+
+이미지 로우데이터가 생성되면 `UIImage(data:)` 생성자 함수를 통해 이미지 인스턴스를 하나 만든 뒤 이미지 뷰에 연결하면 된다.
+
+중간에 `guard self.imageUrl! == url.absoluteString else { return }` 코드도 보이는데, 이는 인스턴스의 url 저장속성과 이 저장속성을 URL 객체로 만든 인스턴스의 url 문자열을 비교하는 로직이다. 셀 재사용 과정에서 인스턴스 이미지 url과 URL객체의 url이 다르면 셀 배치가 잘못된 것이므로 그 즉시 함수를 탈출해야한다.
+
+또한 셀 인스턴스는 재사용되는 것이 필수적이므로, 스위프트 자체적으로 `prepareForReuse`를 제공한다. 함수를 오버라이딩 한 뒤 초기화할 저장속성들을 찾아 해당 메서드 안에서 초기값으로 초기화해주면 된다.
+
 ## Reference
 
 1. [앨런 Swift 문법 마스터스쿨](https://www.inflearn.com/course/%EC%8A%A4%EC%9C%84%ED%94%84%ED%8A%B8-%EB%AC%B8%EB%B2%95-%EB%A7%88%EC%8A%A4%ED%84%B0-%EC%8A%A4%EC%BF%A8-%EC%95%B1%EB%A7%8C%EB%93%A4%EA%B8%B0/dashboard)
