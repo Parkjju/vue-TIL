@@ -294,6 +294,15 @@ lazy var plusButton: UIBarButtonItem = {
 }()
 ```
 
+버튼을 속성으로 관리하지 않고 함수에서 붙일때에는 navigationItem 속성을 활용한다. 네비게이션 바 내에는 각 위치마다 지정해줄 수 있도록 영역을 미리 나누어놓았다.
+
+```swift
+func setupButton(){
+    let plusButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(plusButtonTapped))
+    navigationItem.rightBarButtonItem = plusButton
+}
+```
+
 일반적으로 시스템 버튼을 등록하여 사용하고 나머지는 UIButton과 동일하다. (셀렉터 및 타겟 등록)
 :::
 
