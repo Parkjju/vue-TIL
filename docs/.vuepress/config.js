@@ -91,6 +91,7 @@ module.exports = {
                     'trash/220727-embed',
                     'trash/220727-share',
                     'trash/220831-image',
+                    'trash/230207-textview',
                 ],
             },
             {
