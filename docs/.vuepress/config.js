@@ -163,6 +163,7 @@ module.exports = {
                     'swift/230131-search',
                     'swift/230201-collection',
                     'swift/230201-core',
+                    'swift/230210-auto',
                 ],
                 sidebarDepth: 2,
             },
