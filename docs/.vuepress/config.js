@@ -93,6 +93,7 @@ module.exports = {
                     'trash/220831-image',
                     'trash/230207-textview',
                     'trash/230209-timezone',
+                    'trash/230213-navigationBar',
                 ],
             },
             {
