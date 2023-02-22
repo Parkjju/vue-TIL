@@ -96,6 +96,8 @@ module.exports = {
                     'trash/230213-navigationBar',
                     'trash/230215-12',
                     'trash/230215-13',
+                    'trash/230217-14',
+                    'trash/230219-15',
                 ],
             },
             {
