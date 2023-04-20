@@ -177,6 +177,7 @@ module.exports = {
                     'swift/230201-collection',
                     'swift/230201-core',
                     'swift/230210-auto',
+                    'swift/230322-gcd',
                     'swift/230325-scrollView',
                 ],
                 sidebarDepth: 2,
