@@ -52,7 +52,7 @@ const Box = styled.div`
 const ChildOne = styled.div`
     background-color: teal;
     width: 100px;
-    height: 100px;
+    height: 100px; 
 `;
 const ChildTwo = styled.div`
     background-color: tomato;
