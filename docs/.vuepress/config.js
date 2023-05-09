@@ -182,6 +182,7 @@ module.exports = {
                     'swift/230322-gcd',
                     'swift/230501-operation',
                     'swift/230325-scrollView',
+                    'swift/230509-firebase',
                 ],
                 sidebarDepth: 2,
             },
