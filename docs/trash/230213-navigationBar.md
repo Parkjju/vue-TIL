@@ -56,6 +56,39 @@ backgroundColor 속성은 일반적으로 세팅하는것처럼 진행하면 되
 
 ![attribute](../.vuepress/assets/snack/attribute.png)
 
+## UINavigationBar 커스텀
+
+네비게이션 컨트롤러를 사용하지 않고 커스텀 `UIView`에 네비게이션 바를 삽입할 수 있다.
+
+```swift
+class CustomView: UIView {
+
+    // 커스텀 네비게이션 바
+    let navBar: UINavigationBar = {
+        let bar = UINavigationBar()
+        // 네비게이션 바 타이틀 설정
+        let navItem = UINavigationItem(title: "라이브러리")
+
+        let leftBarButton = UIBarButtonItem(title: "취소", style: .plain, target: self, action: #selector(handleBackButtonTapped))
+        let rightBarButton = UIBarButtonItem(title: "완료", style: .done, target: self, action: #selector(handleCompletionButtonTapped))
+
+        // UINavigationItem 속성을 통해 바 버튼 인스턴스 전달
+        navItem.leftBarButtonItem = leftBarButton
+        navItem.rightBarButtonItem = rightBarButton
+
+        // UINavigationBar의 setItems에 UINavigationItem 전달
+        bar.setItems([navItem], animated: false)
+        return bar
+    }()
+}
+```
+
+`UINavgationItem` 인스턴스를 생성한 뒤 타이틀 속성값을 지정해준다. 네비게이션 바 중단에 삽입될 문자열에 해당한다.
+
+`UINavigationBar` 인스턴스에는 `setItems` 메서드가 있는데, 이곳 배열 아규먼트에 `UINavigationItem` 인스턴스를 전달하면 된다.
+
+나머지 `leftBarButtonItem`과 `rightBarButtonItem`은 `UINavigationItem`의 속성을 통해 정의할 수 있다.
+
 ## Reference
 
 1. [stackoverflow - Changing textTitleAttribute in Swift](https://stackoverflow.com/questions/26868847/changing-titletextattribute-in-swift)
