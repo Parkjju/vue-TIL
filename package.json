@@ -30,6 +30,8 @@
   "dependencies": {
     "@saintic/vuepress-plugin-utterances": "^0.2.0",
     "http-server": "^13.0.1",
+    "markdown-it": "^13.0.1",
+    "markdown-it-katex": "^2.0.3",
     "pug": "^3.0.2",
     "vuepress-plugin-code-copy": "^1.0.6",
     "vuepress-plugin-reading-progress": "^1.0.10"

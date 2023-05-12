@@ -6,8 +6,12 @@ module.exports = {
      */
     base: '/vue-TIL/',
     title: 'Today I Learned',
-    markdown: {
-        lineNumbers: true,
+    // markdown: {
+    //     lineNumbers: true,
+    // },
+    extendMarkdown: (md) => {
+        md.set({ breaks: true });
+        md.use(require('markdown-it-katex'));
     },
     locales: {
         '/': { lang: 'ko-KR' },
@@ -27,6 +31,20 @@ module.exports = {
         ['meta', { name: 'theme-color', content: '#3eaf7c' }],
         ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
         ['link', { rel: 'manifest', href: '/manifest.json' }],
+        [
+            'link',
+            {
+                rel: 'stylesheet',
+                href: 'https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css',
+            },
+        ],
+        [
+            'link',
+            {
+                rel: 'stylesheet',
+                href: 'https://cdn.jsdelivr.net/github-markdown-css/2.2.1/github-markdown.css',
+            },
+        ],
         [
             'link',
             {
@@ -396,6 +414,15 @@ module.exports = {
      */
     plugins: [
         ['sitemap', { hostname: 'https://parkjju.github.io/vue-TIL/' }],
+        [
+            'vuepress-plugin-mathjax',
+            {
+                target: 'svg',
+                macros: {
+                    '*': '\\times',
+                },
+            },
+        ],
         'reading-progress',
         '@vuepress/plugin-back-to-top',
         'vuepress-plugin-smooth-scroll',
