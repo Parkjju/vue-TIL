@@ -366,6 +366,7 @@ module.exports = {
             //   },
             {
                 title: 'Algorithm',
+                sidebarDepth: 2,
                 collapsable: true,
                 children: [
                     '/algorithm/cpp/230620-summary',
