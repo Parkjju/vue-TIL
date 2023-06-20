@@ -368,6 +368,7 @@ module.exports = {
                 title: 'Algorithm',
                 collapsable: true,
                 children: [
+                    '/algorithm/cpp/230620-summary',
                     // '/algorithm/baekjoon',
                     // '/algorithm/method',
                     // '/algorithm/230112-swift',
