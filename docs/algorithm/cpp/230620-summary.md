@@ -16,6 +16,18 @@ vi stdc++.h
 2. cpp파일 컴파일 - `g++ -std=c++14 -Wall test.cpp -o test.out`
 3. `.out`파일 실행 - `./test.out`
 
+:::tip 재귀함수 시간복잡도
+
+재귀함수 내에서 자신을 몇번 호출하느냐에 따라 `O(x^n)`꼴로 시간복잡도가 이루어진다. (base case까지 가는 로직이 -1, +1)로 이루어지는 경우에 해당한다.
+
+:::
+
+:::tip exit(0)
+
+`exit(0)`은 main함수를 그 즉시 종료시킨다. 재귀함수에서 `return`하지 않고 exit을 하면 원하는 결과가 나왔을때 바로 종료시킬 수 있다.
+
+:::
+
 ## 입출력
 
 ### 1. cin
@@ -349,6 +361,31 @@ fill(v.begin(), v.begin() + 3, 10)
 ```
 
 ## 메서드
+
+### 누적합 (prefix sum)
+
+누적합은 n개의 요소를 갖는 배열이 있을때 각 인덱스의 요소가 0부터 해당 인덱스까지의 누적합으로 구성되는 새로운 배열을 마련하는 방법이다.
+
+예컨대 `1 2 3 4 5 6`이라는 배열이 있을때 누적합 배열은 `1 3 6 10 15 21`이 된다. 누적합 배열을 사용하지 않으면 매번 계산을 새로이 하는 것이 부담된다. `prefix sum` 방법은 정적배열에서 사용된다.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int a[100004], psum[100004], n;
+
+int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    // 누적합 배열 생성
+    cin >> n
+    for (int i = 1; i <= n; i++){
+        cin >> a[i];
+        psum[i] = psum[i - 1] + a[i];
+    }
+
+    return 0;
+}
+```
 
 ### split - 직접구현
 
