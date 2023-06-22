@@ -370,7 +370,7 @@ module.exports = {
                 collapsable: true,
                 children: [
                     '/algorithm/cpp/230620-summary',
-                    // '/algorithm/baekjoon',
+                    '/algorithm/baekjoon',
                     // '/algorithm/method',
                     // '/algorithm/230112-swift',
                     // '/algorithm/230115-swift-algorithm-club',
