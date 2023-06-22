@@ -18,6 +18,14 @@ vi stdc++.h
 
 ## 입출력
 
+아래 코드를 main함수 상단에 위치시켜 입출력 속도를 향상시킬 수 있다.
+
+```cpp
+ios_base::sync_with_stdio(false);
+cin.tie(NULL);
+cout.tie(NULL);
+```
+
 ### 1. cin
 
 cin은 개행문자까지만 입력을 받는다.
