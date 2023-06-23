@@ -12,3 +12,4 @@ title: PS 모음집
 -   [10988 팰린드롬인지 확인하기](./ps/inflearn/10988.md)
 -   [1159 농구경기](./ps/inflearn/1159.md)
 -   [9996 한국이 그리울 땐 서버에 접속하지](./ps/inflearn/9996.md)
+-   [2559 수열](./ps/inflearn/2559.md)
