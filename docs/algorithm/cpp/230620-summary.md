@@ -461,6 +461,10 @@ void print_combination(vector<int> b){
 }
 ```
 
+### atoi(string.c_str())
+
+문자열을 int로 바꿔주는 메서드이다. 변환 실패시 0을 반환한다.
+
 ## 각종 팁 정리
 
 :::tip 재귀함수 시간복잡도
