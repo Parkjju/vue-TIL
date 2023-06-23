@@ -10,3 +10,4 @@ title: PS 모음집
 -   [10808 알파벳 개수](./ps/inflearn/10808.md)
 -   [2979 트럭 주차](./ps/inflearn/2979.md)
 -   [10988 팰린드롬인지 확인하기](./ps/inflearn/10988.md)
+-   [1159 농구경기](./ps/inflearn/1159.md)
