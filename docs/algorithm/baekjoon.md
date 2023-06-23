@@ -14,3 +14,4 @@ title: PS 모음집
 -   [9996 한국이 그리울 땐 서버에 접속하지](./ps/inflearn/9996.md)
 -   [2559 수열](./ps/inflearn/2559.md)
 -   [1620 나는야 포켓몬 마스터 이다솜](./ps/inflearn/1620.md)
+-   [9375 패션왕 신해빈](./ps/inflearn/9375.md)
