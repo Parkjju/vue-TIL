@@ -16,6 +16,136 @@ vi stdc++.h
 2. cpp파일 컴파일 - `g++ -std=c++14 -Wall test.cpp -o test.out`
 3. `.out`파일 실행 - `./test.out`
 
+## 정수론
+
+### 1. 모듈로 연산
+
+1. `(a + b) % n == (a % n + b % n) % n`
+2. `(a * b) % n == (a % n * b % n) % n`
+
+덧셈에 대한 나머지 연산은 각 피연산자에 대한 나머지 연산 결과값의 합을 모듈로 연산한 결과와 동일하다. 곱셈도 마찬가지
+
+### 2. 최대공약수와 최소공배수
+
+```cpp
+int gcd(int a, int b){
+    if(int a==0){
+        return b;
+    }
+
+    return gcd(b%a, a);
+}
+```
+
+최소공배수는 두 수의 곱을 최대공약수로 나누면 된다.
+
+```cpp
+include<bits/stdc++.h>
+using namespace std;
+
+int gcd(int a, int b){
+    if(int a==0){
+        return b;
+    }
+
+    return gcd(b%a, a);
+}
+
+int lcm(int a, int b){
+    return (a * b) / gcd(a, b);
+}
+```
+
+### 3. 에라토스테네스의 체
+
+소수를 걸러내는 방법이다.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool check(int n){
+    if(int n <= 1){
+        return 0;
+    }
+    if(n == 2){
+        return 1;
+    }
+    if(n % 2 == 0){
+        return 0;
+    }
+    for(int i=0; i * i< n; i++){
+        if(n % i == 0){
+            return 0;
+        }
+    }
+    return 1;
+}
+```
+
+아래는 소수를 만들어 배열에 저장하는 방법이다.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool che[max_num+1];
+
+vector<int> era(int max_n){
+    vector<int> v;
+    for(int i=2; i<=max_n; i++){
+        if(che[i]){
+            continue;
+        }
+
+        // i에 대해 2의 배수는 모두 소수가 아님.
+        for(int j=2*i; j<=max_n; j+=i){
+            che[j] = 1;
+        }
+    }
+
+    for(int i=2; i<max_n; i++){
+        if(che[i] == 0){
+            v.push_back(i);
+        }
+    }
+
+    return v;
+}
+```
+
+### 4. 등차수열의 합
+
+1. 초항이 a, 항의 개수가 n, 공차가 d일때
+
+$\frac{n\times\{2a + (n-1)d\}}{2}$
+
+2. 초항이 a, 항의 개수가 n, 마지막 항이 l일때
+
+$\frac{n(a+l)}{2}$
+
+### 5. 등비수열의 합
+
+1. 초항이 a, 공비가 r, 항의 개수가 n일때
+
+$\frac{a(r^{n}-1)}{r-1}$
+
+### 6. 승수
+
+pow함수를 사용한다.
+
+```cpp
+pow(밑, 제곱수);
+```
+
+### 7. 제곱근
+
+sqrt 함수를 사용한다.
+
+```cpp
+sqrt(3);
+```
+
 ## 입출력
 
 아래 코드를 main함수 상단에 위치시켜 입출력 속도를 향상시킬 수 있다.
@@ -579,14 +709,5 @@ void print_combination(vector<int> b){
 :::tip 경우의수
 
 경우의수 풀이시 크기가 커져 오버플로우 가능성이 있기 때문에 `long long` 타입으로 선언하자.
-
-:::
-
-:::tip 정수론
-
-1. `(a + b) % n == (a % n + b % n) % n`
-2. `(a * b) % n == (a % n * b % n) % n`
-
-덧셈에 대한 나머지 연산은 각 피연산자에 대한 나머지 연산 결과값의 합을 모듈로 연산한 결과와 동일하다. 곱셈도 마찬가지
 
 :::
