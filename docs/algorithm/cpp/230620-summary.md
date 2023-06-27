@@ -154,7 +154,98 @@ for(int a : v){
 cout << "\n";
 ```
 
-## 문자열 처리
+## 자료구조
+
+:::warning 스택, 큐, 덱 조회시 주의
+
+size체크 후 값 조회를 진행해야 segmentation fault에러와 같이 참조 에러가 발생하지 않는다. 주의!
+
+:::
+
+### 스택(Stack)
+
+문제 내에서 **교차하지 않고**, 괄호만들기, 짝찾기, 문자열 폭발 등의 키워드가 나오는 경우 스택 자료구조를 사용한다.
+
+`stack<타입>` 형태로 선언한다.
+
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+stack<string> stk;
+
+int main() {
+    ios_base::sync_with_stdio(false); cin.tie(NULL);
+    stk.push("화");
+    stk.push("이");
+    stk.push("팅");
+    while(stk.size()){
+        cout << stk.top() << "\n";
+        stk.pop();
+    }
+    return 0;
+}
+```
+
+1. push(값) - 끝에 푸시
+2. pop() - 끝에 삭제
+3. top() - 맨 위 원소 조회
+4. size() - 스택 원소 개수
+
+### 큐(Queue)
+
+선입선출(FIFO) 자료구조이다. `queue<타입> 변수명` 형태로 선언한다.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+queue<int> q;
+
+int main(){
+    for(int i=0; i < 10; i++){
+        q.push(i);
+    }
+
+    while(q.size()){
+        cout << q.front() << " ";
+        q.pop();
+    }
+    return 0;
+}
+```
+
+1. push(값) - 맨 앞에 삽입. `O(1)`
+2. pop() - 맨 앞 삭제. `O(1)`
+3. front() - 맨 앞 원소 반환
+4. size() - 큐 사이즈
+
+### 덱(Deque)
+
+앞뒤로 삽입 및 삭제가 가능하다.
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    deque<int> dq;
+    dq.push_back(1);
+    dq.push_front(0);
+
+    cout << dq.front() << "\n";
+    cout << dq.back() << "\n";
+    cout << dq.size() << "\n";
+
+    dq.pop_back();
+    dq.pop_front();
+}
+```
+
+1. push_back(값) - 뒤에 값 푸시. O(1)
+2. push_front(값) - 앞에 값 푸시. O(1)
+3. pop_back() - 뒤 삭제
+4. pop_front() - 앞 삭제
+5. front() - 앞 조회
+6. back() - 뒤 조회
+7. size() - 덱 사이즈
 
 ## 중복제거
 
