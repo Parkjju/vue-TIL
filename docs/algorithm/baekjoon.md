@@ -16,3 +16,4 @@ title: PS 모음집
 -   [1620 나는야 포켓몬 마스터 이다솜](./ps/inflearn/1620.md)
 -   [9375 패션왕 신해빈](./ps/inflearn/9375.md)
 -   [1213 팰린드롬 만들기](./ps/inflearn/1213.md)
+-   [1940 주몽](./ps/inflearn/1940.md)
