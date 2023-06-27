@@ -135,18 +135,6 @@ module.exports = {
                 title: 'DailyTech',
                 collapsable: true,
                 children: [
-                    '/daily/210918',
-                    '/daily/210921-http',
-                    '/daily/210921-rest',
-                    '/daily/210927-mongo',
-                    '/daily/210930-user',
-                    '/daily/211006-edit',
-                    '/daily/211006-upload',
-                    '/daily/210930-cookie',
-                    //   '/daily/211004-antipattern',
-                    '/daily/211004-githubLogin',
-                    '/daily/211004-Oauth',
-                    '/daily/211018-network',
                     '/daily/220208-DOM',
                     '/daily/220208-browser',
                     '/daily/220224-shadow',
@@ -155,7 +143,6 @@ module.exports = {
                     '/daily/220605-regex',
                     '/daily/220701-grid',
                     '/daily/220703-recoil',
-                    '/daily/220707-https',
                 ],
             },
             {
@@ -208,16 +195,6 @@ module.exports = {
                 sidebarDepth: 2,
             },
             {
-                title: 'Frontend',
-                collapsable: true,
-                children: [
-                    'frontend/220924-lint',
-                    'frontend/220924-prettier',
-                    'frontend/221011-auth',
-                    'frontend/221025-test',
-                ],
-            },
-            {
                 title: 'Javascript Fundamental',
                 collapsable: true,
                 children: [
@@ -249,19 +226,19 @@ module.exports = {
                     '/javascript/class',
                 ],
             },
-            {
-                title: 'Typescript',
-                collapsable: true,
-                children: [
-                    'typescript/typescript',
-                    'typescript/ts-type',
-                    'typescript/why',
-                    'typescript/220628-types',
-                    'typescript/220630-function',
-                    'typescript/220702-class',
-                    'typescript/220708-project',
-                ],
-            },
+            // {
+            //     title: 'Typescript',
+            //     collapsable: true,
+            //     children: [
+            //         'typescript/typescript',
+            //         'typescript/ts-type',
+            //         'typescript/why',
+            //         'typescript/220628-types',
+            //         'typescript/220630-function',
+            //         'typescript/220702-class',
+            //         'typescript/220708-project',
+            //     ],
+            // },
             {
                 title: 'React',
                 collapsable: true,
@@ -302,11 +279,6 @@ module.exports = {
                 ],
             },
             {
-                title: 'Next JS',
-                collapsable: true,
-                children: ['nextJS/220924-intro'],
-            },
-            {
                 title: 'React Native',
                 collapsable: true,
                 children: [
@@ -321,22 +293,6 @@ module.exports = {
                 ],
             },
             {
-                title: 'AWS',
-                collapsable: true,
-                children: ['/aws/220812-IAM', '/aws/220812-start'],
-            },
-            {
-                title: 'Vue',
-                collapsable: true,
-                children: [
-                    '/vue/2021-07-10-mount',
-                    '/vue/2021-07-10-vueData',
-                    '/vue/2021-08-10-vueCaptain',
-                    '/vue/210930-vueTodo',
-                    '/vue/210930-directives',
-                ],
-            },
-            {
                 title: 'Vuepress',
                 collapsable: true,
                 children: [
@@ -347,19 +303,19 @@ module.exports = {
                     '/vuepress/ga.md',
                 ],
             },
-            {
-                title: 'Node JS',
-                collapsable: true,
-                children: [
-                    '/nodeJS/youtube',
-                    '/nodeJS/express',
-                    '/nodeJS/middleware',
-                    '/nodeJS/router',
-                    '/nodeJS/export',
-                    '/nodeJS/param',
-                    '/nodeJS/template',
-                ],
-            },
+            // {
+            //     title: 'Node JS',
+            //     collapsable: true,
+            //     children: [
+            //         '/nodeJS/youtube',
+            //         '/nodeJS/express',
+            //         '/nodeJS/middleware',
+            //         '/nodeJS/router',
+            //         '/nodeJS/export',
+            //         '/nodeJS/param',
+            //         '/nodeJS/template',
+            //     ],
+            // },
             //   {
             //     title: 'Computer Science',
             //     collapsable: true,
@@ -372,13 +328,13 @@ module.exports = {
                 children: [
                     '/algorithm/cpp/230620-summary',
                     '/algorithm/baekjoon',
+                    '/algorithm/graph',
                     // '/algorithm/method',
                     // '/algorithm/230112-swift',
                     // '/algorithm/230115-swift-algorithm-club',
                     // '/algorithm/bigO',
                     // '/algorithm/dp',
                     // '/algorithm/greedy',
-                    // '/algorithm/graph',
                     // '/algorithm/graphAlgo',
                     // '/algorithm/mst',
                     // '/algorithm/backtrack',
@@ -396,20 +352,19 @@ module.exports = {
                     '/git/pr',
                 ],
             },
-
-            {
-                title: 'etc',
-                collapsable: true,
-                children: [
-                    '/grow/openSource',
-                    '/grow/work',
-                    '/grow/cleancode',
-                    '/grow/Missing',
-                    '/grow/windows-zsh',
-                    '/grow/gg',
-                ],
-                sidebarDepth: 2,
-            },
+            // {
+            //     title: 'etc',
+            //     collapsable: true,
+            //     children: [
+            //         '/grow/openSource',
+            //         '/grow/work',
+            //         '/grow/cleancode',
+            //         '/grow/Missing',
+            //         '/grow/windows-zsh',
+            //         '/grow/gg',
+            //     ],
+            //     sidebarDepth: 2,
+            // },
         ],
     },
 
