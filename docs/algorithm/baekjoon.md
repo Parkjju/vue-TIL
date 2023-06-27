@@ -17,3 +17,5 @@ title: PS 모음집
 -   [9375 패션왕 신해빈](./ps/inflearn/9375.md)
 -   [1213 팰린드롬 만들기](./ps/inflearn/1213.md)
 -   [1940 주몽](./ps/inflearn/1940.md)
+-   [3986 좋은 단어](./ps/inflearn/3986.md)
+-   [1629 곱셈](./ps/inflearn/1629.md)
