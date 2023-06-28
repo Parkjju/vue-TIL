@@ -292,6 +292,45 @@ size체크 후 값 조회를 진행해야 segmentation fault에러와 같이 참
 
 :::
 
+### 연결리스트
+
+연결리스트 구현을 위한 클래스는 아래와 같다.
+
+```cpp
+class Node{
+public:
+    int data;
+    // next는 다른 Node의 주소값을 가리키므로 Node* 타입이 됨.
+    Node* next;
+
+    // 기본생성자
+    Node(){
+        data = 0;
+        next = NULL;
+    }
+    Node(int data){
+        this->data = data;
+        this->next = NULL;
+    }
+}
+```
+
+하지만 실제로는 C++에서 자체적으로 제공하는 원형연결리스트 타입을 사용하면 된다.
+
+```cpp
+list<int> a;
+```
+
+1. push_front(값) - 맨앞에 값 추가
+2. push_back(값) - 맨뒤에 값 추가
+3. insert(idx, value) - idx위치에 값 추가
+4. erase(idx) - 링크만 삭제하면 되므로 O(1)
+5. pop_front() - 맨앞 삭제
+6. pop_back() - 맨뒤 삭제
+7. front() - 맨앞 조회
+8. back() - 맨뒤 조회
+9. clear() - 모든 요소 삭제
+
 ### 스택(Stack)
 
 문제 내에서 **교차하지 않고**, 괄호만들기, 짝찾기, 문자열 폭발 등의 키워드가 나오는 경우 스택 자료구조를 사용한다.
