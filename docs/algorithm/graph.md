@@ -461,3 +461,80 @@ int main(){
 // 0 0 1 1 1
 // 답 : 9
 ```
+
+## 트리 순회
+
+1. 후위 순회 - 자식노드 방문을 마치고 자신을 방문
+
+```cpp
+// 인접리스트 기반
+vector<int> adj[1004]; // 각 인접리스트는 노드이며, [0]이 left, [1]이 right를 의미한다고 가정한다.
+int visited[1004];
+
+void postOrder(int here){
+    if(visited[here] == 0){
+        // 트리에 자식노드가 하나
+        if(adj[here].size() == 1){
+            postOrder(adj[here][0]);
+        }
+
+        // 트리에 자식노드가 둘 -> 왼-오 순회
+        if(adj[here].size() == 2){
+            postOrder(adj[here][0]);
+            postOrder(adj[here][1]);
+        }
+
+        // 자식노드 순회 마친 뒤 자기자신 순회
+        visited[here] = 1;
+        cout << here << " ";
+    }
+}
+```
+
+2. 전위순회 - 자기 자신을 먼저 순회한 뒤 자식노드 순회 (코드상으로 후위순회와 재귀함수 호출 위치만 변경된것)
+
+```cpp
+void preOrder(int here){
+    if(visited[here] == 0){
+        visited[here] = 1;
+        cout << visited[here] << "\n";
+
+        // 트리에 자식노드가 하나
+        if(adj[here].size() == 1){
+            postOrder(adj[here][0]);
+        }
+
+        // 트리에 자식노드가 둘 -> 왼-오 순회
+        if(adj[here].size() == 2){
+            postOrder(adj[here][0]);
+            postOrder(adj[here][1]);
+        }
+    }
+}
+```
+
+3. 중위순회 - 왼쪽노드, 자신노드, 오른쪽노드 순서로 순회한다.
+
+```cpp
+void inOrder(int here){
+    if(visited[here] == 0){
+        // 왼쪽 자식노드만 있는경우
+        if(adj[here].size() == 1){
+            inOrder(adj[here][0]);
+            visited[here] = 1;
+            cout << here << " ";
+        // 왼쪽 오른쪽 자식노드 둘다 있는경우
+        }else if(adj[here].size() == 2){
+            inOrder(adj[here][0]);
+            // 중간에 자기자신 순회
+            visited[here] = 1;
+            cout << here << "\n";
+            inOrder(adj[here][1]);
+        // 자식노드 아예 없는경우
+        }else{
+            visited[here] = 1;
+            cout << here << "\n";
+        }
+    }
+}
+```
