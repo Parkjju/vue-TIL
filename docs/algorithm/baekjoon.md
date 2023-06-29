@@ -25,3 +25,6 @@ title: PS 모음집
 
 -   [2178 미로탐색](./ps/inflearn/2178.md)
 -   [1012 유기농 배추](./ps/inflearn/1012.md)
+-   [2468 안전 영역](./ps/inflearn/2468.md)
+-   [2583 영역 구하기](./ps/inflearn/2583.md)
+-   [1992 쿼드트리](./ps/inflearn/1992.md)
