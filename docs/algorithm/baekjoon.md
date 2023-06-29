@@ -20,3 +20,8 @@ title: PS 모음집
 -   [3986 좋은 단어](./ps/inflearn/3986.md)
 -   [1629 곱셈](./ps/inflearn/1629.md)
 -   [4375 1](./ps/inflearn/4375.md)
+
+### 그래프
+
+-   [2178 미로탐색](./ps/inflearn/2178.md)
+-   [1012 유기농 배추](./ps/inflearn/1012.md)
