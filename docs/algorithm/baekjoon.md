@@ -25,6 +25,8 @@ title: PS 모음집
 -   [4659 비밀번호 발음하기](./ps/inflearn/4659.md)
 -   [2870 수학숙제](./ps/inflearn/2870.md)
 -   [10709 기상캐스터](./ps/inflearn/10709.md)
+-   [3474 교수가 된 현우](./ps/inflearn/3474.md)
+-   [2852 NBA 농구](./ps/inflearn/2852.md)
 
 ### 그래프
 
