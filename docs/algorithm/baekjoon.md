@@ -23,6 +23,8 @@ title: PS 모음집
 -   [2910 빈도 정렬](./ps/inflearn/2910.md)
 -   [2828 사과 담기](./ps/inflearn/2828.md)
 -   [4659 비밀번호 발음하기](./ps/inflearn/4659.md)
+-   [2870 수학숙제](./ps/inflearn/2870.md)
+-   [10709 기상캐스터](./ps/inflearn/10709.md)
 
 ### 그래프
 
