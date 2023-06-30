@@ -22,6 +22,7 @@ title: PS 모음집
 -   [4375 1](./ps/inflearn/4375.md)
 -   [2910 빈도 정렬](./ps/inflearn/2910.md)
 -   [2828 사과 담기](./ps/inflearn/2828.md)
+-   [4659 비밀번호 발음하기](./ps/inflearn/4659.md)
 
 ### 그래프
 
