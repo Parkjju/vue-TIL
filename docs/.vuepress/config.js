@@ -191,6 +191,7 @@ module.exports = {
                     'swift/230501-operation',
                     'swift/230325-scrollView',
                     'swift/230509-firebase',
+                    'swift/230704-keychain',
                 ],
                 sidebarDepth: 2,
             },
