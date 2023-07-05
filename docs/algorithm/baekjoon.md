@@ -27,6 +27,11 @@ title: PS 모음집
 -   [10709 기상캐스터](./ps/inflearn/10709.md)
 -   [3474 교수가 된 현우](./ps/inflearn/3474.md)
 -   [2852 NBA 농구](./ps/inflearn/2852.md)
+-   [1436 영화감독 숌](./ps/inflearn/1436.md)
+
+### 자료구조
+
+-   [9012 괄호](./ps/inflearn/9012.md)
 
 ### 그래프
 
