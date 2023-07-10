@@ -42,3 +42,4 @@ title: PS 모음집
 -   [2583 영역 구하기](./ps/inflearn/2583.md)
 -   [1992 쿼드트리](./ps/inflearn/1992.md)
 -   [14502 연구소](./ps/inflearn/14502.md)
+-   [2636 치즈](./ps/inflearn/2636.md)
