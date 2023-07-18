@@ -33,6 +33,7 @@ title: PS 모음집
 
 -   [9012 괄호](./ps/inflearn/9012.md)
 -   [4949 균형잡힌 세상](./ps/inflearn/4949.md)
+-   [17298 오큰수](./ps/inflearn/17298.md)
 
 ### 그래프
 
@@ -44,3 +45,4 @@ title: PS 모음집
 -   [14502 연구소](./ps/inflearn/14502.md)
 -   [2636 치즈](./ps/inflearn/2636.md)
 -   [1068 트리](./ps/inflearn/1068.md)
+-   [1325 효율적인 해킹](./ps/inflearn/1325.md)
