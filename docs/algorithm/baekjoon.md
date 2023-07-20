@@ -46,3 +46,7 @@ title: PS 모음집
 -   [2636 치즈](./ps/inflearn/2636.md)
 -   [1068 트리](./ps/inflearn/1068.md)
 -   [1325 효율적인 해킹](./ps/inflearn/1325.md)
+
+## 브루트포스
+
+-   [15686 치킨 배달](./ps/inflearn/15686.md)
