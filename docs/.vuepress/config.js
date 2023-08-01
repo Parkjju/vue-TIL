@@ -199,6 +199,12 @@ module.exports = {
                 sidebarDepth: 2,
             },
             {
+                title: 'RxSwift',
+                collapsable: true,
+                children: [],
+                sidebarDepth: 2,
+            },
+            {
                 title: 'Javascript Fundamental',
                 collapsable: true,
                 children: [
