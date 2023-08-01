@@ -193,6 +193,7 @@ module.exports = {
                     'swift/230325-scrollView',
                     'swift/230509-firebase',
                     'swift/230704-keychain',
+                    'swift/230801-mvvm',
                 ],
                 sidebarDepth: 2,
             },
