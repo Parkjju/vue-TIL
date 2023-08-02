@@ -201,7 +201,7 @@ module.exports = {
             {
                 title: 'RxSwift',
                 collapsable: true,
-                children: [],
+                children: ['rxSwift/230802-basic'],
                 sidebarDepth: 2,
             },
             {
