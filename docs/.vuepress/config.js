@@ -209,6 +209,7 @@ module.exports = {
                     'rxSwift/230804-5',
                     'rxSwift/230804-6',
                     'rxSwift/230808-7',
+                    'rxSwift/230808-8',
                 ],
                 sidebarDepth: 2,
             },
