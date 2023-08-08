@@ -82,6 +82,7 @@ module.exports = {
         repo: 'Parkjju/vue-TIL',
         docsrepo: 'Parkjju/vue-TIL',
         docsDir: 'docs',
+        searchMaxSuggestions: 10,
         // editLinks: true,
         // editLinkText: "",
         lastUpdated: false,
