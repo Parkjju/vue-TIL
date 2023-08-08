@@ -199,22 +199,6 @@ module.exports = {
                 sidebarDepth: 2,
             },
             {
-                title: 'RxSwift',
-                collapsable: true,
-                children: [
-                    'rxSwift/230802-basic',
-                    'rxSwift/230802-2',
-                    'rxSwift/230802-3',
-                    'rxSwift/230802-4',
-                    'rxSwift/230804-5',
-                    'rxSwift/230804-6',
-                    'rxSwift/230808-7',
-                    'rxSwift/230808-8',
-                    'rxSwift/230808-9',
-                ],
-                sidebarDepth: 2,
-            },
-            {
                 title: 'Javascript Fundamental',
                 collapsable: true,
                 children: [
