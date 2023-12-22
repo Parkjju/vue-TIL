@@ -205,6 +205,7 @@ module.exports = {
                     'swift/230509-firebase',
                     'swift/230704-keychain',
                     'swift/230801-mvvm',
+                    'swift/231222-keypath',
                 ],
                 sidebarDepth: 2,
             },
@@ -384,6 +385,12 @@ module.exports = {
                     'rxSwift/230809-12',
                     'rxSwift/230810-13',
                 ],
+                sidebarDepth: 2,
+            },
+            {
+                title: 'SwiftUI',
+                collapsable: true,
+                children: ['swiftui/231220-1'],
                 sidebarDepth: 2,
             },
             // {
