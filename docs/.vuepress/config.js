@@ -206,6 +206,7 @@ module.exports = {
                     'swift/230704-keychain',
                     'swift/230801-mvvm',
                     'swift/231222-keypath',
+                    'swift/231223-opaque',
                 ],
                 sidebarDepth: 2,
             },
