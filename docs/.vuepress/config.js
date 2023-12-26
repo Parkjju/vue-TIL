@@ -211,6 +211,12 @@ module.exports = {
                 sidebarDepth: 2,
             },
             {
+                title: 'SwiftUI',
+                collapsable: true,
+                children: ['/swiftuiOpen/231226-1'],
+                sidebarDepth: 2,
+            },
+            {
                 title: 'Javascript Fundamental',
                 collapsable: true,
                 children: [
