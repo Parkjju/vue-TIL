@@ -397,7 +397,7 @@ module.exports = {
             {
                 title: 'SwiftUI',
                 collapsable: true,
-                children: ['swiftui/231220-1'],
+                children: ['swiftui/231220-1', 'swiftui/231226-2'],
                 sidebarDepth: 2,
             },
             // {
