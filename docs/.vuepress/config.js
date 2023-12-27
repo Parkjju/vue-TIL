@@ -213,7 +213,7 @@ module.exports = {
             {
                 title: 'SwiftUI',
                 collapsable: true,
-                children: ['/swiftuiOpen/231226-1'],
+                children: ['/swiftuiOpen/231226-1', 'swiftuiOpen/231227-2'],
                 sidebarDepth: 2,
             },
             {
