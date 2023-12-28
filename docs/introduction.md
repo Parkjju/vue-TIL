@@ -2,6 +2,8 @@
 title: Introduction
 ---
 
-# TIL
+# Today I Learned
 
-### 공부한 내용들을 정리하는 공간입니다.
+### 끄적 ✍️
+
+[2023 회고](./grow/2023.md)
