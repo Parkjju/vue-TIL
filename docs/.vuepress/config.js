@@ -141,7 +141,6 @@ module.exports = {
                     'trash/231129-37',
                     'trash/231202-38',
                     'trash/231205-39',
-                    'trash/240101-40',
                 ],
             },
             {
@@ -214,7 +213,11 @@ module.exports = {
             {
                 title: 'SwiftUI',
                 collapsable: true,
-                children: ['/swiftuiOpen/231226-1', 'swiftuiOpen/231227-2'],
+                children: [
+                    '/swiftuiOpen/231226-1',
+                    'swiftuiOpen/231227-2',
+                    'swiftuiOpen/240101-3',
+                ],
                 sidebarDepth: 2,
             },
             {
