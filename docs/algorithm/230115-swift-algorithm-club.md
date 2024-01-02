@@ -9,6 +9,7 @@ title: 스위프트 알고리즘 정리
 ## 자료구조
 
 1. [연결 리스트](./swift-algorithm-club/data-structure/list.md)
+2. [스택](./swift-algorithm-club/data-structure/stack.md)
 
 ## Reference
 
