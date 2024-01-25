@@ -409,6 +409,7 @@ module.exports = {
                     'swiftui/240102-5',
                     'swiftui/240105-6',
                     'swiftui/240125-7',
+                    'swiftui/240125-8',
                 ],
                 sidebarDepth: 2,
             },
