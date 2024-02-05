@@ -1,7 +1,7 @@
 <template lang="html">
     <div>
         <span v-for="tag in Object.keys(tags)">
-            <h2 :id="tag">
+            <h3 :id="tag">
                 <router-link
                     :to="{ path: `/tags.html#${tag}` }"
                     class="header-anchor"
@@ -9,7 +9,7 @@
                     >#</router-link
                 >
                 {{ tag }}
-            </h2>
+            </h3>
             <ul>
                 <li v-for="page in tags[tag]">
                     <router-link :to="{ path: page.path }">{{
