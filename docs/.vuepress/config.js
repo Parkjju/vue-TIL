@@ -145,6 +145,7 @@ module.exports = {
                     'trash/240205-41',
                     'trash/240205-42',
                 ],
+                sidebarDepth: 2,
             },
             {
                 title: 'DailyTech',
