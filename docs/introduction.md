@@ -1,6 +1,5 @@
 ---
 title: Introduction
-tags: ['snack', 'swift']
 ---
 
 # Today I Learned
