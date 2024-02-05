@@ -1,5 +1,6 @@
 ---
 title: Swift - Firebase API 연동
+tags: ['Swift', 'UIKit']
 ---
 
 ## 기본 설정

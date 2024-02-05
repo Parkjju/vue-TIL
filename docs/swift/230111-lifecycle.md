@@ -1,5 +1,6 @@
 ---
 title: Swift - 생명주기
+tags: ['Swift', 'UIKit']
 ---
 
 ## 뷰 컨트롤러의 생명주기

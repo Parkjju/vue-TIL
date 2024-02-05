@@ -1,5 +1,6 @@
 ---
 title: Swift - 클로저
+tags: ['Swift', 'UIKit']
 ---
 
 ## 클로저 개념

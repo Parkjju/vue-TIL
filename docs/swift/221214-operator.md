@@ -1,5 +1,6 @@
 ---
 title: Swift - 고급 연산자
+tags: ['Swift', 'UIKit']
 ---
 
 ## 숫자 리터럴

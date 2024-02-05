@@ -1,5 +1,6 @@
 ---
 title: Swift - 열거형
+tags: ['Swift', 'UIKit']
 ---
 
 ## 개념

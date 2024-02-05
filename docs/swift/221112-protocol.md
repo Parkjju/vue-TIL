@@ -1,5 +1,6 @@
 ---
 title: Swift - 프로토콜
+tags: ['Swift', 'UIKit']
 ---
 
 ## 프로토콜 개념

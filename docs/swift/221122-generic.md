@@ -1,5 +1,6 @@
 ---
 title: Swift - 제네릭
+tags: ['Swift', 'UIKit']
 ---
 
 ## 제네릭 필요성

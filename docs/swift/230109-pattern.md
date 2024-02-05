@@ -1,5 +1,6 @@
 ---
 title: Swift - 디자인 패턴
+tags: ['Swift', 'UIKit']
 ---
 
 ## BMI 앱 MVC 패턴 적용하기

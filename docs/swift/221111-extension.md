@@ -1,5 +1,6 @@
 ---
 title: Swift - 확장
+tags: ['Swift', 'UIKit']
 ---
 
 ## 타입의 확장

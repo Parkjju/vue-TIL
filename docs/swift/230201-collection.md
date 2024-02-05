@@ -1,5 +1,6 @@
 ---
 title: Swift - 컬렉션뷰
+tags: ['Swift', 'UIKit']
 ---
 
 ## 컬렉션 뷰

@@ -1,5 +1,6 @@
 ---
 title: Swift - 옵셔널 타입
+tags: ['Swift', 'UIKit']
 ---
 
 ## 개념

@@ -1,5 +1,6 @@
 ---
 title: Swift - 컬렉션
+tags: ['Swift', 'UIKit']
 ---
 
 ## 배열

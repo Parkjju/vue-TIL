@@ -1,5 +1,6 @@
 ---
 title: Swift - 함수
+tags: ['Swift', 'UIKit']
 ---
 
 ## 함수 문법

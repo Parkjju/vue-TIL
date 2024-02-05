@@ -1,5 +1,6 @@
 ---
 title: Swift - 키체인
+tags: ['Swift', 'UIKit']
 ---
 
 ## 로그인 모달 제작

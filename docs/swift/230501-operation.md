@@ -1,5 +1,6 @@
 ---
 title: Swfit - 오퍼레이션
+tags: ['Swift', 'UIKit']
 ---
 
 아래 내용은 [인프런 - 앨런 iOS Concurrency 프로그래밍](https://www.inflearn.com/course/iOS-Concurrency-GCD-Operation/dashboard) 강의 내용을 요약한 글입니다.

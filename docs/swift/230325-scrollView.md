@@ -1,5 +1,6 @@
 ---
 title: Swift - 스크롤뷰 만들기
+tags: ['Swift', 'UIKit']
 ---
 
 해당 문서는 [다음 링크의 문서를](https://fluffy.es/scrollview-storyboard-xcode-11/) 정리한 내용입니다.

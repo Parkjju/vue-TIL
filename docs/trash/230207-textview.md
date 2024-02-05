@@ -1,5 +1,6 @@
 ---
 title: Snack 10호 - Swift TextView 플레이스홀더
+tags: ['Snack', 'Swift', 'UIKit']
 ---
 
 ## 텍스트뷰

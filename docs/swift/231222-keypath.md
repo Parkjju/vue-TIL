@@ -1,5 +1,6 @@
 ---
 title: Swift - KeyPath
+tags: ['Swift', 'UIKit']
 ---
 
 ## KeyPath 문법

@@ -1,5 +1,6 @@
 ---
 title: Swift - 클래스 상속
+tags: ['Swift', 'UIKit']
 ---
 
 ## 개념

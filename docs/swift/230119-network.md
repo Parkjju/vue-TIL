@@ -1,5 +1,6 @@
 ---
 title: Swift - 네트워킹
+tags: ['Swift', 'UIKit']
 ---
 
 ## GET

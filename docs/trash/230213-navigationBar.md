@@ -1,5 +1,6 @@
 ---
 title: Snack 11호 - Swift 네비게이션 바 커스텀
+tags: ['Snack', 'Swift', 'UIKit']
 ---
 
 ## 네비게이션 바 커스텀

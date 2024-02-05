@@ -1,5 +1,6 @@
 ---
 title: Swift - 네트워크 통신
+tags: ['Swift', 'UIKit']
 ---
 
 ## iOS 네트워크 통신 과정
