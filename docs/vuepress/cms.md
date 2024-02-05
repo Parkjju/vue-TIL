@@ -1,7 +1,8 @@
 ---
 title: Vuepress CMS 페이지 생성
-
+tags: ['VuePress']
 ---
+
 ## Monolithic CMS
 
 CMS는 `Content Management System`의 약자로 프론트 단(Presentation layer)에 표시되는 각종 컨텐츠들을 저장하고 관리하는 공간입니다.
@@ -29,7 +30,7 @@ CMS 페이지 하나를 예시로 보여드리겠습니다.
 >
 > 출처 -[ WebriQ, WTF is Headless CMS?](https://www.webriq.com/monolithic-cms-versus-headless-cms)
 
-위와 같은 특징으로 인해 헤드리스 CMS는 **API-first** 라고도 불립니다. 가끔  **Content Infratstructure**, **Content Hubs**, **Content as a Service** 와 같은 명칭으로도 불리는 경우가 있지만 실상은 컨텐츠 중심이 아닌 컨텐츠 접근 API를 중심으로 사이트가 구현되기 때문에 올바른 표현은 아니라고 할 수 있습니다.
+위와 같은 특징으로 인해 헤드리스 CMS는 **API-first** 라고도 불립니다. 가끔 **Content Infratstructure**, **Content Hubs**, **Content as a Service** 와 같은 명칭으로도 불리는 경우가 있지만 실상은 컨텐츠 중심이 아닌 컨텐츠 접근 API를 중심으로 사이트가 구현되기 때문에 올바른 표현은 아니라고 할 수 있습니다.
 
 :::details API란?
 
@@ -37,7 +38,7 @@ CMS 페이지 하나를 예시로 보여드리겠습니다.
 
 API는 소프트웨어와 쉽게 소통할 수 있도록 **컨텐츠를 얻는** **방식**을 말합니다.
 
-네트워크 상에서 컨텐츠를 주고 받을 때에는 네트워크 요청과 응답에 의해 이루어집니다. 특정 웹 페이지 방문을 예시로 해당 페이지의 컨텐츠를 요청한다고 할 때에 사용자는 **"**[**https://mydomain.com/api/posts/**](https://mydomain.com/api/posts/ "https://mydomain.com/api/posts/")" 와 같은 주소로 네트워크 요청을 보냅니다. 사용자들은 요청에 대한 응답으로 위 페이지에 대한 컨텐츠를 받게 되지만 개발자들은 **위 페이지를 구성하는 요소들에 대한 리스트를 얻습니다.** 이 컨텐츠에 대한 구성요소 리스트가 바로 **API**입니다.
+네트워크 상에서 컨텐츠를 주고 받을 때에는 네트워크 요청과 응답에 의해 이루어집니다. 특정 웹 페이지 방문을 예시로 해당 페이지의 컨텐츠를 요청한다고 할 때에 사용자는 **"**[**https://mydomain.com/api/posts/**](https://mydomain.com/api/posts/ 'https://mydomain.com/api/posts/')" 와 같은 주소로 네트워크 요청을 보냅니다. 사용자들은 요청에 대한 응답으로 위 페이지에 대한 컨텐츠를 받게 되지만 개발자들은 **위 페이지를 구성하는 요소들에 대한 리스트를 얻습니다.** 이 컨텐츠에 대한 구성요소 리스트가 바로 **API**입니다.
 
 :::
 
@@ -70,28 +71,28 @@ forestry를 활용하여 CMS를 구축하는 과정은 다음과 같습니다.
 ---
 new_page_extension: md
 auto_deploy: false
-admin_path: 
-webhook_url: 
+admin_path:
+webhook_url:
 sections:
-- type: directory
-  path: docs/TIL
-  label: TIL
-  create: documents
-  match: "*.md"
-  templates:
-  - post
+    - type: directory
+      path: docs/TIL
+      label: TIL
+      create: documents
+      match: '*.md'
+      templates:
+          - post
 upload_dir: docs/.vuepress/assets
-public_path: "../.vuepress/assets"
+public_path: '../.vuepress/assets'
 front_matter_path: ''
 use_front_matter_path: false
-file_template: ":filename:"
+file_template: ':filename:'
 build:
-  preview_output_directory: docs/.vuepress/dist
-  install_dependencies_command: npm install
-  preview_docker_image: forestryio/node:12
-  mount_path: "/srv"
-  working_dir: "/srv"
-  instant_preview_command: npm run build && npm run dev
+    preview_output_directory: docs/.vuepress/dist
+    install_dependencies_command: npm install
+    preview_docker_image: forestryio/node:12
+    mount_path: '/srv'
+    working_dir: '/srv'
+    instant_preview_command: npm run build && npm run dev
 ```
 
 각 속성에 대해서는 [forestry.io sidebar configuration Docs](https://forestry.io/docs/settings/content-sections/)를 참조해주세요.

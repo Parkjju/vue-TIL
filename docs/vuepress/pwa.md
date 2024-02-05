@@ -1,7 +1,8 @@
 ---
 title: Vuepress pwa
-
+tags: ['VuePress']
 ---
+
 ## PWA란?
 
 [프로그레시브 웹 앱](https://developer.mozilla.org/ko/docs/Web/Progressive_web_apps/Introduction)(Progressive Web App, PWA)은 웹과 앱의 장점만을 섞어 놓은 웹 앱입니다. 웹의 접근성이라는 장점과 앱의 부드러움을 섞어놓았습니다. 네이티브 앱은 기본적으로 설치가 가능하므로 **오프라인에서 동작한다**는 장점이 있고 **모바일 환경에서의 접근성이 비약적으로 상승하게 됩니다.** (홈 화면에서 아이콘 클릭을 통해 바로 접근)
@@ -37,7 +38,7 @@ PWA의 핵심은 **서비스워커(service-worker) 매니페스트(Manifest)** �
 6. `background_color` - 모바일 앱 아이콘의 배경색을 지정합니다.
 7. `theme_color` - 앱 환경의 시스템 바 (URL 입력창과 같이 각 환경에서 기본적으로 제공되는 UI, 사진의 상단 바 확인)
 
-   ![](../.vuepress/assets/vuepress/bar.jpg)
+    ![](../.vuepress/assets/vuepress/bar.jpg)
 
 플러그인 설치 코드는 다음과 같습니다.
 
@@ -49,18 +50,19 @@ yarn add -D @vuepress/plugin-pwa
 
 ```js
 plugins: [
-  // ....
-  [
-    "@vuepress/pwa",
-    {
-      serviceWorker: true,
-      updatePopup: {
-        message: "새 컨텐츠가 등록되었습니다. 새로고침 버튼을 눌러주세요😀",
-        buttonText: "새로고침",
-      },
-    },
-  ],
-]
+    // ....
+    [
+        '@vuepress/pwa',
+        {
+            serviceWorker: true,
+            updatePopup: {
+                message:
+                    '새 컨텐츠가 등록되었습니다. 새로고침 버튼을 눌러주세요😀',
+                buttonText: '새로고침',
+            },
+        },
+    ],
+];
 ```
 
 플러그인 속성으로 `serviceWorker`를 지정할 수 있는데, 서비스워커(serviceWorker)는 브라우저가 백그라운드에서 실행하는 스크립트로 웹페이지와 별개로 작동하여 사용자 상호작용이 필요하지 않은 기능에 대해 대신 수행하게 됩니다.
@@ -126,13 +128,13 @@ plugins: [
 
 :::tip Vupress 메타데이터 핸들링
 
-배포하는 뷰프레스 블로그 페이지 전체에 적용될 메타데이터를 설정하기 위해서는 `config.js`파일의 `head`영역을 수정하면 됩니다.  인덱스 페이지를 기준으로 상속받는 모든 페이지에 메타데이터가 포함되게 됩니다.
+배포하는 뷰프레스 블로그 페이지 전체에 적용될 메타데이터를 설정하기 위해서는 `config.js`파일의 `head`영역을 수정하면 됩니다. 인덱스 페이지를 기준으로 상속받는 모든 페이지에 메타데이터가 포함되게 됩니다.
 
 ```js
 head: [
-  ["link", { rel: "shortcut icon", href: "./favicon.ico" }],
-  // .... 
-]
+    ['link', { rel: 'shortcut icon', href: './favicon.ico' }],
+    // ....
+];
 ```
 
 위 코드를 `config.js`에 추가하면 전체 페이지에 해당 `link`태그가 삽입되게 됩니다.

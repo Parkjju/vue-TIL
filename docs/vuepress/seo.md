@@ -1,7 +1,8 @@
 ---
 title: Vuepress Google Search Console
-
+tags: ['VuePress']
 ---
+
 ## SEO
 
 SEO란 Search Engine Optimization의 약자로 직역하면 검색 엔진 최적화를 의미합니다. 성능, 접근성 등 몇 가지 지표로 점수를 매겨 포털 사이트 검색 결과로 페이지 노출 우선순위를 결정하게 되며, SEO가 높은 사이트의 게시글은 검색창에서 찾기 쉬워지게 됩니다.
@@ -24,10 +25,10 @@ npm install -D vuepress-plugin-sitemap
 
 ```js
 plugins: [
-  ["sitemap", { hostname: "https://Username.github.io/TIL" }],
-  "@vuepress/plugin-back-to-top",
-  // ....
-  // 위의 예시는 깃헙페이지 baseURL이 있는 것을 기준으로 합니다.
+    ['sitemap', { hostname: 'https://Username.github.io/TIL' }],
+    '@vuepress/plugin-back-to-top',
+    // ....
+    // 위의 예시는 깃헙페이지 baseURL이 있는 것을 기준으로 합니다.
 ];
 ```
 
@@ -68,8 +69,8 @@ plugins: [
 
 ```js
 head: [
-  ["link", { rel: "shortcut icon", href: "./favicon.ico" }],
-  //...
+    ['link', { rel: 'shortcut icon', href: './favicon.ico' }],
+    //...
 ];
 ```
 
@@ -83,8 +84,8 @@ head: [
 
 ```js
 head: [
-  ["meta", { name: "google-site-verification", content: "..." }],
-  //...
+    ['meta', { name: 'google-site-verification', content: '...' }],
+    //...
 ];
 ```
 

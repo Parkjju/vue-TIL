@@ -1,5 +1,6 @@
 ---
 title: Vuepress Google Analytics
+tags: ['VuePress']
 ---
 
 ## Google Analytics
@@ -16,24 +17,24 @@ yarn add -D @vuepress/plugin-google-analytics
 
 ```js
 module.exports = {
-  //...
-  head: [
-    [
-      "script",
-      {
-        async: true,
-        src: "https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX",
-        // GA에서 발급받은 코드
-      },
+    //...
+    head: [
+        [
+            'script',
+            {
+                async: true,
+                src: 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX',
+                // GA에서 발급받은 코드
+            },
+        ],
+        [
+            'script',
+            {},
+            [
+                "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-XXXXXXXXXX');",
+            ],
+        ],
     ],
-    [
-      "script",
-      {},
-      [
-        "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-XXXXXXXXXX');",
-      ],
-    ],
-  ],
 };
 ```
 
