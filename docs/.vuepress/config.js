@@ -149,20 +149,6 @@ module.exports = {
                 sidebarDepth: 2,
             },
             {
-                title: 'DailyTech',
-                collapsable: true,
-                children: [
-                    '/daily/220208-DOM',
-                    '/daily/220208-browser',
-                    '/daily/220224-shadow',
-                    '/daily/220223-virtualDom',
-                    '/daily/220420-api',
-                    '/daily/220605-regex',
-                    '/daily/220701-grid',
-                    '/daily/220703-recoil',
-                ],
-            },
-            {
                 title: 'Swift',
                 collapsable: true,
                 children: [
@@ -225,6 +211,12 @@ module.exports = {
                     'swiftuiOpen/240201-4',
                     'swiftuiOpen/240205-5',
                 ],
+                sidebarDepth: 2,
+            },
+            {
+                title: 'Combine',
+                collapsable: true,
+                children: ['combine/240217-1', 'combine/240217-2'],
                 sidebarDepth: 2,
             },
             {
