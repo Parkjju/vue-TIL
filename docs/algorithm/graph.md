@@ -272,6 +272,37 @@ int main(){
 }
 ```
 
+```swift
+// 스위프트 버전 DFS
+import Foundation
+
+var visited: [Int] = .init(repeating: 0, count: 9)
+var adj: [[Int]] = .init(repeating: [], count: 10000)
+
+func dfs(_ u: Int) {
+    visited[u] = 1
+    print("순회 중..", u)
+
+    for v in adj[u] {
+        if visited[v] == 0 {
+            dfs(v)
+        }
+    }
+
+    print("\(u)에서 시작된 DFS 종료")
+    return
+}
+
+adj[0].append(1)
+adj[0].append(2)
+adj[1].append(3)
+adj[1].append(4)
+adj[4].append(5)
+adj[2].append(8)
+
+dfs(0)
+```
+
 DFS 구현에는 크게 두가지 방법이 있다.
 
 1. 방문 전에 다음 노드의 `visited` 여부를 체크하여 순회 여부를 결정하거나,
@@ -282,7 +313,7 @@ DFS 구현에는 크게 두가지 방법이 있다.
 void dfs(int here){
     visited[here] = 1;
     for(int there : adj[here]){
-        if(visited[there] == 0){
+        if(visited[there] ){
             continue;
         }
         dfs(there);
@@ -360,6 +391,60 @@ int main(void){
 
     return 0;
 }
+```
+
+```swift
+// 스위프트 버전
+import Foundation
+
+let dy = [-1, 0, 1, 0], dx = [0, 1, 0, -1]
+var visited: [[Bool]] = .init(repeating: [], count: 104)
+var adj: [[Int]] = .init(repeating: [], count: 104)
+
+var n = 0, m = 0, y = 0, x = 0, ret = 0, ny = 0, nx = 0
+
+func dfs(_ y: Int, _ x: Int) {
+    visited[y][x] = true
+
+    for i in 0..<4 {
+        ny = y + dy[i]
+        nx = x + dx[i]
+
+        if ny < 0 || nx < 0 || ny >= n || nx >= m {
+            continue
+        }
+        if adj[ny][nx] == 1 && !visited[ny][nx] {
+            dfs(ny, nx)
+        }
+    }
+}
+
+let nm = readLine()!.split(separator: " ").map { Int($0)! }; n = nm[0]; m = nm[1]
+
+for i in 0..<n {
+    adj[i] = readLine()!.split(separator: " ").map { Int($0)! }
+    visited[i] = .init(repeating: false, count: m)
+}
+
+for i in 0..<n {
+    for j in 0..<m {
+        if adj[i][j] == 1 && !visited[i][j] {
+            dfs(i, j)
+            ret += 1
+        }
+    }
+}
+
+print(ret)
+
+//5 5
+//1 0 1 0 1
+//1 1 0 0 1
+//0 0 1 1 1
+//0 0 1 1 1
+//0 1 0 0 0
+
+//출력결과 4
 ```
 
 ## BFS
