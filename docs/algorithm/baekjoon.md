@@ -4,8 +4,11 @@ title: PS 모음집
 
 ## PS 아카이빙 - Swift
 
+### 구현
+
 -   [2309 일곱난쟁이](./ps/inflearn/swift/2309.md)
--   [10808 - 알파벳 개수](./ps/inflearn/swift/10808.md)
+-   [10808 알파벳 개수](./ps/inflearn/swift/10808.md)
+-   [2979 트럭 주차](./ps/inflearn/swift/2979.md)
 
 ## PS 아카이빙 - C++
 
