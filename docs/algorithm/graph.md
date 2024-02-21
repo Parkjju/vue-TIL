@@ -477,6 +477,40 @@ while(q.size()){
 }
 ```
 
+```swift
+// 스위프트 버전
+var visited: [Int] = .init(repeating: 0, count: 104)
+var adj: [[Int]] = .init(repeating: [], count: 104)
+let nodeList = [10, 12, 14, 16, 18, 20, 22, 24]
+
+func bfs(_ here: Int) {
+    var q = Queue<Int>()
+    visited[here] = 1
+    q.enqueue(here)
+
+    while(!q.isEmpty) {
+        guard let here = q.front else { return }
+        _ = q.dequeue()
+        for there in adj[here] {
+            if visited[there] == 1 { continue }
+            visited[there] = visited[here] + 1
+            q.enqueue(there)
+        }
+    }
+}
+
+adj[10].append(12)
+adj[10].append(14)
+adj[10].append(16)
+adj[12].append(18)
+adj[12].append(20)
+adj[20].append(22)
+adj[20].append(24)
+
+bfs(10)
+print(visited[24])
+```
+
 `visited`배열을 레벨별로 다른 가중치로 주는 이유는 BFS를 가중치를 둔 최단거리 알고리즘에서도 사용하기 때문이다. (레벨간 가중치는 모두 동일해야한다.) 큐에서 pop이 된 이후에 순회되는 노드들은 레벨이 하나 더해지는것과 동일한 것이다.
 
 BFS예제이다. 출발지 `<cury, curx>`부터 도착지 `<desty, destx>`까지의 최단거리를 출력해야한다.
@@ -545,6 +579,34 @@ int main(){
 // 0 0 1 1 1
 // 0 0 1 1 1
 // 답 : 9
+```
+
+```swift
+// 2차원 BFS 스위프트 버전
+func bfs(_ here: (Int, Int)) {
+    var q = Queue<(Int, Int)>()
+    visited[here.0][here.1] = 1
+    q.enqueue(here)
+    while(!q.isEmpty) {
+        guard let here = q.dequeue() else { return }
+        for i in 0..<4 {
+            let ny = dy[i] + here.0
+            let nx = dx[i] + here.1
+
+            if ny < 0 || nx < 0 || ny >= n || nx >= m || adj[ny][nx] == 0 {
+                continue
+            }
+
+            if visited[ny][nx] != 0 {
+                continue
+            }
+
+            visited[ny][nx] = visited[here.0][here.1] + 1
+            adj[ny][nx] = visited[ny][nx]
+            q.enqueue((ny, nx))
+        }
+    }
+}
 ```
 
 ## 트리 순회

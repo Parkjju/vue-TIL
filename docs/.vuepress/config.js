@@ -352,9 +352,9 @@ module.exports = {
                 collapsable: true,
                 children: [
                     // '/algorithm/cpp/230620-summary',
-                    '/algorithm/230115-swift-algorithm-club',
-                    '/algorithm/230112-swift',
+                    // '/algorithm/230115-swift-algorithm-club',
                     '/algorithm/baekjoon',
+                    '/algorithm/230112-swift',
                     '/algorithm/graph',
                     '/algorithm/backtrack',
                     // '/algorithm/method',
