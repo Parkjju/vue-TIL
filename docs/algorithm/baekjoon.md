@@ -20,6 +20,7 @@ title: PS 모음집
 -   [2178 미로 탐색](./ps/inflearn/swift/2178.md)
 -   [1012 유기농 배추](./ps/inflearn/swift/1012.md)
 -   [2468 안전 영역](./ps/inflearn/swift/2468.md)
+-   [2583 영역 구하기](./ps/inflearn/swift/2583.md)
 
 ## PS 아카이빙 - C++
 
