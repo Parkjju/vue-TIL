@@ -22,6 +22,10 @@ title: PS 모음집
 -   [2468 안전 영역](./ps/inflearn/swift/2468.md)
 -   [2583 영역 구하기](./ps/inflearn/swift/2583.md)
 
+## 브루트포스
+
+-   [15686 치킨 배달](./ps/inflearn/swift/15686.md)
+
 ## PS 아카이빙 - C++
 
 ### 구현
