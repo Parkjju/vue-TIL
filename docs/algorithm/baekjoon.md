@@ -25,6 +25,7 @@ title: PS 모음집
 ## 브루트포스
 
 -   [15686 치킨 배달](./ps/inflearn/swift/15686.md)
+-   [2589 보물섬](./ps/inflearn/swift/2589.md)
 
 ## PS 아카이빙 - C++
 
