@@ -22,6 +22,7 @@ title: PS 모음집
 -   [2468 안전 영역](./ps/inflearn/swift/2468.md)
 -   [2583 영역 구하기](./ps/inflearn/swift/2583.md)
 -   [16234 인구 이동](./ps/inflearn/swift/16234.md)
+-   [4179 불!](./ps/inflearn/swift/4179.md)
 
 ## 브루트포스
 
