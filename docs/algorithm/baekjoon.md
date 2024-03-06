@@ -25,6 +25,7 @@ title: PS 모음집
 -   [16234 인구 이동](./ps/inflearn/swift/16234.md)
 -   [4179 불!](./ps/inflearn/swift/4179.md)
 -   [12869 뮤탈리스크](./ps/inflearn/swift/12869.md)
+-   [12851 숨바꼭질 2](./ps/inflearn/swift/12851.md)
 
 ## 브루트포스
 
