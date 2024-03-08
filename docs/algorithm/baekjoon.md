@@ -27,6 +27,7 @@ title: PS 모음집
 -   [12869 뮤탈리스크](./ps/inflearn/swift/12869.md)
 -   [12851 숨바꼭질 2](./ps/inflearn/swift/12851.md)
 -   [13913 숨바꼭질 4](./ps/inflearn/swift/13913.md)
+-   [17071 숨바꼭질 5](./ps/inflearn/swift/17071.md)
 
 ## 브루트포스
 
