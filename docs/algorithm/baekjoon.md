@@ -17,6 +17,7 @@ title: PS 모음집
 -   [16637 괄호 추가하기](./ps/inflearn/swift/16637.md)
 -   [프로그래머스 level1 - 가장 많이 받은 선물](./ps/programmers/level1/230322-1.md)
 -   [프로그래머스 level1 - 달리기 경주](./ps/programmers/level1/230322-2.md)
+-   [프로그래머스 level1 - 추억점수](./ps/programmers/level1/230322-3.md)
 
 ### 그래프
 
