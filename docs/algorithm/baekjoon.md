@@ -16,6 +16,7 @@ title: PS 모음집
 -   [10988 팰린드롬인지 확인하기](./ps/inflearn/swift/10988.md)
 -   [16637 괄호 추가하기](./ps/inflearn/swift/16637.md)
 -   [프로그래머스 level1 - 가장 많이 받은 선물](./ps/programmers/level1/230322-1.md)
+-   [프로그래머스 level1 - 달리기 경주](./ps/programmers/level1/230322-2.md)
 
 ### 그래프
 
