@@ -34,6 +34,7 @@ title: PS 모음집
 -   [17071 숨바꼭질 5](./ps/inflearn/swift/17071.md)
 -   [14497 주난의 난(難)](./ps/inflearn/swift/14497.md)
 -   [3197 백조의 호수](./ps/inflearn/swift/3197.md)
+-   [1987 알파벳](./ps/inflearn/swift/1987.md)
 
 ## 브루트포스
 
