@@ -35,6 +35,7 @@ title: PS 모음집
 -   [14497 주난의 난(難)](./ps/inflearn/swift/14497.md)
 -   [3197 백조의 호수](./ps/inflearn/swift/3197.md)
 -   [1987 알파벳](./ps/inflearn/swift/1987.md)
+-   [9934 완전 이진 트리](./ps/inflearn/swift/9934.md)
 
 ## 브루트포스
 
