@@ -36,6 +36,7 @@ title: PS 모음집
 -   [3197 백조의 호수](./ps/inflearn/swift/3197.md)
 -   [1987 알파벳](./ps/inflearn/swift/1987.md)
 -   [9934 완전 이진 트리](./ps/inflearn/swift/9934.md)
+-   [15684 사다리 조작](./ps/inflearn/swift/15684.md)
 
 ## 브루트포스
 
