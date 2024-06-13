@@ -147,6 +147,7 @@ module.exports = {
                     'trash/240206-43',
                     'trash/240321-44',
                     'trash/240416-45',
+                    'trash/240613-46',
                 ],
                 sidebarDepth: 2,
             },
