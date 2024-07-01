@@ -19,6 +19,7 @@ title: PS 모음집
 -   [프로그래머스 level1 - 달리기 경주](./ps/programmers/level1/240322-2.md)
 -   [프로그래머스 level1 - 추억점수](./ps/programmers/level1/240322-3.md)
 -   [프로그래머스 level1 - 실패율](./ps/programmers/level1/240322-4.md)
+-   [10870 피보나치 5](./ps/inflearn/swift/10870.md)
 
 ### 그래프
 
