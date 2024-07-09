@@ -38,6 +38,7 @@ title: PS 모음집
 -   [1987 알파벳](./ps/inflearn/swift/1987.md)
 -   [9934 완전 이진 트리](./ps/inflearn/swift/9934.md)
 -   [15684 사다리 조작](./ps/inflearn/swift/15684.md)
+-   [1260 DFS와 BFS](./ps/inflearn/swift/1260.md)
 
 ## 브루트포스
 
