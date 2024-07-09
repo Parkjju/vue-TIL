@@ -46,6 +46,7 @@ title: PS 모음집
 -   [15686 치킨 배달](./ps/inflearn/swift/15686.md)
 -   [2589 보물섬](./ps/inflearn/swift/2589.md)
 -   [2529 부등호](./ps/inflearn/swift/2529.md)
+-   [2231 분해합](./ps/inflearn/swift/2231.md)
 
 ## PS 아카이빙 - C++
 
