@@ -41,6 +41,7 @@ title: PS 모음집
 -   [1260 DFS와 BFS](./ps/inflearn/swift/1260.md)
 -   [7576 토마토](./ps/inflearn/swift/7576.md)
 -   [11725 트리의 부모 찾기](./ps/inflearn/swift/11725.md)
+-   [14675 단절점과 단절선](./ps/inflearn/swift/14675.md)
 
 ## 브루트포스
 
