@@ -40,6 +40,7 @@ title: PS 모음집
 -   [15684 사다리 조작](./ps/inflearn/swift/15684.md)
 -   [1260 DFS와 BFS](./ps/inflearn/swift/1260.md)
 -   [7576 토마토](./ps/inflearn/swift/7576.md)
+-   [11725 트리의 부모 찾기](./ps/inflearn/swift/11725.md)
 
 ## 브루트포스
 
