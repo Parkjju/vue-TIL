@@ -43,6 +43,7 @@ title: PS 모음집
 -   [11725 트리의 부모 찾기](./ps/inflearn/swift/11725.md)
 -   [14675 단절점과 단절선](./ps/inflearn/swift/14675.md)
 -   [2667 단지번호 붙이기](./ps/inflearn/swift/2667.md)
+-   [14502 연구소](./ps/inflearn/swift/14502.md)
 
 ## 브루트포스
 
