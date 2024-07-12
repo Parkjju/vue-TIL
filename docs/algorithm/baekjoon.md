@@ -21,6 +21,7 @@ title: PS 모음집
 -   [프로그래머스 level1 - 실패율](./ps/programmers/level1/240322-4.md)
 -   [10870 피보나치 5](./ps/inflearn/swift/10870.md)
 -   [5568 카드 놓기](./ps/inflearn/swift/5568.md)
+-   [2961 도영이가 만든 맛있는 음식](./ps/inflearn/swift/2961.md)
 
 ### 그래프
 
