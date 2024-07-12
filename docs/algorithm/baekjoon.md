@@ -20,6 +20,7 @@ title: PS 모음집
 -   [프로그래머스 level1 - 추억점수](./ps/programmers/level1/240322-3.md)
 -   [프로그래머스 level1 - 실패율](./ps/programmers/level1/240322-4.md)
 -   [10870 피보나치 5](./ps/inflearn/swift/10870.md)
+-   [5568 카드 놓기](./ps/inflearn/swift/5568.md)
 
 ### 그래프
 
