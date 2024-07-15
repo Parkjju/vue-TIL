@@ -22,6 +22,7 @@ title: PS 모음집
 -   [10870 피보나치 5](./ps/inflearn/swift/10870.md)
 -   [5568 카드 놓기](./ps/inflearn/swift/5568.md)
 -   [2961 도영이가 만든 맛있는 음식](./ps/inflearn/swift/2961.md)
+-   [14620 꽃길](./ps/inflearn/swift/14620.md)
 
 ### 그래프
 
@@ -46,6 +47,7 @@ title: PS 모음집
 -   [14675 단절점과 단절선](./ps/inflearn/swift/14675.md)
 -   [2667 단지번호 붙이기](./ps/inflearn/swift/2667.md)
 -   [14502 연구소](./ps/inflearn/swift/14502.md)
+-   [5547 일루미네이션](./ps/inflearn/swift/5547.md)
 
 ## 브루트포스
 
