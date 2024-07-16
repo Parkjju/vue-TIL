@@ -50,6 +50,7 @@ title: PS 모음집
 -   [5547 일루미네이션](./ps/inflearn/swift/5547.md)
 -   [7569 토마토](./ps/inflearn/swift/7569.md)
 -   [13023 ABCDE](./ps/inflearn/swift/13023.md)
+-   [1600 말이 되고픈 원숭이](./ps/inflearn/swift/1600.md)
 
 ## 브루트포스
 
