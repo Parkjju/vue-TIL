@@ -49,6 +49,7 @@ title: PS 모음집
 -   [14502 연구소](./ps/inflearn/swift/14502.md)
 -   [5547 일루미네이션](./ps/inflearn/swift/5547.md)
 -   [7569 토마토](./ps/inflearn/swift/7569.md)
+-   [13023 ABCDE](./ps/inflearn/swift/13023.md)
 
 ## 브루트포스
 
