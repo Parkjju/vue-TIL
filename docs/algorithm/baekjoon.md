@@ -48,6 +48,7 @@ title: PS 모음집
 -   [2667 단지번호 붙이기](./ps/inflearn/swift/2667.md)
 -   [14502 연구소](./ps/inflearn/swift/14502.md)
 -   [5547 일루미네이션](./ps/inflearn/swift/5547.md)
+-   [7569 토마토](./ps/inflearn/swift/7569.md)
 
 ## 브루트포스
 
