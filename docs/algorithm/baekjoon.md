@@ -51,6 +51,7 @@ title: PS 모음집
 -   [7569 토마토](./ps/inflearn/swift/7569.md)
 -   [13023 ABCDE](./ps/inflearn/swift/13023.md)
 -   [1600 말이 되고픈 원숭이](./ps/inflearn/swift/1600.md)
+-   [2206 벽 부수고 이동하기](./ps/inflearn/swift/2206.md)
 
 ## 브루트포스
 
