@@ -53,6 +53,7 @@ title: PS 모음집
 -   [1600 말이 되고픈 원숭이](./ps/inflearn/swift/1600.md)
 -   [2206 벽 부수고 이동하기](./ps/inflearn/swift/2206.md)
 -   [16945 움직이는 미로 탈출](./ps/inflearn/swift/16945.md)
+-   [1991 트리 순회](./ps/inflearn/swift/1991.md)
 
 ## 브루트포스
 
