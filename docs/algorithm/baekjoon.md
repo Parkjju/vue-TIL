@@ -11,6 +11,8 @@ title: PS 모음집
 ### DP
 
 -   [2748 피보나치 수 2](./ps/inflearn/swift/2748.md)
+-   [9095 1,2,3 더하기](./ps/inflearn/swift/9095.md)
+-   [1010 다리 놓기](./ps/inflearn/swift/1010.md)
 
 ### 구현
 
