@@ -6,7 +6,7 @@ home: true
 # heroImage: https://v1.vuepress.vuejs.org/hero.png
 tagline: 공부한 지식을 정리하고 공유합니다.
 actionText: Get Started
-actionLink: /introduction
+actionLink: /trash/introduction.html
 features:
     - title: TIL
       details: 오늘 어떤 공부를 했는지 작성합니다.
