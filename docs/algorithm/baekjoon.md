@@ -8,6 +8,10 @@ title: PS 모음집
 
 -   [스위프트 자료구조 모음집](./230115-swift-algorithm-club.md)
 
+### DP
+
+-   [2748 피보나치 수 2](./ps/inflearn/swift/2748.md)
+
 ### 구현
 
 -   [2309 일곱난쟁이](./ps/inflearn/swift/2309.md)
