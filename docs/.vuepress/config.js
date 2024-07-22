@@ -104,7 +104,7 @@ module.exports = {
             '/trash': [
                 {
                     title: 'Snack',
-                    collapsable: true,
+                    collapsable: false,
                     children: [
                         '/trash/220715-async.md',
                         '/trash/220717-api.md',
@@ -162,8 +162,8 @@ module.exports = {
                     title: 'Swift',
                     collapsable: true,
                     children: [
-                        '../swift/221030-basic',
-                        '../swift/221101-repeat',
+                        'swift/221030-basic',
+                        'swift/221101-repeat',
                         'swift/221102-function',
                         'swift/221104-optional',
                         'swift/221105-collection',
