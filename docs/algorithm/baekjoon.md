@@ -14,6 +14,7 @@ title: PS 모음집
 -   [9095 1,2,3 더하기](./ps/inflearn/swift/9095.md)
 -   [1010 다리 놓기](./ps/inflearn/swift/1010.md)
 -   [1463 1로 만들기](./ps/inflearn/swift/1463.md)
+-   [11727 2xN 타일링 2](./ps/inflearn/swift/11727.md)
 
 ### 구현
 
