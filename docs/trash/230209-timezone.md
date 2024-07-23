@@ -1,5 +1,5 @@
 ---
-title: Snack 11호 - Swift 전 세계 시간 알아내기
+title: Snack - Swift 전 세계 시간 알아내기
 tags: ['Snack', 'Swift', 'UIKit']
 ---
 
