@@ -15,6 +15,7 @@ title: PS 모음집
 -   [1010 다리 놓기](./ps/inflearn/swift/1010.md)
 -   [1463 1로 만들기](./ps/inflearn/swift/1463.md)
 -   [11727 2xN 타일링 2](./ps/inflearn/swift/11727.md)
+-   [2839 설탕 배달](./ps/inflearn/swift/2839.md)
 
 ### 구현
 
