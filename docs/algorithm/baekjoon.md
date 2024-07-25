@@ -17,6 +17,7 @@ title: PS 모음집
 -   [11727 2xN 타일링 2](./ps/inflearn/swift/11727.md)
 -   [2839 설탕 배달](./ps/inflearn/swift/2839.md)
 -   [22857 가장 긴 짝수 연속한 부분 수열 (small)](./ps/inflearn/swift/22857.md)
+-   [11726 2xN 타일링](./ps/inflearn/swift/11726.md)
 
 ### 구현
 
