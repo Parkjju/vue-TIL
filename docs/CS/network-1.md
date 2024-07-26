@@ -66,14 +66,17 @@ int main(int argc, char *argv[])
     memset(&serv_addr, 0, sizeof(serv_addr));
     serv_addr.sin_family=AF_INET;
     serv_addr.sin_addr.s_addr=htonl(INADDR_ANY);
-    serv_addr.sin_port=htons(atoi(argv[1]));
+    serv_addr.sin_port=htons(atoi(argv[1])); // 포트번호
 
+	// 주소값 할당
     if(bind(serv_sock, (struct sockaddr*) &serv_addr, sizeof(serv_addr))==-1 )
         error_handling("bind() error");
 
+	// 소켓 리스닝
     if(listen(serv_sock, 5)==-1)
         error_handling("listen() error");
 
+	// accept로 데이터 송수신 흐름 열기
     clnt_addr_size=sizeof(clnt_addr);
     clnt_sock=accept(serv_sock, (struct sockaddr*)&clnt_addr,&clnt_addr_size);
     if(clnt_sock==-1)
@@ -114,3 +117,85 @@ int main(int argc, char* argv[])
 ```
 
 클라이언트 소켓 코드에서는 `connect` 함수를 호출하여 리스닝 중인 소켓에 연결을 요청한다. 리스닝 소켓 예제 코드에 `write`이 존재하므로 클라이언트 소켓에서는 서버에서 `write`한 데이터를 읽어들이고 소켓을 종료하게 되는 것이다.
+
+## 실습
+
+```shell
+> gcc hello_server.c -o hserver
+> gcc hello_client.c -o hclient
+
+> ./hserver 9190
+> ./hclient 127.0.0.1 9190
+```
+
+위의 클라이언트 & 서버 소스를 기반으로 실행파일을 생성하고 독립된 터미널에서 서버 프로그램을 9190 포트에서 실행한다. 이후 클라이언트 프로그램으로 9190 포트 접속을 요청하면 서버 프로그램 내에 하드코딩 해놓았던 텍스트가 전달된다.
+
+## 리눅스 기반 파일 조작하기
+
+리눅스 계열 OS에서는 연결이 이루어진 뒤에 기본 파일 입출력 함수를 통해 데이터를 주고받는다.
+
+윈도우 운영체제와 리눅스 운영체제는 응용 프로그램 개발을 위한 라이브러리 코드가 존재한다. 이때 파일 입출력을 위한 C 표준 함수는 **해당 라이브러리 코드 내에 존재하는 것이 아니다.** C 표준함수 코드는 컴파일러가 운영체제에 맞게 바이너리 코드로 변환해줌으로써 호환 가능하게 된다.
+
+`ANSI-C`는 C언어 표준을 의미한다. 해당 표준 코드들이 OS상에서 돌아가도록 하기 위해 OS 자체 시스템 라이브러리를 거쳐 최종적인 동작이 이루어진다.
+
+리눅스는 소켓도 파일로 간주하기 때문에 저수준 파일 입출력 함수를 기반으로 데이터 송수신이 가능하다. 소켓 뿐만 아니라 콘솔도 파일로 간주한다.
+
+## 파일 열기
+
+유닉스 계열인 맥OS에서 C open함수 내부를 살펴보면 다음과 같은 화면을 볼 수 있다.
+
+![3-2](../.vuepress/assets/CS/2-1.png)
+
+`__DARWIN_ALIAS_C`를 통해 시스템 라이브러리 함수를 호출하게 된다.
+
+### 소스
+
+```c
+// 파일 쓰기
+int main(void)
+{
+    int fd;
+    char buf[]="Let's go!\n";
+
+    fd=open("data.txt", O_CREAT|O_WRONLY|O_TRUNC);
+    if(fd==-1)
+        error_handling("open() error!");
+    printf("file descriptor: %d \n", fd);
+
+    if(write(fd, buf, sizeof(buf))==-1)
+        error_handling("write() error!");
+
+    close(fd);
+    return 0;
+}
+```
+
+1. `int open(const char *path, int flag);`: path에 파일 이름을 전달하고 flag에 파일 오픈 모드를 전달한다.
+2. 파일 오픈 모드는 `O_CREATE`, `O_TRUNC`등 여러가지가 존재한다. 위 코드에서는 파일 생성 모드, 쓰기 전용 모드, 기존 데이터 삭제 모드를 적용하게 된다.
+3. `ssize_t write(int fd, const void * buf, size_t nbytes)`: fd에는 쓰기 연산을 진행할 파일 디스크립터를 전달한다. buf에는 전송할 데이터 주소값을 전달한다. nbytes에는 전송할 데이터 바이트 수를 전달한다.
+
+```c
+// 파일 읽기
+int main(void)
+{
+	int fd;
+	char buf[BUF_SIZE];
+
+	fd=open("data.txt", O_RDONLY);
+	if( fd==-1)
+		error_handling("open() error!");
+
+	printf("file descriptor: %d \n" , fd);
+
+	if(read(fd, buf, sizeof(buf))==-1)
+		error_handling("read() error!");
+
+	printf("file data: %s", buf);
+
+	close(fd);
+	return 0;
+}
+```
+
+1. `open`함수에 `O_RDONLY`모드를 전달하며 파일을 생성한다.
+2. `ssize_t read(int fd, void *buf, size_t nbytes)`: fd에 파일 디스크립터를 전달한다. buf에 읽어들인 데이터를 저장할 버퍼 사이즈를 전달한다. nbytes에 얼마의 사이즈만큼 읽어들일지 전달한다.

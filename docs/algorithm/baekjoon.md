@@ -19,6 +19,8 @@ title: PS 모음집
 -   [22857 가장 긴 짝수 연속한 부분 수열 (small)](./ps/inflearn/swift/22857.md)
 -   [11726 2xN 타일링](./ps/inflearn/swift/11726.md)
 -   [9465 스티커](./ps/inflearn/swift/9465.md)
+-   [10844 쉬운 계단 수](./ps/inflearn/swift/10844.md)
+-   [2668 숫자 고르기 - DFS + DP](./ps/inflearn/swift/2668.md)
 
 ### 구현
 
