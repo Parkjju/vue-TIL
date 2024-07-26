@@ -244,7 +244,11 @@ module.exports = {
                     title: 'Computer Science',
                     sidebarDepth: 2,
                     collapsable: true,
-                    children: ['/CS/network-1'],
+                    children: [
+                        '/CS/network-1',
+                        '/CS/network-2',
+                        '/CS/network-3',
+                    ],
                 },
                 {
                     title: 'React Native',
