@@ -173,6 +173,7 @@ int main(void)
 1. `int open(const char *path, int flag);`: path에 파일 이름을 전달하고 flag에 파일 오픈 모드를 전달한다.
 2. 파일 오픈 모드는 `O_CREATE`, `O_TRUNC`등 여러가지가 존재한다. 위 코드에서는 파일 생성 모드, 쓰기 전용 모드, 기존 데이터 삭제 모드를 적용하게 된다.
 3. `ssize_t write(int fd, const void * buf, size_t nbytes)`: fd에는 쓰기 연산을 진행할 파일 디스크립터를 전달한다. buf에는 전송할 데이터 주소값을 전달한다. nbytes에는 전송할 데이터 바이트 수를 전달한다.
+    - 함수 호출 성공시 전달한 바이트 수를 반환한다.
 
 ```c
 // 파일 읽기
@@ -199,3 +200,4 @@ int main(void)
 
 1. `open`함수에 `O_RDONLY`모드를 전달하며 파일을 생성한다.
 2. `ssize_t read(int fd, void *buf, size_t nbytes)`: fd에 파일 디스크립터를 전달한다. buf에 읽어들인 데이터를 저장할 버퍼 사이즈를 전달한다. nbytes에 얼마의 사이즈만큼 읽어들일지 전달한다.
+    - 함수 호출 성공 시 수신한 바이트 수를 반환한다.
