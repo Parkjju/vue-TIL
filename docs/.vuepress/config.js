@@ -238,6 +238,7 @@ module.exports = {
                         '/algorithm/230112-swift',
                         '/algorithm/graph',
                         '/algorithm/backtrack',
+                        '/algorithm/240729-bit',
                     ],
                 },
                 {
