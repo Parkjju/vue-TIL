@@ -76,7 +76,11 @@ title: PS 모음집
 -   [2589 보물섬](./ps/inflearn/swift/2589.md)
 -   [2529 부등호](./ps/inflearn/swift/2529.md)
 -   [2231 분해합](./ps/inflearn/swift/2231.md)
--   [19942 다이어트 - 비트 마스킹](./ps/inflearn/swift/19942.md)
+
+## 비트마스킹
+
+-   [19942 다이어트](./ps/inflearn/swift/19942.md)
+-   [1285 동전 뒤집기](./ps/inflearn/swift/1285.md)
 
 ## PS 아카이빙 - C++
 
