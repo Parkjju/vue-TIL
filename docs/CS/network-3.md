@@ -1,5 +1,5 @@
 ---
-title: TCP/IP 소켓 프로그래밍 3
+title: TCP/IP 소켓 프로그래밍 3. 주소체계와 데이터 정렬
 tags: ['Network', 'Computer Science', 'iOS']
 ---
 

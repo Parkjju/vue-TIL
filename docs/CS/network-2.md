@@ -1,5 +1,5 @@
 ---
-title: TCP/IP 소켓 프로그래밍 2
+title: TCP/IP 소켓 프로그래밍 2. 소켓의 타입과 프로토콜의 설정
 tags: ['Network', 'Computer Science', 'iOS']
 ---
 

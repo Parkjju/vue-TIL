@@ -1,5 +1,5 @@
 ---
-title: TCP/IP 소켓 프로그래밍 1
+title: TCP/IP 소켓 프로그래밍 1. 소켓 프로그래밍 기초
 tags: ['Network', 'Computer Science', 'iOS']
 ---
 

@@ -252,6 +252,7 @@ module.exports = {
                         '/CS/network-4',
                         '/CS/network-5',
                         '/CS/network-6',
+                        '/CS/network-7',
                     ],
                 },
                 {

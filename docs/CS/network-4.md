@@ -1,5 +1,5 @@
 ---
-title: TCP/IP 소켓 프로그래밍 4
+title: TCP/IP 소켓 프로그래밍 4. TCP 기반 서버 & 클라이언트 1
 tags: ['Network', 'Computer Science', 'iOS']
 ---
 
