@@ -70,6 +70,10 @@ title: PS 모음집
 -   [1991 트리 순회](./ps/inflearn/swift/1991.md)
 -   [7562 나이트의 이동](./ps/inflearn/swift/7562.md)
 
+## 그리디
+
+-   [1931 회의실 배정](./ps/inflearn/swift/1931.md)
+
 ## 브루트포스
 
 -   [15686 치킨 배달](./ps/inflearn/swift/15686.md)
