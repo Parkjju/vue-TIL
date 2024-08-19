@@ -37,6 +37,8 @@ title: PS 모음집
 -   [5568 카드 놓기](./ps/inflearn/swift/5568.md)
 -   [2961 도영이가 만든 맛있는 음식](./ps/inflearn/swift/2961.md)
 -   [14620 꽃길](./ps/inflearn/swift/14620.md)
+-   [LeetCode 0001 - Two Sum](./ps/leetcode/EASY/0001.md)
+-   [LeetCode 0007 - Reverse Integer](./ps/leetcode/EASY/0007.md)
 
 ### 그래프
 
