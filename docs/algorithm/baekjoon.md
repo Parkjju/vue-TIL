@@ -41,6 +41,7 @@ title: PS 모음집
 -   [LeetCode 0007 - Reverse Integer](./ps/leetcode/EASY/0007.md)
 -   [LeetCode 0002 - Add two numbers](./ps/leetcode/MEDIUM/0002.md)
 -   [LeetCode 0146 - LRU Cache](./ps/leetcode/MEDIUM/0146.md)
+-   [LeetCode 1038 - Binary Search Tree to Greater Sum Tree](./ps/leetcode/MEDIUM/1038.md)
 
 ### 그래프
 
