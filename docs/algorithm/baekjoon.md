@@ -52,6 +52,7 @@ title: PS 모음집
 -   [LeetCode 0016 - 3Sum Closest](./ps/leetcode/MEDIUM/0016.md)
 -   [LeetCode 0328 - Odd Even Linked List](./ps/leetcode/MEDIUM/0328.md)
 -   [LeetCode 0062 - Unique Paths](./ps/leetcode/MEDIUM/0062.md)
+-   [LeetCode 0208 - Implement Trie (Prefix Tree)](./ps/leetcode/MEDIUM/0208.md)
 
 ### 그래프
 
