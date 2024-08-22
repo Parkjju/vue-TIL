@@ -96,6 +96,10 @@ title: PS 모음집
 -   [2529 부등호](./ps/inflearn/swift/2529.md)
 -   [2231 분해합](./ps/inflearn/swift/2231.md)
 
+## 백트래킹
+
+-   [LeetCode 0039 - Combination Sum](./ps/leetcode/MEDIUM/0039.md)
+
 ## 비트마스킹
 
 -   [19942 다이어트](./ps/inflearn/swift/19942.md)
