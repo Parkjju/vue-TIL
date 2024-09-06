@@ -224,6 +224,12 @@ module.exports = {
                     sidebarDepth: 2,
                 },
                 {
+                    title: 'LLDB',
+                    collapsable: true,
+                    children: ['lldb/lldb-1'],
+                    sidebarDepth: 2,
+                },
+                {
                     title: 'Combine',
                     collapsable: true,
                     children: ['combine/240217-1', 'combine/240217-2'],
