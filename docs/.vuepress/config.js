@@ -226,7 +226,7 @@ module.exports = {
                 {
                     title: 'LLDB',
                     collapsable: true,
-                    children: ['lldb/lldb-1'],
+                    children: ['lldb/lldb-1', 'lldb/lldb-2'],
                     sidebarDepth: 2,
                 },
                 {
