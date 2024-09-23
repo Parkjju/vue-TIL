@@ -18,3 +18,15 @@ LLDB는 기능적인 디버거를 만들기 위해 여러 구성 요소로 구�
 LLDB는 `SWIG`라는 언어 번역기를 통해 C++ 스크립트 브릿징 API에 대한 파이썬 래퍼를 생성한다. 이를 통해 LLDB에서 라이브 프로그램을 빠르게 실험하고 고급 명령을 실행하기 용이해진다.
 
 또한 `debugserver`, 혹은 `lldb-server`라는 제어 프로세스는 디버그 중인 프로세스를 조작하는 역할을 한다.
+
+## 원격으로 iOS 기기 디버깅하기
+
+PC 내부의 프로그램 외에도 원격 iOS기기의 디버깅이 가능하다. `DeveloperDiskImage.dmg`마운트를 iOS 기기에 로드한다. 마운트란 OS에서 특정 디스크나 파일 시스템을 사용할 수 있도록 연결하는 과정을 의미한다.
+
+마운트는 `Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/DeviceSupport/`에 위치한다. 해당 dmg 파일에는 `debugserver`뿐만 아니라 여러 디버깅 실행 파일 및 프레임워크가 포함되어 있다.
+
+컴퓨터에 lldb가 있고 iOS 기기에 디버그 서버가 로드되어도 둘 사이의 통신 브릿징을 시작할 수 있는 수단도 필요하다. 여기서 `/usr/libexec/lockdown`이 중요한 역할을 한다.
+
+`lockdownd`는 데몬이다. 데몬이란 백그라운드에서 실행되는 프로세스를 의미한다. 해당 데몬은 USB 연결을 통해 iOS 기기와 컴퓨터 간 통신 요청을 처리한다.
+
+Xcode와 같은 도구는 특정 서비스를 위해 장치에 요청을 보내며 `lockdownd`데몬이 요청을 수락하면 필요한 설정을 수행한다. 디버깅 시 `lockdownd`는 포트를 `debugserver`로 전달하고 컴퓨터 lldb와 원격 호스트 `debugserver`간 브릿지를 설정한다.
