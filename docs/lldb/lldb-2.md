@@ -30,3 +30,34 @@ PC 내부의 프로그램 외에도 원격 iOS기기의 디버깅이 가능하�
 `lockdownd`는 데몬이다. 데몬이란 백그라운드에서 실행되는 프로세스를 의미한다. 해당 데몬은 USB 연결을 통해 iOS 기기와 컴퓨터 간 통신 요청을 처리한다.
 
 Xcode와 같은 도구는 특정 서비스를 위해 장치에 요청을 보내며 `lockdownd`데몬이 요청을 수락하면 필요한 설정을 수행한다. 디버깅 시 `lockdownd`는 포트를 `debugserver`로 전달하고 컴퓨터 lldb와 원격 호스트 `debugserver`간 브릿지를 설정한다.
+
+Xcode는 Xcode와 `lockdownd`간 통신을 원활히 하기 위해 `MobileDevice`라는 프라이빗 프레임워크를 사용한다. 해당 프레임워크는 리버스 엔지니어링 되어 배포중이다.
+
+1. [iOS-deploy](https://github.com/ios-control/ios-deploy)
+2. [libimobiledevice](https://libimobiledevice.org/)
+
+## 초심자에게 좋은 lldb 커맨드
+
+### 1. help
+
+`help` 커맨드를 사용하면 lldb 커맨드에 대한 설명을 확인할 수 있다. lldb 커맨드는 서브 커맨드를 이어 붙여 사용할 수 있고, 서브 커맨드와 연관된 서브 커맨드들 역시 여러가지가 존재한다.
+
+```bash
+(lldb) help breakpoint name
+```
+
+`breakpoint`라는 명령어에 대해 `name`이라는 서브 명령어가 존재한다. 해당 명령어에 대한 `help`를 요청하는 것이라 이해하면 된다.
+
+### 2. apropos
+
+`apropos`는 찾고 있는 명령어 이름은 모르지만 관련 단어 및 문구를 알 때, lldb 문서에서 검색 용도로 사용하는 명령어이다.
+
+```bash
+(lldb) apropos swift
+```
+
+위 명령어를 입력하면 `swift`키워드와 관련된 각종 명령어 및 lldb 동작 제어를 위한 설정들이 나타난다.
+
+만약 `reference count`라는 키워드와 관련되어 검색하고 싶다면 `apropos "reference count"`를 입력하면 된다.
+
+위 명령어 인자는 하나밖에 받지 못하기 때문에 따옴표로 감싸면 하나의 인자로 취급되어 검색이 가능하다.
