@@ -60,3 +60,55 @@ $ lldb -n 프로그램명 -w
 위 명령어로 프로세스 연결을 감지한 상태로 새로운 터미널에서 실행파일을 실행하면 lldb 디버거가 연결된다.
 
 `-w`옵션은 기존에 실행중인 프로세스가 만약 있었다고 해도 해당 프로그램 이름에 대해 새로운 프로세스가 할당되는 것만 감시한다.
+
+`-f` 옵션과 함께 실행할 파일 경로를 지정하면 lldb 디버거 모드로 프로세스가 실행이 준비되고, `process launch`를 하면 프로세스가 실행된다.
+
+```bash
+# 1. LLDB 디버거 모드로 진입
+$ lldb -f /프로그램/위치
+
+# 2. 프로세스 실행
+$ process launch
+```
+
+## 프로세스 실행 시 사용할 수 있는 옵션
+
+lldb 디버거 모드로 진입한 뒤 `help process launch`를 입력하면 프로세스 런치 과정에서 사용 가능한 옵션들을 확인할 수 있다.
+
+리눅스 명령어 중 파일 목록을 나열해주는 `ls`를 실행파일로 지정해주려면 다음과 같이 명령어를 작성하면 된다.
+
+```bash
+$ lldb -f /bin/ls
+```
+
+위 명령어를 실행하고 나면 ls 명령어가 실행파일로 생성된다. 아래 결과가 출력되고 ls 프로세스가 실행될 준비가 된다.
+
+```bash
+(lldb) target create "/bin/ls"
+Current executable set to '/bin/ls' (arm64e).
+```
+
+이후 프로세스를 실행하면 ls명령어가 실제로 실행된다. 다른 디렉토리의 하위 파일 리스트를 출력하고 싶다면 `cd`명령어를 통해 해당 디렉토리로 이동한 뒤 `lldb -f /bin/ls`, `process launch`를 차례로 실행해주면 된다.
+
+```bash
+(lldb) process launch
+```
+
+디렉토리를 이동하지 않고 process launch 명령어의 인수로 디렉토리를 전달하면 해당 경로의 하위 파일 리스트를 출력할 수 있다.
+
+```bash
+(lldb) process launch -- /Applications
+```
+
+인수에 물결 옵션을 주어 루트 디렉토리를 참조하려면 아래 명령어를 입력한다.
+
+```bash
+(lldb) process launch -X true –- ~/Desktop
+# /Users/jun/Desktop..
+```
+
+`process launch -X true --` 명령어는 `run`명령어로 단축되기도 한다.
+
+```bash
+(lldb) run ~/Desktop
+```
