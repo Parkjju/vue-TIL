@@ -112,3 +112,36 @@ Current executable set to '/bin/ls' (arm64e).
 ```bash
 (lldb) run ~/Desktop
 ```
+
+## 환경변수
+
+위에서 ls 명령어를 하나의 파일로 생성한 뒤 프로세스로서 동작하게 했었는데, 환경변수 역시 추가할 수 있다.
+
+```bash
+# 명령어 실행
+$ lldb -f /bin/ls
+
+# 환경변수 출력
+(lldb) env
+target.env-vars (dictionary of strings) =
+```
+
+`settings` 명령어를 입력하면 환경변수와 관련된 작업을 처리할 수 있다.
+
+```bash
+(lldb) settings set|show|replace|clear|list target.env-vars
+```
+
+set, show.. 저 작업들 중 원하는 작업을 골라 활용하면 된다. `-E`옵션을 활용하면 환경변수에 대한 값을 지정하여 명령어를 바로 실행 가능하다.
+
+```bash
+(lldb) process launch -E LSCOLORS=Db -E CLICOLOR=1  -- /usr/share
+```
+
+위 명령어는 lldb 환경에서 ls 프로세스가 실행될 때 LSCOLORS와 CLICOLOR라는 환경변수 값을 각각 `Db`와 `1`로 지정하는 것을 의미한다.
+
+`man` 명령어를 입력하면 명령어에 대해 미리 정의되어 있는 환경변수 리스트를 포함하여 명렁어에 대한 자세한 정보를 알 수 있다.
+
+```bash
+$ man ls
+```
