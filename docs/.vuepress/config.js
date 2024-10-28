@@ -212,6 +212,12 @@ module.exports = {
                     sidebarDepth: 2,
                 },
                 {
+                    title: 'Concurrency',
+                    collapsable: true,
+                    children: ['concurrency/concurrency-1'],
+                    sidebarDepth: 2,
+                },
+                {
                     title: 'SwiftUI',
                     collapsable: true,
                     children: [
