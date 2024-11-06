@@ -214,7 +214,10 @@ module.exports = {
                 {
                     title: 'Concurrency',
                     collapsable: true,
-                    children: ['concurrency/concurrency-1'],
+                    children: [
+                        'concurrency/concurrency-1',
+                        'concurrency/concurrency-2',
+                    ],
                     sidebarDepth: 2,
                 },
                 {
