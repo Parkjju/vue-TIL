@@ -117,6 +117,7 @@ module.exports = {
                         'trash/231205-39',
                         'trash/240416-45',
                         'trash/230918-31',
+                        'trash/250521-mcp'
                     ],
                     sidebarDepth: 2,
                 },
