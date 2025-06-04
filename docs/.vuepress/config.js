@@ -117,7 +117,7 @@ module.exports = {
                         'trash/231205-39',
                         'trash/240416-45',
                         'trash/230918-31',
-                        'trash/250521-mcp'
+                        'trash/250521-mcp',
                     ],
                     sidebarDepth: 2,
                 },
@@ -219,6 +219,12 @@ module.exports = {
                         'concurrency/concurrency-1',
                         'concurrency/concurrency-2',
                     ],
+                    sidebarDepth: 2,
+                },
+                {
+                    title: 'Google Cloud Platform',
+                    collapsable: true,
+                    children: ['gcp/250604-1'],
                     sidebarDepth: 2,
                 },
                 {
