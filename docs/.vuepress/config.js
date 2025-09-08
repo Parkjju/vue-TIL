@@ -224,7 +224,14 @@ module.exports = {
                 {
                     title: 'Google Cloud Platform',
                     collapsable: true,
-                    children: ['gcp/250604-1', 'gcp/250607-1', 'gcp/250608-1', 'gcp/250610-1', 'gcp/250618-1'],
+                    children: [
+                        'gcp/250604-1',
+                        'gcp/250607-1',
+                        'gcp/250608-1',
+                        'gcp/250610-1',
+                        'gcp/250618-1',
+                        'gcp/250906-dumps',
+                    ],
                     sidebarDepth: 2,
                 },
                 {
