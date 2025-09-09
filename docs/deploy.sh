@@ -4,10 +4,10 @@
 set -e
 
 # build commands
-npm run build
+npm run docs:build
 
 # navigate into the build output directory
-cd src/.vuepress/dist
+cd .vuepress/dist
 
 git init
 git add -A
