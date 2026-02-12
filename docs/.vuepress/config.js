@@ -79,17 +79,18 @@ module.exports = {
                 '@type': 'WebSite',
                 name: 'Today I Learned',
                 url: 'https://parkjju.github.io/vue-TIL/',
-                description: '기술 학습 노트 - Swift, iOS, 알고리즘, 웹 개발 등',
+                description:
+                    '기술 학습 노트 - Swift, iOS, 알고리즘, 웹 개발 등',
                 author: {
                     '@type': 'Person',
-                    name: 'Parkjju'
+                    name: 'Parkjju',
                 },
                 publisher: {
                     '@type': 'Person',
-                    name: 'Parkjju'
+                    name: 'Parkjju',
                 },
-                inLanguage: 'ko-KR'
-            })
+                inLanguage: 'ko-KR',
+            }),
         ],
         [
             'script',
@@ -99,24 +100,25 @@ module.exports = {
                 '@type': 'Blog',
                 name: 'Today I Learned',
                 url: 'https://parkjju.github.io/vue-TIL/',
-                description: '기술 학습 노트 - Swift, iOS development, 알고리즘, React, VuePress 등 개발 관련 지식을 정리한 블로그',
+                description:
+                    '기술 학습 노트 - Swift, iOS development, 알고리즘, React, VuePress 등 개발 관련 지식을 정리한 블로그',
                 author: {
                     '@type': 'Person',
-                    name: 'Parkjju'
+                    name: 'Parkjju',
                 },
                 publisher: {
                     '@type': 'Person',
-                    name: 'Parkjju'
+                    name: 'Parkjju',
                 },
                 mainEntityOfPage: {
                     '@type': 'WebPage',
-                    '@id': 'https://parkjju.github.io/vue-TIL/'
+                    '@id': 'https://parkjju.github.io/vue-TIL/',
                 },
                 potentialAction: {
                     '@type': 'ReadAction',
-                    target: 'https://parkjju.github.io/vue-TIL/'
-                }
-            })
+                    target: 'https://parkjju.github.io/vue-TIL/',
+                },
+            }),
         ],
     ],
 
@@ -291,6 +293,12 @@ module.exports = {
                         'swiftuiOpen/240201-4',
                         'swiftuiOpen/240205-5',
                     ],
+                    sidebarDepth: 2,
+                },
+                {
+                    title: 'Java',
+                    collapsable: true,
+                    children: ['java/260212-basic', 'java/260212-basic2'],
                     sidebarDepth: 2,
                 },
                 {
