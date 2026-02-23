@@ -298,7 +298,11 @@ module.exports = {
                 {
                     title: 'Java',
                     collapsable: true,
-                    children: ['java/260212-basic', 'java/260212-basic2'],
+                    children: [
+                        'java/260212-basic',
+                        'java/260212-basic2',
+                        'java/260223-intermediate',
+                    ],
                     sidebarDepth: 2,
                 },
                 {
