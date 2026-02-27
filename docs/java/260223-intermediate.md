@@ -403,6 +403,112 @@ class Outer {
     -   자동차의 내부 클래스로 엔진을 정의하는 것이 자연스럽다.
 -   내부 클래스에서 외부 클래스 인스턴스를 참조하려면 `OuterClassName.this.property` 형태로 참조하면 된다.
 
+### 지역 클래스
+
+-   지역 클래스는 다음과 같은 특징을 갖는다.
+    -   자신의 인스턴스 변수에 접근할 수 있다.
+    -   자신이 속한 코드블럭 내의 지역 변수에 접근할 수 있다.
+    -   자신이 속한 코드블럭 파라미터에 접근할 수 있다.
+    -   **바깥 클래스의 인스턴스 멤버에도 접근할 수 있다.**
+
+:::tip 지역변수 캡처
+
+-
+
+```java
+public class LocalOuterV3 {
+    private final int outInstanceVar = 3;
+
+    public Printer process(int paramVar) {
+        int localVar = 1;
+
+        class LocalPrinter implements Printer {
+            final int value = 0;
+
+            @Override
+            public void print() {
+                System.out.println(value);
+                System.out.println(localVar);
+                System.out.println(paramVar);
+                System.out.println(outInstanceVar);
+            }
+        }
+
+        return new LocalPrinter();
+    }
+
+    public static void main(String[] args) {
+        LocalOuterV3 localOuter = new LocalOuterV3();
+        Printer printer = localOuter.process(2);
+        printer.print();
+    }
+}
+```
+
+-   위 코드에서 `LocalPrinter` 지역 클래스 인스턴스의 `print`메서드가 호출될때 paramVar, localVar는 지역변수로서 스택 프레임 해제 이후에 소멸되게 된다.
+-   인스턴스의 생명주기는 길고 지역변수의 생명주기는 짧다.
+-   이러한 차이로 발생하는 참조 문제를 해결하기 위해 자바에서는 **인스턴스 생성 시점에 필요한 지역 변수를 복사하여 인스턴스에 함께 넣어둔다.**
+    -   이러한 과정을 **변수 캡처(Capture)라고** 한다.
+    -   접근이 필요한 지역 변수만 캡처한다.
+-   인스턴스 내에 복사된 지역변수의 값이 함께 포함되게 된다.
+-   위 코드 `main`함수에서 print 메서드를 호출하면 어딘가에 있을 함수 지역변수를 참조하는 것이 아닌 인스턴스 자기 자신에게 복사되어 있는 변수를 출력하는 것이다.
+-   `getDeclaredFields` 함수를 호출하면 아래와 같은 출력 결과를 보여준다.
+
+```java
+final int nested.local.LocalOuterV3$1LocalPrinter.value
+final int nested.local.LocalOuterV3$1LocalPrinter.val$localVar
+final int nested.local.LocalOuterV3$1LocalPrinter.val$paramVar
+```
+
+-   캡처한 지역 변수의 값을 함수 내에서 변경하는 경우 **컴파일 에러가 발생한다.**
+-   런타임에 스택 영역에 존재하는 지역변수 값과 캡처 변수의 값이 서로 달라지는 문제가 발생할 수 있기 때문이다.
+    -   **이를 동기화 문제라고 한다.**
+-
+
+:::
+
+### 익명 클래스
+
+-   익명 클래스는 이름이 없는 지역 클래스이다.
+-   Printer는 인터페이스인데, 코드만 보면 인터페이스를 가지고 인스턴스를 생성하는 것처럼 보인다.
+-   이는 사실 Printer 인터페이스를 구현한 익명클래스 인스턴스를 생성하는 것이다.
+-   익명 클래스는 **부모 클래스를 상속 받거나, 인터페이스를 구현해야 한다.**
+-   `getClass`로 클래스명을 출력해보면 `class nested.local.LocalOuterV3$1`와 같이 `바깥클래스명 + $ + 넘버링` 구조로 네이밍된다.
+
+```java
+public void process(int paramVar) {
+    int localVar = 1;
+
+    Printer printer = new Printer() {
+        int value = 0;
+
+        @Override
+        public void print() {
+            System.out.println(value);
+        }
+    };
+
+    printer.print();
+}
+```
+
+-   지역 클래스가 일회성으로 사용되는 경우나 간단한 구현을 제공할때 사용한다.
+-   **유사한 역할을 하는 서로 다른 코드 조각을 하나의 인터페이스로 묶어 일회성으로 제공할때 사용한다.**
+-   익명 클래스의 인스턴스는 생성 후 참조값을 인라인 파라미터로 전달 가능하다.
+
+```java
+// hello 함수 파라미터로 즉시 전달
+hello(
+    new Process() {
+        @Override
+        public void run() {
+            int randomValue = new Random().nextInt(6) + 1;
+            System.out.println(randomValue);
+        }
+    }
+);
+```
+
 ## Reference
 
 -   [F-lab 자바의 스트링 풀(String Pool) 이해하기](https://f-lab.kr/insight/understanding-java-string-pool)
