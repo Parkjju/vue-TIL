@@ -509,6 +509,102 @@ hello(
 );
 ```
 
+## 예외처리
+
+-   자바 예외처리 키워드는 `try`, `catch`, `finally`, `throw`, `throws`가 있다.
+-   자바에서 예외처리를 위한 객체들도 여러 타입으로 존재한다.
+    -   `Object`: 자바 모든 객체의 최상위 객체이므로 예외의 최상위 객체도 Object이다.
+    -   `Throwable`: 최상위 예외이며, 하위에 `Exception`과 `Error`가 존재한다.
+        -   `Error`: 메모리 부족 및 심각한 시스템 오류로 인해 애플리케이션에서 자체 복구가 불가능한 시스템 예외이다.
+        -   `Exception`: 체크 예외로, 애플리케이션에서 사용할 수 있는 실질적 최상위 예외이다.
+            -   `Exception`의 하위 예외들 중 `RuntimeException`을 제외하고는 모두 컴파일러가 체크하는 예외이다.
+            -   `RuntimeException`: 런타임 예외 / 언체크 예외
+
+```java
+public class MyCheckedException extends Exception {
+    public MyCheckedException(String message) {
+        super(message);
+    }
+}
+```
+
+-   예외 클래스를 만들려면 예외를 상속받으면 된다.
+-   `throw 예외`는 새로운 예외를 발생시키는 키워드이다. 예외도 객체이므로 `throw new MyException()`과 같이 생성 후 던진다.
+-   `throws 예외`는 발생시킨 예외를 밖으로 던질 때 사용한다. `public void call() throws MyCheckedException`과 같이 함수 시그니처에 사용한다.
+
+```java
+public void callCatch() {
+    try {
+        client.call();
+    } catch (MyCheckedException e) {
+        System.out.println("예외처리" + e.getMessage());
+    }
+    System.out.println("정상");
+}
+```
+
+-   `Exception`을 상속받은 예외는 **체크 예외이다.**
+-   `RuntimeException`을 상속받으면 **언체크 예외이다.**
+-   위 코드에서 `MyCheckedException`으로 에러를 캐치하지 않고 `Exception`으로 캐치해도 다형성이 적용되어 예외를 잡을 수 있다.
+
+```java
+try {
+    client.call();
+} catch (Exception e) {
+    System.out.println("예외처리" + e.getMessage());
+}
+```
+
+-   언체크 예외는 예외를 잡아서 처리하지 않아도 `throws` 키워드를 생략할 수 있다.
+    -   명시적인 throws 선언 없이 에러를 잡지 않으면 자동으로 밖으로 던진다.
+    -   상위 호출자에서 잡아서 처리하는 것도 가능하다.
+-   만약 `catch (Exception e)` 외에 런타임 예외 등 고려되지 못한 예외가 존재하면 해당 함수 스코프를 즉시 벗어나 상위 스코프로 예외를 던지게 된다.
+    -   이런 경우 리소스 정리 등 반드시 수행되어야 할 부수 동작들이 수행되지 못할 경우가 존재한다.
+    -   어떤 경우에라도 실행이 되어야 할 코드는 `try` ~ `catch` ~ `finally`로, 반드시 호출할 마무리 흐름으로 구성할 수 있다.
+-   하위 예외들이 여러개이고, 이들을 한번에 묶어서 잡는것도 가능하다. `|` 연산으로 가능하다.
+
+```java
+try {
+    //..
+} catch (MyException1 | MyExeption2) {
+    // ..
+} finally {
+    client.disconnect();
+}
+```
+
+-   개발 과정에서 의존성들이 추가되어 라이브러리 자체 및 외부 환경에 의한 예외들을 처리해야 하는 경우, 체크 예외로 처리하게 되면 모든 상위 스코프에서 Exception 캐치를 명시해줘야 하는 번거로움이 존재한다.
+    -   이 경우 언체크 예외를 활용하여 실제로 언체크 예외를 잡아 처리해야할 스코프에서만 코드를 작성해두면 된다.
+-   서비스 자체 에러 발생시, 공통 에러처리 모듈에서 사용자에게 에러 메시지만 응답으로 준 뒤 로그만 남겨두면 된다.
+    -   실무에서는 로그 라이브러리를 사용하여 파일 로그로 기록하는게 일반적이다.
+
+:::tip try-with-resources
+
+-   try에서 외부 자원을 사용하고, try 사용을 마친 뒤 외부 자원을 마치는 패턴이 반복되어 자바 7 이후로 try-with-resources 편의기능을 도입했다.
+-   이 기능을 사용하려면 `AutoCloseable` 인터페이스를 구현해야 한다.
+
+```java
+public interface AutoCloseable {
+    void close() throws Exception;
+}
+
+// ..
+public class NetworkingClient implements AutoCloseable {
+    //..
+
+    @Override
+    void close() {
+        // 리소스 반납
+    }
+}
+```
+
+-   위와 같이 `AutoCloseable` 인터페이스를 구현하며 `close`함수를 정의해두면 try를 마친 뒤 자동으로 `close`메서드를 호출해준다.
+-   **명시적인 close 호출이 불필요하다.**
+    -   자원 반납 및 리소스 닫음에 대한 보장을 해주기 때문에 `finally` 블록을 실수로 적지 않은 것에 대한 휴먼에러를 없애준다.
+
+:::
+
 ## Reference
 
 -   [F-lab 자바의 스트링 풀(String Pool) 이해하기](https://f-lab.kr/insight/understanding-java-string-pool)
