@@ -332,6 +332,81 @@ public static void main(String[] args) {
 
 :::
 
+## 동기화
+
+-   여러 자원이 접근하는 자원을 공유 자원이라고 한다.
+-   자바에서는 공유 자원, 임계 영역을 보호하기 위해 `synchronized`라는 키워드를 제공한다.
+-   **자바에서는 모든 객체(인스턴스) 내에 자신만의 락을 가지고 있다.**
+    -   이를 모니터 락(monitor lock)이라고도 부른다.
+-   멀티 스레딩 환경에서 `synchronized`가 동작하는 과정은 아래와 같다. 1번 스레드가 먼저 실행된다고 가정한다.
+    1. `synchronized` 키워드가 있는 메서드를 먼저 호출한다.
+    2. synchronized 메서드 호출 후 인스턴스의 락을 획득한다.
+    3. 2번 스레드에서 동일한 메서드를 호출한다.
+    4. 인스턴스에 락이 없으므로 락 획득 전까지 해당 스레드는 `BLOKCED` 상태로 대기한다.
+        - 락 획득 전까지 계속 대기하며, CPU 실행 스케줄링에 포함되지 않는다.
+    5. t1 스레드 메서드 호출을 마치면 락을 반납한다.
+    6. t2 스레드는 자동으로 락을 획득한다. `BLOCKED` -> `RUNNABLE` 상태로 바뀐 뒤 다시 코드를 실행한다.
+-   락 획득의 순서는 보장되지 않는다. 코드 호출 순서도 상관없다.
+-   락 기반으로 동시성 문제가 해결되기 때문에, `volatile`을 사용하지 않아도 된다.
+
+```java
+public synchronized boolean withdraw {
+    //..
+}
+```
+
+-   메서드 내에서 여러 동작을 수행하는데, 해당 메서드 내의 임계 영역은 메서드 전체가 아닐 수 있다.
+-   이 경우 메서드 전체를 `synchronized`로 감싸는 것은 성능상 비효율적이다.
+-   이러한 문제를 해결하기 위해 `synchronized` 키워드를 메서드 단위가 아닌 **특정 코드 블럭에 최적화하여 적용할 수 있는 기능을 제공한다.**
+
+```java
+public boolean withdraw(int amount) {
+    synchronized(this) {
+        // 1. 검증
+        // 2. 출금
+    }
+
+    // 3. 로깅
+    return true
+}
+```
+
+-   `synchronized` 블럭 선언을 통해 임계 영역을 코드 블럭으로 지정할 수 있다.
+-   **코드블럭의 `this`가 들어갈 파라미터는 락을 획득할 인스턴스에 대한 참조값이다.**
+-   메서드 내에서 synchronized 블럭을 만나면 나머지 실행되지 않은 코드는 해당 블럭 실행을 모두 마친 뒤 실행된다.
+
+```java
+void doSomething() {
+    System.out.println("A");         // 1. 먼저 실행
+
+    synchronized (lock) {
+        System.out.println("B");     // 2. 락 획득 후 실행
+        System.out.println("C");     // 3. 블럭 내부
+    }                                //    ← 여기서 락 해제
+
+    System.out.println("D");         // 4. 블럭 끝난 후 실행
+}
+```
+
+-   지역변수는 절대 다른 스레드와 공유되지 않으므로 동기화에 대한 걱정을 하지 않아도 된다.
+
+## 고급 동기화
+
+-   `synchronized`는 자바 1.0부터 제공되는 편리한 기능이지만 단점들이 존재한다.
+    1. 무한 대기: `BLOKCED`상태의 스레드는 락이 풀릴 때까지 무한 대기한다.
+    2. 공정성: 락이 돌아왔을때 `BLOKCED`스레드들이 여러개라면 어떤 스레드가 락을 획득할 지 알 수 없다.
+
+### LockSupport
+
+-   LockSupport는 스레드를 `WAITING` 상태로 변경한다.
+-   WAITING 상태는 누군가 깨우기 전까지 계속 대기하며, CPU 실행 스케줄링에 들어가지 않는다.
+-   LockSupport의 대표적 기능은 다음과 같다.
+    1. `park()`: 스레드를 WAITING 상태로 변경한다.
+    2. `parkNanos(nanos)`: 스레드를 나노초 동안만 `TIMED_WAITING`상태로 변경한다. 나노초가 지나면 RUNNABLE 상태로 변경한다.
+    3. `unpark(thread)`: WAITING 상태의 대상 스레드를 `RUNNABLE` 상태로 변경한다.
+-   park 메서드는 파라미터가 필요없고, unpark 메서드는 파라미터가 필요하다.
+    -   WAITING중인 스레드는 자신의 코드를 실행할 수 없기 때문에 외부의 도움이 필요하다.
+
 ## Reference
 
 -   [Guide to the Volatile Keyword in Java](https://www.baeldung.com/java-volatile)
