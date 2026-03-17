@@ -406,6 +406,195 @@ void doSomething() {
     3. `unpark(thread)`: WAITING 상태의 대상 스레드를 `RUNNABLE` 상태로 변경한다.
 -   park 메서드는 파라미터가 필요없고, unpark 메서드는 파라미터가 필요하다.
     -   WAITING중인 스레드는 자신의 코드를 실행할 수 없기 때문에 외부의 도움이 필요하다.
+-   `unpark`를 통해 스레드를 깨우거나 `interrupt`를 통해서도 스레드를 깨울 수 있다. (`thread1.interrupt()`)
+
+:::tip 밀리초 / 나노초
+
+-   1밀리초 = 1,000,000ns
+-   2초 = 2,000,000,000ns
+
+:::
+
+-   `BLOCKED` 상태는 인터럽트가 걸려도 대기 상태를 빠져나올 수 없다.
+-   `WAITING`, `TIMED_WAITING` 상태는 인터럽트가 걸리면 대기 상태를 빠져나와 RUNNABLE 상태로 전환된다.
+-   `BLOCKED`, `WAITING`, `TIMED_WAITING` 상태들은 모두 스레드가 대기하며 실행 스케줄링에 들어가지 않는다.
+    -   `BLOCKED` 상태는 `synchronized`에서만 사용하는 특별한 대기 상태이다
+    -   `WAITING`, `TIMED_WAITING` 상태는 범용적으로 활용 가능한 대기 상태이다.
+-   `LockSupport`는 저수준 API이다.
+    -   멀티 스레딩 환경에서 동시에 실행된 스레드가 여러개일때, 특정 한개의 스레드만 락을 가질 수 있도록 해야한다.
+    -   나머지 9개 스레드는 대기해야 하는데, 어떤 스레드가 대기 중인지 알아야 한다.
+    -   어떤 스레드를 깨울지에 대한 우선순위 결정도 필요하다.
+    -   `ReentrantLock`이 위의 한계를 해결해준다.
+
+### ReentrantLock
+
+-   자바는 1.5부터 `syncrhonized`와 BLOCKED 상태를 통한 임계 영역 관리의 한계를 극복하기 위해 자바 1.5부터 `Lock` 인터페이스와 `ReentrantLock` 구현체를 제공한다.
+    -   스레드 무한 대기
+    -   스레드 락 획득 우선순위 공정성
+
+```java
+public interface Lock {
+    void lock();
+    void lockInterruptibly() throws InterruptedException;
+    boolean tryLock();
+    boolean tryLock(long time, TimeUnit unit) throws InterruptedException;
+    void unlock();
+    Condition newCondition();
+}
+```
+
+-   Lock 인터페이스는 위와 같다. 해당 인터페이스에 대한 대표적인 구현체로 `ReentrantLock`이 존재한다.
+    -   `void lock()`: 락을 획득한다. 다른 스레드가 이미 락을 획득했다면 락이 풀릴때까지 스레드는 대기한다(**WAITING**). **해당 메서드는 인터럽트에 응답하지 않는다.**
+        -   WAITING 상태이기때문에 인터럽트를 걸어서 RUNNABLE로 바꿀 수는 있지만, 내부적으로 아주 짧은 시간 내에 lock 메서드 내에서 해당 스레드를 다시 WAITING 상태로 강제로 변경한다.
+    -   `void lockInterruptibly()`: 락 획득을 시도하되, 다른 스레드가 인터럽트 할 수 있도록 한다. 대기 중 인터럽트 발생 시 `InterruptedException`이 발생하며 락 획득을 포기한다.
+    -   `boolean tryLock()`: 락 획득을 시도하고, 즉시 성공 여부를 반환한다. 다른 스레드가 이미 락을 획득했다면 `false`를 리턴한다. 락을 획득했다면 `true`를 리턴한다.
+    -   `boolean tryLock(long time, TimeUnit unit)`: 주어진 시간 동안 락 획득을 시도한다. 해당 시간이 지나도 락을 획득하지 못하면 `false`를 반환한다. 대기 중 인터럽트가 발생하면 `InterruptedException`이 발생하며 락 획득을 포기한다.
+    -   `void unlock()`: 락을 해제한다. 락을 획득한 스레드가 호출해야 하며 이를 지키지 않으면 `IllegalMonitorStateException`이 발생할 수 있다.
+    -   `Condition newCondition()`: `Condition` 객체를 생성하여 반환한다. 이는 락과 결합되어 사용되며 스레드가 특정 조건을 기다리거나 신호를 받을 수 있도록 한다.
+        -   `Object` 클래스의 wait, notify, notifyAll 메서드와 유사한 역할을 한다.
+-   `ReentrantLock` 구현체는 스레드가 공정하게 락을 얻을 수 있는 모드를 제공한다.
+    -   `Non-fair mode`: 비공정 모드는 ReentrantLock의 기본 모드이다.
+        -   성능 우선: 락을 획득하는 속도가 빠르다.
+        -   선점 가능: 새로운 스레드가 기존 대기 스레드보다 먼저 락 획득이 가능하다.
+        -   기아 현상 (Starvation): 특정 스레드가 계속해서 락을 획득하지 못할 수 있다.
+    -   `Fair mode`: ReentrantLock 생성자 파라미터에 true를 전달하면 된다.
+        -   공정성 보장: 대기 큐에서 먼저 대기한 스레드가 락을 먼저 획득한다.
+        -   기아 현상 방지: 모든 스레드가 언젠가 락을 획득할 수 있게 보장된다.
+        -   성능 저하: 락을 획득하는 속도가 느려질 수 있다.
+
+```java
+public class ReentrantLockEx {
+    // 비공정 모드 락
+    private final Lock noFairLock = new ReentrantLock();
+
+    // 공정 모드 락
+    private final Lock fairLock = new ReentrantLock(true);
+}
+```
+
+-   ReentrantLock은 객체 내부의 모니터 락이 아니다.
+
+## 생산자 소비자 문제
+
+-   생산자 소비자 문제는 멀티스레드 프로그래밍에서 자주 등장하는 동시성 문제 중 하나이다.
+-   여러 스레드가 동시에 데이터를 생산하고 소비하는 상황을 다룬다.
+    -   생산자(Producer): 데이터를 생성하는 역할을 한다. 파일에서 데이터를 읽어오거나 네트워크에서 데이터를 받아오는 스레드 등
+    -   소비자(Consumer): 생성된 데이터를 사용하는 역할을 한다. 데이터를 처리하거나 저장하는 스레드
+    -   버퍼(Buffer): 생산자가 생성한 데이터를 일시적으로 저장하는 공간이다.
+        -   이 버퍼는 한정된 크기를 가진다. 버퍼를 통해 생산자와 소비자가 데이터를 주고받는다.
+-   생산자가 너무 빠를때: 버퍼가 가득 차서 데이터를 넣을 수 없을때, 버퍼에 빈 공간이 생길때까지 대기해야 한다.
+-   소비자가 너무 빠를때: 버퍼에 새로운 데이터가 들어올 때까지 기다려야 한다.
+-   이러한 문제를 **생산자 소비자 문제(producer-consumer problem), 또는 한정된 버퍼 문제(bounded-buffer problem)**라고 부른다.
+-   아래 상황을 가정해보자.
+    1. 버퍼 크기는 2로 고정이다.
+    2. 생산자가 생성할 데이터는 총 3개이다.
+    3. 소비자가 데이터를 처리할 수 있는 스레드는 3개이다.
+    4. 생산자가 데이터 2개를 먼저 처리한다. 버퍼에 2개의 데이터가 push된다.
+    5. 나머지 한개의 처리되지 못한 데이터는 버퍼 슬롯이 확보되기 전까지 Lock을 잡고 대기한다.
+    6. 소비자 스레드에서 데이터 처리를 위해 버퍼에 접근한다.
+    7. 임계 영역 접근을 위한 락을 생산자 스레드에서 보유중이다.
+    8. 모든 소비자 락은 BLOCKED 상태가 되어버린다.
+-   DeadLock 문제 해결을 위해 잡고 있는 Lock을 잠깐 양보하면 문제가 해결된다.
+-   `Object.wait()`, `Object.notify()`메서드들을 사용하면 위 문제를 해결할 수 있다.
+    -   `Object.wait()`: **현재 스레드가 가진 락을 반납하고 대기한다.(WAITING)**
+        -   현재 스레드가 `synchronized` 블록 또는 메서드에서 락을 소유하고 있을때만 호출 가능하다.
+    -   `Object.notify()`: 대기 중인 스레드 중 하나를 깨운다.
+        -   `synchronized`블록이나 메서드에서 호출되어야 한다. 대기 중인 스레드들 중 하나만 깨운다. 깨운 스레드는 락을 다시 획득할 기회를 얻는다.
+    -   `Object.notifyAll()`: 대기 중인 모든 스레드를 깨운다.
+        -   `synchronized` 블록이나 메서드에서 호출되어야 한다. 모든 스레드가 락을 획득할 기회를 얻는다.
+
+:::tip 스레드 대기 집합(wait set)
+
+-   `synchronized` 임계 영역 내에서 `Object.wait()`를 호출하면 스레드는 대기 상태에 들어간다.
+-   위와 같이 대기 상태에 들어간 스레드를 관리하는 것을 대기 집합이라고 한다.
+    -   모든 객체는 각자의 대기 집합을 가지고 있다.
+    -   **대기 집합은 임계 영역 내에 위치한다.**
+
+:::
+
+-   wait / notify 기반으로 생산자 소비자 문제가 어떻게 해결되는지 보자.
+    1. 두개의 데이터 push 후, 나머지 생산자에서 버퍼 부족 문제로 대기해야 하는 상황이다.
+    2. 이때, 해당 스레드에서 wait을 호출하여 **락을 반납한 뒤 대기 집합에 들어간다.**
+    3. 소비자 스레드가 이어서 실행된다.
+    4. 버퍼로부터 데이터를 하나 취하고, notify를 호출하여 스레드 대기 집합의 스레드를 하나 깨운다.
+        - **락은 아직 소비자가 가지고 있는 상태이다.**
+        - **깨어난 생산자 스레드는 `BLOCKED` 상태로 대기한다.**
+    5. 소비자 스레드가 데이터 소비를 완료한 뒤 락을 반납, 임계 영역을 빠져나간다.
+    6. BLOCKED 상태였던 생산자 스레드가 락을 획득하고 `wait()` 이후 코드부터 로직을 수행한다.
+-   만약 생산자 스레드가 아닌 소비자 스레드부터 전체적으로 실행되어, 대기 집합에 소비자 스레드만 존재하게 된 상황을 고려해보자.
+    1. 소비자 스레드 3개 모두 대기 집합에 추가된다.
+    2. 생산자 스레드 데이터 하나가 추가된 후 notify로 소비자 하나를 깨운다.
+    3. 소비자에서 데이터를 소비한 뒤 다른 소비자를 깨운다.
+    4. 이때 버퍼에 데이터가 비어있으므로 락을 반납한 뒤 다시 대기 집합에 들어간다.
+-   이러한 비효율은 생산자, 소비자 모두에게 발생할 수 있다.
+    -   데이터가 꽉차있을때 생산자 스레드를 notify
+    -   데이터가 비어있을때 소비자 스레드를 notify
+-   wait / notify기반으로 어떤 스레드를 깨울 지에 대한 우선순위가 없으면 **스레드 기아 현상**도 발생할 수 있다.
+    -   notifyAll을 사용하면 해결을 할 수는 있다.
+-   생산자 스레드에 기아 현상이 발생했다고 가정하자.
+    -   버퍼에 데이터가 없는 상태에서 notifyAll을 호출한다.
+    -   모든 소비자 스레드는 데이터가 없기 때문에 다시 스레드 대기 집합으로 들어간다.
+    -   이때 남은 생산자 스레드가 데이터를 처리할 수 있게 된다.
+
+## 생산자 소비자 비효율 개선
+
+-   생산자용 소비자용 대기 집합을 서로 나누어 분리하면 비효율 문제를 해결할 수 있다.
+
+### Condition
+
+-   Condition은 `ReentrantLock`을 사용하는 스레드가 대기하는 스레드 대기 공간이다.
+-   `lock.newCondition()`메서드를 호출하면 스레드 대기 공간이 만들어진다.
+-   `Object.wait()`에서 사용하는 대기 공간은 모든 객체 인스턴스가 기본적으로 가지고 있다.
+-   ReentrantLock을 사용하는 경우 스레드 대기 공간은 Condition으로 직접 만들어야 한다.
+-   관련 함수는 아래와 같다.
+    1. `condition.await()`: `Object.wait`과 유사한 기능이다.
+        - 지정한 condition에 현재 스레드를 WAITING 상태로 보관한다.
+        - 이때 ReentrantLock에서 획득한 락을 반납하고 대기상태로 컨디션에 보관된다.
+    2. `condition.signal()`: `Object.signal`과 유사한 기능이다.
+        - 지정한 condition에서 대기중인 스레드를 하나 깨운다.
+
+```java
+Condition condition = lock.newCondition();
+```
+
+-   `Condition.signal`은 대기중인 스레드 하나를 깨우는데, 일반적으로 Condition 구현은 큐 구조를 사용하기 때문에 FIFO 순서로 스레드를 깨운다.
+    -   `ReentrantLock`을 가지고 있는 스레드가 호출해야 한다.
+-   synchronized 블록 기반에서는 자체적으로 모니터 락을 제공한다.
+    -   임계 영역 관리를 위해 락 대기 집합, 스레드 대기 집합 모두 기본적으로 제공된다.
+-   ReentrantLock은 Lock 인터페이스를 구현한 커스텀 구현체이다.
+    -   임계 영역 관리를 위해 자체 락 대기 큐, 스레드 대기를 위한 Condition이 내부적으로 구현되어 있다.
+    -   모니터 락, synchronized 블록 기반에서의 락 대기 집합 및 스레드 대기 집합과는 별개이다.
+
+### BlockingQueue
+
+-   자바에서는 생산자 소비자 문제, 한정된 버퍼라 불리는 문제를 해결하기 위해 `java.util.concurrent.BlockingQueue`라는 인터페이스 및 구현체들을 제공한다.
+-   `BlockingQueue`는 인터페이스이며, 대표적인 구현체들이 있다.
+    1. `ArrayBlockingQueue`: 배열 기반 구현, 버퍼 크기 고정
+    2. `LinkedBlockingQueue`: 링크 기반 구현, 버퍼 크기를 고정하거나 무한히 사용 가능하다.
+    3. 이 외에 여러가지가 더 존재한다.
+-   데이터 추가: `add()`, `offer()`, `put()`, `offer(타임아웃)`
+    -   버퍼가 꽉 차면 동일 Condition에서 대기하는 기능 제공
+-   데이터 획득: `take()`, `poll(타임아웃)`, `remove(..)`
+    -   버퍼가 비어있으면 동일 Condition에서 대기하는 기능 제공
+-   생산자 측에서 데이터가 꽉 찼거나 비었을때 삽입 및 제거에 대해 어떻게 처리하는 지에 따라 다른 메서드들을 사용하면 된다.
+
+| Operation          | Throws Exception | Special Value | Blocks         | Times Out              |
+| ------------------ | ---------------- | ------------- | -------------- | ---------------------- |
+| **Insert (추가)**  | `add(e)`         | `offer(e)`    | `put(e)`       | `offer(e, time, unit)` |
+| **Remove (제거)**  | `remove()`       | `poll()`      | `take()`       | `poll(time, unit)`     |
+| **Examine (관찰)** | `element()`      | `peek()`      | not applicable | not applicable         |
+
+-   Throws Exception: 대기시 예외
+-   Special Value: 대기시 즉시 반환
+    -   큐가 가득 차면 false 리턴
+    -   큐가 비어있으면 null 반환
+    -   큐의 머리요소 반환, 비어있으면 null
+-   Blocks: 대기
+-   Times Out: 시간 대기
+    -   시간 이후로도 버퍼 확보가 안되면 false
+    -   시간 이후로도 데이터 획득이 안되면 null
+
+## CAS - 동기화와 원자적 연산
 
 ## Reference
 
