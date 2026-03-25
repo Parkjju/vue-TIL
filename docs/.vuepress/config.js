@@ -304,6 +304,7 @@ module.exports = {
                         'java/260223-intermediate',
                         'java/260303-intermediate2',
                         'java/260310-advanced1',
+                        'java/260325-advanced2',
                     ],
                     sidebarDepth: 2,
                 },
