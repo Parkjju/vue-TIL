@@ -596,6 +596,407 @@ Condition condition = lock.newCondition();
 
 ## CAS - 동기화와 원자적 연산
 
+-   원자적 연산(atmonic operation)의 의미는 해당 연산이 더 이상 나눌 수 없는 단위로 수행된다는 것을 의미한다.
+-   원자적 연산은 중단되지 않고, 다른 연산과 간섭없이 완전히 실행되거나 전혀 실행되지 않는 성질을 갖는다.
+-   멀티스레딩 관점에서 원자적 연산이 아닌 경우 `synchonized`, `Lock`등을 사용해서 안전한 임계 영역을 만들어야 한다.
+-   자바는 `AtomicInteger`와 같이 `Integer`연산을 멀티 스레딩 환경에서도 원자적으로 수행할 수 있도록 해주는 클래스를 제공한다.
+    -   `AtomicInteger`, `AtomicLong`, `AtomicBoolean`등 다양한 `AtomicXXX` 클래스를 제공한다.
+-   사실 `AtomicInteger`의 `incrementAndGet()`과 같은 원자적 연산 메서드는 **락을 사용하지 않고 원자적 연산을 만들어 낸다.**
+
+### CAS 연산
+
+-   락 기반 연산에서는 락 데이터 조회, 락 획득, 수행 및 반납 과정이 계속 반복되어 동작이 무겁다.
+-   이런 문제를 해결하기 위해 락을 걸지 않고 원자적 연산을 수행할 수 있다.
+-   이를 CAS(Compare-And-Swap / Compare-And-set) 연산이라 한다.
+    -   락을 사용하지 않기 때문에 락-프리(Lock-Free) 기법이라고 한다.
+-   CAS는 락을 완전히 대체하지는 못하고, 작은 단위의 일부 영역에 적용 가능하다.
+-   Atomic 객체에 대해 `compareAndSet(0, 1)` 연산을 뜯어보면 원자적이지 않은 것으로 보인다.
+    1. 메인 메모리 값 확인
+    2. 해당 값이 현재 0이라면 1로 값을 변경
+-   CAS 연산은 원자적이지 않은 두 연산을 CPU 하드웨어 차원에서 특별히 하나의 원자적 연산으로 묶어 제공하는 기능이다.
+    1. 주소값 내의 값을 확인한다.
+    2. 해당 값이 0이면 1로 변환한다.
+    3. 위 두 동작을 하드웨어 단에서 원자적으로 묶어 처리한다.
+-   `incrementAndGet` 동작 과정은 아래와 같다.
+    1. get
+    2. compareAndSet(current, current + 1)
+    3. if (result == true) { break; } else continue;
+-   위 코드에서 멀티스레딩 환경에서 get으로 얻은 값이 동일하고, 1번 스레드에서 Set이 먼저 이루어지게 되면 2번 스레드에서는 Set에 실패하여 result값이 false가 된다.
+-   값 충돌시 루프를 돌며 락없이 데이터를 안전하게 변경 가능하다.
+-   충돌이 거의 발생하지 않는 시나리오에서는 락을 사용하지 않기 때문에 성능이 좋다. 반대의 경우 반복문을 수행하기 때문에 CPU 자원을 많이 소모한다.
+-   CAS와 락 방식을 비교하면 다음과 같다.
+    -   Lock방식
+        -   비관적(pessimistic) 접근
+        -   다른 스레드가 방해할 것이라고 가정
+        -   데이터 접근 시 항상 락 획득 및 다른 스레드 접근을 막음
+    -   CAS 방식
+        -   낙관적(optimistic) 접근
+        -   락 사용 없이 데이터에 바로 접근
+        -   대부분의 경우 충돌이 없을 것이라 가정
+        -   충돌 발생시 그때 재시도
+-   CAS 기반으로 락을 구현하는 경우 락 해제를 대기하면서 반복문을 통해 확인하게 된다.
+    -   이 모습이 마치 제자리에서 회전(spin)하는 것처럼 보여, **스핀 락**이라고도 부른다.
+    -   스핀 대기(spin-wait), 바쁜 대기(busy-wait)이라고도 한다.
+-   위와 같은 스핀락 방식은 **CPU 연산이 매우 짧을때 사용해야 효율적이다.**
+
+## 동시성 컬렉션
+
+-   자바에서 하는 컬렉션 프레임워크들은 기본적으로 스레드 세이프하지 않다.
+-   `ArrayList`와 같은 자료구조에 append 연산을 수행한다고 가정해보면, 연산이 원자적이지 않다.
+    -   내부 배열에 데이터를 추가해야 하고, size값도 1 증가시켜야 한다.
+    -   size값을 증가시키는 것 자체도 원자적이지 않다.
+-   필요한 메서드에서 `synchronized`와 같은 키워드를 추가하여 임계 영역 접근에 대한 보호를 할 수 있다.
+
+### 프록시(Proxy)
+
+-   만약 ArrayList를 새로 구현한 SyncArrayList를 구현했다고 할때, ArrayList에서의 구현이 변경된 경우 SyncArrayList에도 변경사항을 반영해줘야 한다.
+-   기존 코드를 그대로 사용하면서 `synchronized`기능만 멀티스레드 상황에 동기화가 필요할때만 추가하려면 **프록시를 사용해야 한다.**
+-   변경 시 아래와 같은 구조를 갖게 된다.
+    -   변경 전: 클라이언트 -> ArrayList
+    -   변경 후: 클라이언트 -> SyncProxyArrayList -> ArrayList
+    -   전체 코드를 그대로 가져다 사용하는 것이 아닌 필요한 구현 대상만 프록시에 구현해둔 뒤, 프록시가 `ArrayList` 인스턴스를 참조할 수 있도록 구현하면 된다.
+
+```java
+SimpleList arrayList = new ArrayList();
+SimpleList proxyList = new SyncArrayList(arrayList);
+test(proxyList)
+```
+
+-   이때 배열 요소를 조작하는 `test`라는 이름의 함수가 ArrayList와 SyncArrayList의 상위 타입에 의존하도록 하면 된다.
+-   함수 입장에서는 내부 코드 구현에 상관없이 호출하고, 전달된 인스턴스 타입에 따라 별개로 `synchronized` 처리를 하게 될지 런타임에 구분하게 된다.
+    -   `SyncProxyList`의 append라는 함수가 호출된다면 `synchronized`블록으로 처리된 메서드의 append가 호출되고, 내부적으로 원본 ArrayList의 append함수를 한번 더 호출하는 구조로 구현된다.
+
+:::tip 프록시 패턴 사용 목적
+
+-   접근 제어: 실제 객체에 대한 접근을 제한하거나 통제
+-   성능 향상: 실제 객체의 생성 지연시키거나 캐싱하여 성능을 최적화
+-   부가 기능 제공: 실제 객체에 추가정 기능 (로깅, 인증, 동기화) 등을 투명하게 제공 가능
+-   실무에서의 프록시 패턴은 스프링 AOP 기능에서 주로 적용된다.
+
+:::
+
+-   `Collections.synchronizedList(target)`를 사용하면 기존 코드를 유지하면서 필요한 경우에 대해서만 동기화 적용이 가능하다.
+
+```java
+List<String> list = Collections.synchronizedList(new ArrayList<>());
+```
+
+-   내부에서 `SynchronizedRandomAccessList<>(new ArrayList())` 인스턴스를 생성한 뒤 리턴하는데, 생성자 파라미터에 Collections.synchronized 함수에 전달한 객체를 그대로 전달한다.
+-   클라이언트 -> SynchronizedRandomAccessList -> ArrayList로 이어지는 구조가 된다.
+-   synchronized 기반 프록시 사용시 아래와 같은 단점이 있다.
+    -   동기화 오버헤드가 발생한다.
+    -   특정 스레드가 컬렉션을 사용하고 있는 경우 다른 스레드들이 대기해야 한다.
+        -   리스트를 기준으로 Index A 요소에만 락을 걸게되는 것이 아닌 컬렉션 전체에 락을 걸기 때문에 Index B를 참조하려는 다른 스레드도 대기를 해야한다.
+    -   정교한 동기화가 불가능하다.특정 부분 혹은 메서드에 대해서만 선택적 동기화가 가능하다.
+
+### 동시성 컬렉션
+
+-   `java.util.concurrent` 패키지에는 고성능 멀티스레드 환경을 지원하는 다양한 동시성 컬렉션들을 제공한다.
+-   `ConcurrentMap`, `CopyOnWriteArrayList`, `BlockingQueue` 등이 있다.
+    -   내부적으로 다양한 성능 최적화 기법들이 적용되어 있다.
+    -   `synchronized`, `Lock(ReentrantLock)`, `CAS`, 분할 잠금 기술(segmentLock)등 다양한 방법을 사용한다.
+-   List
+    -   `CopyOnWriteArrayList` -> ArrayList의 대안
+-   Set
+    -   `CopyOnWriteArraySet` -> HashSet의 대안
+    -   `ConcurrentSkipListSet` -> TreeSet의 대안 / 정렬 순서 유지 및 Comparator 사용 가능
+-   위와 같이 여러 컬렉션들이 존재한다.
+-   `LinkedHashSet`, `LinkedHashMap`과 같이 입력순서를 유지하는 동시에 멀티스레드 환경에서 사용하는 `Set`, `Map` 구현체는 제공하지 않는다.
+    -   Collections.synchronizedSet과 같은 메서드를 사용해야 한다.
+-   `ArrayBlockingQueue`와 같은 타입들은 다른 스레드를 블록하는 컬렉션이다.
+
+## 스레드 풀과 Executor 프레임워크 1
+
+-   실무에서 스레드를 직접 생성하여 사용시 문제들이 있다.
+    1. 스레드 생성 시간으로 인한 성능저하
+    2. 스레드 관리
+    3. `Runnable` 인터페이스의 불편함
+-   스레드를 직접 생성하는 것은 아래와 같은 이유로 동작이 무겁다.
+    -   메모리 할당: 각 스레드는 자체적으로 호출 스택을 가져야 한다. 호출 스택은 스레드가 실행되는 동안 사용하는 메모리 공간이다. 이를 위한 메모리를 할당해야 한다.
+    -   운영체제 자원 사용: **스레드 생성 작업은 운영체제 커널 수준에서** 이루어진다. **이는 시스템 콜을 통해 처리된다.** 이는 CPU와 메모리 리소스를 소모하는 작업이다.
+    -   운영체제 스케줄러 설정: 새로운 스레드 생성 시 운영체제 스케줄러가 해당 스레드를 관리하고 실행 순서를 조정해야 한다. 이는 운영체제 스케줄링 알고리즘에 따라 추가 오버헤드가 발생할 수 있다.
+    -   일반적으로 스레드 하나는 1MB 이상의 메모리를 사용한다.
+-   스레드 관리 문제
+    -   서버 CPU / 메모리 자원은 한정되어 있기 때문에 무한히 스레드를 만들 수 없다.
+    -   인터럽트 등의 신호를 주고 스레드를 종료하려는 경우 스레드가 객체로서 어딘가에 관리되고 있어야 한다.
+-   Runnable 인터페이스의 불편함
+    -   run 메서드는 반환값이 없다. 스레드 실행 결과를 멤버 변수에 두고 반환시 활용해야 하며 이때 경합 상황에 대한 대응도 추가로 필요할 수 있다.
+    -   체크 예외를 던질 수 없어서 메서드 내부에서 반드시 처리되어야 한다.
+
+```java
+public interface Runnable {
+    void run();
+}
+```
+
+-   스레드 풀이라는 개념을 사용하면 1,2번 문제가 해결된다.
+    -   스레드를 관리하는 스레드 풀에 스레드를 미리 필요한 만큼 만들어둔다.
+    -   스레드는 스레드 풀에서 대기하며 쉰다.
+    -   작업 요청이 오면 이미 만들어진 스레드를 조회하여 해당 스레드로 작업을 처리한다.
+    -   **작업 완료된 스레드는 종료하지 않고 스레드 풀에 다시 반납한다.**
+-   스레드 풀을 직접 구현하기 위해서는 생산자 소비자 문제 및 스레드 상태값 관리 등의 문제가 겹쳐서 복잡해진다.
+-   이러한 문제를 자바의 Executor 프레임워크가 해결해준다.
+    -   스레드 풀 / 스레드 관리 / Runnable 프레임워크 문제점을 해결해준다.
+    -   생산자 소비자 문제까지 해결해주는 도구이다.
+
+## Executor 프레임워크 주요 구성
+
+-   Executor 인터페이스를 살펴보자.
+    -   가장 단순한 작업 실행 인터페이스이다.
+
+```java
+public interface Executor {
+    void execute(Runnable command);
+}
+```
+
+-   ExecutorService 인터페이스도 존재한다.
+
+```java
+public interface ExecutorService extends Executor, AutoCloseable {
+    <T> Future<T> submit(Callable<T> task);
+
+    @Override
+    default void close() { ... }
+}
+```
+
+-   `ExecutorService` 인터페이스의 기본 구현체는 `ThreadPoolExecutor`이다.
+
+## ThreadPoolExecutor
+
+-   `ThreadPoolExecutor(ExecutorService)`는 크게 2가지 요소로 구성되어 있다.
+    -   스레드 풀: 스레드 관리
+    -   `BlockingQueue`: 작업들을 보관한다. / 생산자 소비자 문제를 해결하기 위해 단순 큐가 아닌 `BlockingQueue`를 사용한다.
+    -   생산자: `es.execute(작업)`을 호출하면 BlockingQueue에 작업을 보관한다.
+    -   소비자: 스레드 풀에 있는 스레드가 소비자이다.
+-   ThreadPoolExecutor 생성자는 다음 속성들을 사용한다.
+    -   `corePoolSize`: 스레드 풀에서 관리되는 기본 스레드 수
+    -   `maximumPoolSize`: 스레드 풀에서 관리되는 최대 스레드 수. 처리할 작업이 많아지는 경우 corePoolSize보다 스레드를 더 생성할 수 있다.
+    -   `keepAliveTime`, `TimeUnit unit`: 기본 스레드 수를 초과하여 만들어진 스레드가 생존할 수 있는 대기시간.
+        -   해당 시간동안 처리할 작업이 없으면 제거됨
+    -   `BlockingQueue workQueue`: 작업 보관을 위한 블로킹 큐
+-   프로그램 실행 순서는 다음과 같다.
+    1. corePoolSize와 maximumPoolSize를 각각 2로 지정하여 스레드 풀을 생성한다.
+        - corePoolSize는 maximumPoolSize를 넘어설 수 없다.
+    2. 작업들 4개를 ThreadExecutor를 통해 배치한다.
+    3. **초기 상태에서는 스레드를 풀에 만들어놓지 않는다.**
+    4. corePoolSize만큼만 스레드를 차례로 생성한다.
+        - 작업 1이 들어오면 하나를 생성하고, 작업 2가 들어오면 하나를 더 생성하는 구조이다.
+        - 해당 갯수만큼 스레드가 생성되고 나면 이후부터는 스레드를 더 생성하지 않고 재사용하게 된다.
+    5. 작업을 스레드에 배치할때 스레드 풀의 스레드는 밖으로 나오는게 아니라 **스레드의 상태가 바뀐다.**
+    6. 스레드 작업 권한 반납시 **WAITING 상태로 스레드풀에 대기한다.**
+    7. 작업 완료시 ThreadPoolExecutor의 `close()` 메서드를 호출한다.
+    8. 자바 19 미만 버전에서는 `shutdown()`을 호출한다.
+
+:::tip ExecutorService vs ThreadPoolExecutor
+
+```text
+Executor                          (인터페이스 - execute()만 있음)
+└── ExecutorService               (인터페이스 - submit, shutdown 등 추가)
+    └── AbstractExecutorService   (추상 클래스)
+        └── ThreadPoolExecutor    (구현체 - 실제 스레드풀 로직)
+            └── ScheduledThreadPoolExecutor (주기적 실행 추가)
+```
+
+:::
+
+-   만약 응답시간이 중요한 서버인 경우 스레드 풀에 스레드들을 미리 생성해둘 수도 있다.
+-   `ThreadPoolExecutor.prestartAllCoreThreads()`를 호출하면 기본 스레드를 미리 생성할 수 있다.
+    -   ThreadPoolExecutor에만 구현되어 있고, ExecutorService에는 없다.
+
+```java
+ExecutorService es = Executors.newFixedThreadPool();
+
+ThreadPoolExecutor poolExecutor = (ThreadPoolExecutor) es;
+poolExecutor.prestartAllCoreThreads();
+```
+
+## Callable과 Future
+
+-   `run` 메서드는 리턴값이 없다. 실행결과를 얻기 위해서는 멤버 변수를 넣어두고 스레드 종료를 대기해야 한다.
+-   예외를 던질 수 없다.
+-   Executor에서는 이 문제들을 해결하기 위해 Callable과 Future라는 인터페이스를 도입했다.
+
+```java
+public interface Callable<V> {
+    V call() throws Exception;
+}
+```
+
+-   Callable 리턴 타입은 제네릭 V이다.
+-   `throws Exception`도 함께 선언되어 있어 Exception의 모든 하위 예외들을 던질 수 있다.
+
+```java
+ExecutorService es = Executors.newFixedThreadPool(1);
+Future<Integer> future = es.submit(new MyCallable());
+Integer result = future.get();
+es.close();
+
+// ...
+
+static class MyCallable implements Callable<Integer> {
+    @Override
+    public Integer call() {
+        sleep(2000);
+        int value = new Random().nextInt(10);
+        return value;
+    }
+}
+```
+
+-   위와 같은 코드 기반으로 Callable과 Future가 어떻게 동작하는지 확인해보자.
+-   `ExecutorService`의 `submit` 메서드를 통해 `Callable`을 작업으로 전달한다.
+-   스레드 풀의 스레드 중 하나가 해당 `Callable` 작업을 실행하고, 작업 결과는 `Future` 인터페이스를 통해 반환된다.
+-   `future.get()`메서드를 호출하면 `Callable` 인터페이스의 `call` 메서드 반환 결과를 받을 수 있다.
+    -   `get()`메서드는 `InterruptedException`, `ExecutionException` 체크 예외를 던진다.
+-   `Future`는 전달한 Callable 작업의 미래를 담고 있다.
+-   Future에 작업 결과가 담기는 과정은 다음과 같다.
+    1. submit 메서드를 호출한다.
+    2. `ExecutorService`에서 전달된 태스크의 미래 결과를 알 수 있는 `Future` 객체를 생성한다.
+        - Future 인터페이스 구현체는 `FutureTask`이며, 해당 구현체는 `Runnable`도 함께 구현하고 있어서 `run`메서드를 포함한다.
+    3. 생성한 Future 객체 내에 태스크의 인스턴스를 보관한다.
+    4. Future는 태스크 작업 완료 여부와 작업 결과값을 가진다.
+    5. Future로 래핑된 태스크가 BlockingQueue에 담긴다.
+    6. 작업 전달시 생성된 Future는 **submit 이후 즉시 반환된다.**
+    7. `ExecutorService`에서 태스크를 꺼내어 스레드 풀 여유 스레드가 작업을 시작한다.
+    8. 호출 단에서 `future.get()` 메서드를 호출한다.
+        - submit이후 스레드 대기상태가 되는 것이 아니라 Future를 즉시 반환하기 때문에 future.get 메서드 호출이 가능하다.
+    9. 스레드는 run 메서드를 내부적으로 호출하고, 해당 메서드는 태스크의 `call` 메서드를 호출하여 결과를 받아 처리한다.
+    10. 작업 결과를 반환받는다.
+-   `future.get` 메서드를 호출했을때 작업 완료 여부에 따라 동작이 달라진다.
+    -   완료 상태일때: `Future`에 결과도 포함한다. **요청 스레드는 대기하지 않고 값을 즉시 반환받는다.**
+    -   미완료 상태일때: 태스크가 수행되지 않았거나 수행 중이라는 의미이다. 이때 요청 스레드는 `WAITING` 대기한다.
+        -   작업이 완료되면 요청스레드를 깨우고, 요청 스레드는 `RUNNABLE` 상태로 변환된다.
+-   `Thread.join`과 같은 메서드를 사용하면서 스레드를 대기시킬 필요가 없어진다.
+    -   전체 코드가 직관적으로 변하게 된다.
+-   **비동기 작업 자체는 submit이후 스레드 풀 여유에 따라 작업 배치가 즉시 이루어진다.**
+    -   get 메서드는 요청 스레드를 WAITING 시키면서까지 작업 결과를 받아야만 할때 사용하면 된다.
+
+:::warning Future 제대로 활용하기
+
+-   여러 비동기 작업들을 처리해야 할때, submit즉시 get을 같은 스레드에서 바로바로 호출하는 것은 비효율적이다.
+-   다른 작업들에 대해서도 `submit` 호출을 해두어 블로킹 큐에 작업 배치를 해두고 get을 하나씩 호출해야 병렬적으로 작업을 의미있게 처리할 수 있게 된다.
+
+```java
+Future<Integer> future1 = es.submit(task1);
+Integer sum1 = future1.get(); // 대기 시작
+
+Future<Integer> future2 = es.submit(task2);
+Integer sum2 = future2.get(); // 대기 시작
+// 각 비동기 작업 소요시간만큼 정직하게 누적됨
+```
+
+:::
+
+-   Future submit시 `Callable`이 아닌 `Runnable` 작업을 전달해도 된다.
+    -   Runnable은 반환값이 없기 때문에 `future.get()`을 호출해도 null을 반환한다.
+
+## Future 인터페이스 및 메서드
+
+-   `boolean cancel(boolean mayInterruptIfRunning)`
+    -   기능: 아직 완료되지 않은 작업을 취소한다.
+    -   파라미터: `mayInterruptIfRunning`
+        -   `cancel(true)`: Future를 취소 상태로 변경한다.
+            -   작업이 실행중이라면 `Thread.interrupt()`를 호출하여 작업을 중단한다.
+        -   `cancel(false)`: Future를 취소 상태로 변경한다.
+            -   실행중인 작업을 중단하지는 않는다.
+    -   반환값: 작업이 취소된경우 `true`, 완료되었거나 취소 불가능한 경우 `false`
+    -   설명: 취소상태에서 `Future.get()`메서드 호출시 `CancellationException` 런타임 예외가 발생한다.
+-   `boolean isCancelled()`
+    -   `cancel()`메서드에 의해 취소된 경우 `true`를 반환한다.
+-   `boolean isDone()`
+    -   작업이 완료되었는지 여부를 확인한다. 완료, 취소, 예외 발생 후 종료된 경우 모두 true를 반환한다.
+-   `State state()`
+    -   Future 상태를 반환하고, 자바 19 이후부터 지원한다.
+        -   `RUNNING`: 작업 실행중
+        -   `SUCCESS`: 성공 완료
+        -   `FAILED`: 실패 완료
+        -   `CANCELED`: 취소 완료
+-   `V get()`
+    -   작업 완료까지 대기하고, 완료시 결과를 반환한다.
+    -   예외
+        -   `InterruptedException`: 대기중인 현재 스레드가 인터럽트된 경우 발생
+        -   `ExecutionException`: 작업 계산 중 예외가 발생한 경우
+-   `V get(long timeout, TimeUnit unit)`
+    -   `get()` 메서드와 동일하지만 시간 초과 시 예외를 발생시킨다.
+    -   `timeout`은 대기할 최대 시간, `unit`은 타임아웃 매개변수의 시간 단위
+    -   예외
+        -   InterruptedExeception, ExecutionException은 동일하다.
+        -   대기 시간 초과 시 `TimeoutException`이 발생한다.
+    -   **get 메서드는 작업 결과뿐 아니라 처리 과정에서 발생한 예외도 담아둔다.**
+    -   요청 스레드에서 `get` 메서드 호출 시 Future가 FAILED 상태라면 `ExecutionException`을 던진다.
+    -   에러를 잡아 `e.getCause()`를 호출하면 작업에서 발생한 원본 예외를 받을 수 있다.
+
+### ExecutorService 작업 컬렉션 처리
+
+-   `ExecutorService`는 여러 작업을 한번에 처리하는 `invokeAll`, `invokeAny` 메서드를 제공한다.
+-   `<T> List<Future<T>> invokeAll(Coolection<? extends Callable<T>> tasks) throws InterruptedException`
+    -   모든 `Callable` 작업을 제출하고 모든 작업 완료까지 대기한다.
+    -   timeout을 받는 버전도 있다.
+-   `<T> List<Future<T>> invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException`
+    -   컬렉션에서 하나의 Callable 작업이 완료될 때까지 기다리고 가장 먼저 완료된 작업 결과를 반환한다.
+    -   완료되지 않은 나머지 작업은 인터럽트를 통해 취소한다.
+    -   이 역시 timeout을 받는 버전도 있다.
+
+## ExecutorService 우아한 종료
+
+-   서버 업데이트로 인해 서버 재시작을 해야하낟.
+-   고객 주문 처리 과정에서 재시작된다면 주문이 제대로 진행되지 못할 것이다.
+-   **새로운 요청 주문은 막고, 진행중인 주문은 모두 완료한 뒤 서버를 재시작하는 것이 가장 바람직하다.**
+    -   위와 같이 문제없이 우아하게 종료하는 방식을 `graceful shutdown`이라고 한다.
+
+### 서비스 종료 메서드
+
+1. `void shutdown()`
+    - 새로운 작업을 받지 않고, 이미 제출된 작업을 모두 마무리한 뒤 종료한다.
+    - 논 블로킹 메서드이다.
+2. `List<Runnable> shutdownNow()`
+    - 실행 중 작업을 중단하고, 대기 중 작업을 반환하며 즉시 종료한다.
+    - 실행 중 작업을 중단하기 위해 인터럽트를 발생시킨다.
+    - 논 블로킹 메서드이다.
+3. `boolean isShutDown()`
+    - 서비스가 종료되었는지 확인한다.
+4. `boolean isTerminated()`
+    - shutDown, shutDownNow 호출 후 모든 작업이 완료되었는지 확인한다.
+5. `boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException`
+    - 서비스 종료 시 모든 작업이 완료될 때까지 대기한다. 지정 시간까지만 대기한다.
+    - 블로킹 메서드이다.
+6. `close()`
+    - 자바 19부터 지원하는 메서드이며, `shutDown`과 동일하다고 보면 된다.
+    - `shutDown`호출 후 작업이 완료되거나 인터럽트가 발생할때까지 무한정 대기한다.
+    - 호출 스레드에 인터럽트가 발생해도 `shutDownNow`를 호출한다.
+
+## 스레드 풀 전략
+
+-   자바는 자신에게 맞는 스레드 풀 전략을 사용할 수 있다.
+    1. `newSingleThreadPool()`: 단일 스레드 풀 전략
+        - 스레드 풀에 기본 스레드 1개만 사용한다.
+        - BlockingQueue 사이즈에 제한이 없다.
+        - 테스트용과 같이 간단히 사용할때만 활용한다.
+    2. `newFixedThreadPool(nThreads)`: 고정 스레드 풀 전략
+        - 스레드 풀에 nThreads 갯수만큼의 기본 스레드를 생성한다. 초과 스레드는 생성하지 않는다.
+        - 큐 사이즈 제한이 없다.
+        - 고정 스레드 수로 관리되기 때문에 CPU / 메모리 리소스 사용이 예측 가능한 안정적 방식이다.
+    3. `newCachedThreadPool()`: 캐시 스레드 풀 전략
+        - 기본 스레드를 사용하지 않고 60초 주기를 갖는 초과 스레드만 사용한다. (주기는 당연히 조절 가능하다.)
+        - 초과 스레드 수 갯수제한이 없다.
+        - 기존 BlockingQueue에 작업을 저장하지 않고 `SynchronousQueue`에 작업을 저장한다.
+        - `SynchronousQueue`는 `BlockingQueue`의 구현체이다.
+            - 내부에 저장 공간이 없다.
+            - 생산자 작업을 소비자 스레드에 직접 전달한다.
+            - 중간 버퍼없이 스레드간 직거래를 하는 구조이다.
+
+## Executor 예외 정책
+
+-   큐도 가득차고 스레드도 더 생성 못하는 경우 작업을 거절하는데, 이 경우 어떻게 처리할지에 대한 다양한 정책이 존재한다.
+    1. `AbortPolicy`: 새 작업 제출시 `RejectedExecutionException`을 발생시킨다. (기본값)
+    2. `DiscardPolicy`: 새 작업을 조용히 버린다.
+    3. `CallerRunsPolicy`: 새 작업을 제출한 스레드가 대신하여 직접 작업을 실행한다.
+        - shutDown 이후에도 제출자 스레드에서 작업이 이루어질 수 있으므로 예외처리가 필요하다.
+    4. 사용자 정의(`RejectedExecutionHandler`): 직접 정의한 거절 정책을 사용할 수 있다.
+-   shutDown 이후 추가되는 작업들에 대해서도 거절하는데, 위의 정책에 따라 거절하게 된다.
+
 ## Reference
 
 -   [Guide to the Volatile Keyword in Java](https://www.baeldung.com/java-volatile)
