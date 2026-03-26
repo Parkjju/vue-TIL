@@ -282,3 +282,5 @@ public class ObjectRepositoryImpl implements MemberRepository {
         -   직렬화 및 역직렬화가 성능을 저하시킨다.
         -   유연하지 않다.
         -   크기가 상대적으로 크다.
+-   이러한 한계점으로 현대에는 JSON을 주로 사용한다.
+-
