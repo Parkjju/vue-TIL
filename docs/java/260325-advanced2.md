@@ -185,3 +185,100 @@ public static void main(String[] args) throws IOException {
 -   Buffered 스트림은 데이터 동기화가 내부적으로 처리되어 있어 직접 다루는 것보다 성능이 떨어진다.
 
 :::
+
+## 문자 다루기
+
+-   스트림 시 모든 데이터는 `byte` 단위를 사용한다. 따라서 바이트가 아닌 문자를 스트림에 직접 전달할 수 없다.
+-   `String`문자를 스트림을 통해 파일에 저장하려면 `byte`로 변환한 뒤 저장해야 한다.
+    -   `문자열.getBytes(UTF_8)` 메서드를 호출하여 바이트로 변경한다.
+-   입출력간 데이터들을 바이트로 변환해줘야 하는 과정을 `StreamWriter`가 해준다.
+    -   `OutputStreamWriter`: 스트림에 `byte`대신 문자를 저장할 수 있게 지원한다.
+        -   문자를 입력받고, 받은 문자를 인코딩하여 `byte[]`로 변환한다.
+        -   변환한 바이트 데이터를 전달하기 위해 인코딩 문자 집합도 필요하다.
+    -   `InputStreamWriter`: 스트림에 `byte` 대신 문자를 읽을 수 있게 지원한다.
+        -   인풋 스트림과 문자 집합이 필요하다.
+        -   스트림에서 `byte[]`로 데이터를 먼저 읽어들이고, `InputStreamReader`에서 바이트 데이터를 char로 변환한다.
+        -   반환값 자체는 EOF 표현을 위해 int이며, 문자로 사용하려면 타입 변환을 하면 된다.
+-   스트림은 기본적으로 바이트 단위로 데이터를 읽고 쓴다. write 함수의 파라미터 역시 `byte` 데이터들을 전달했다.
+-   반면 `StreamWriter`의 write 함수는 String이나 char를 사용한다.
+-   위의 이유는 byte를 다루는 클래스와 문자를 다루는 클래스가 구분되어 있기 때문이다.
+    -   문자를 직접 다루는 부모 클래스는 `Writer`, `Reader`이다.
+    -   문자를 직접 다룬다 하여 내부 데이터도 **문자 자체가 저장되는 것은 아니다.**
+-   `FileWriter`, `FileReader`를 사용하면 기존에 파일 읽고 쓰기 시 바이트 단위로 처리했던 코드가 간결해진다.
+    -   Filewriter, FileReader는 `OuputStreamWriter`과 `InputStreamWriter`의 자식 클래스이다.
+    -   내부적으로 FileOutputStream, FileInputStream을 생성해주어 조금이나마 편리하게 사용하게 해주는 역할을 한다.
+-   `BufferedReader`, `BufferedReader`는 한줄단위로 데이터를 읽어들인다.
+    -   내부에서 버퍼 처리를 자동으로 해준다.
+
+:::tip try-with-resource
+
+-   Writer, Reader 사용시 `try-with-resource` 구문을 사용하면 명시적인 close 함수 호출 없이도 try 블럭이 끝나면 자원을 정리해준다.
+
+```java
+try (BufferWriter bw = new BufferedWriter(new FileWriter(FILE_PATH, UTF_8, true))) {
+    // ...
+}
+```
+
+-   인라인 형태로 작성하면 된다.
+
+:::
+
+### DataInputStream
+
+-   `DataStream`은 구분자 및 라인없이 데이터를 저장하고 조회할 수 있다.
+
+```java
+dataOutputStream.writeUTF("UTF데이터_쓰기");
+dataInputStream.readUTF(); // 문자열 읽기
+```
+
+-   writeUTF 메서드는 `UTF-8`로 문자를 저장하는데, 저장 시 2byte를 추가로 사용하여 글자 길이를 저장한다.
+-   기타 타입들은 각 타입들의 사용 바이트 규격에 맞춰 데이터를 읽어들인다.
+-   write과 read의 읽어들이는 데이터 순서 쌍이 동일해야 한다.
+    -   writeUTF & writeInt를 했는데 readInt부터 호출하게 되면 데이터 파싱 및 읽기가 실패한다.
+
+### ObjectStream
+
+-   ObjectStream을 사용하면 메모리에 보관되어 있는 인스턴스를 파일에 편리하게 저장할 수 있다.
+-   **자바 객체 직렬화를 사용하면, 객체 인스턴스를 바이트 스트림으로 변환하여 파일에 저장하거나 네트워크를 통해 전송할 수 있다.**
+-   객체 직렬화를 하려면 클래스는 반드시 `Serializable` 인터페이스를 구현해야 한다.
+    -   구현해야할 특정 기능은 없다.
+    -   직렬화 가능한 클래스라는 것을 표시하기 위한 목적이다.
+    -   **표시가 목적인 인터페이스를 마커 인터페이스라 한다.**
+
+```java
+public class ObjectRepositoryImpl implements MemberRepository {
+    @Override
+    public void add(Member member) {
+        List<Member> members = findAll();
+        members.add(member);
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("members-object.dat"))) {
+            oos.writeObject(members);
+        } catch (IOException e) {
+        }
+
+    }
+
+    @Override
+    public List<Member> findAll() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("members-object.dat"))) {
+            Object objects = ois.readObject();
+            return (List<Member>) objects;
+        } catch (IOException | ClassNotFoundException e) {
+            return new ArrayList<>();
+        }
+    }
+}
+```
+
+-   비어있을때 List.of를 리턴하면 불변 리스트를 반환하기 때문에 `new ArrayList`를 반환해야 한다.
+-   writeObject로 객체 쓰기를 하고, readObject로 객체 읽기가 가능하다.
+-   `ClassNotFoundException`도 잡아야 하는 예외이다.
+    -   현대에는 객체 직렬화를 거의 사용하지 않는다.
+        -   버전 관리가 어렵다.
+        -   자바 플랫폼에 종속적이다.
+        -   직렬화 및 역직렬화가 성능을 저하시킨다.
+        -   유연하지 않다.
+        -   크기가 상대적으로 크다.
