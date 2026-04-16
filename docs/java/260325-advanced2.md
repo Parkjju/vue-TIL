@@ -734,3 +734,147 @@ public static void main(String[] args) throws IOException {
     -   이 경우 해당 연결을 사용해서는 안된다는 의미이다.
     -   read로 읽는 경우 Connection Reset
     -   write로 쓰는 경우 Broken pipe 예외를 던진다.
+
+## HTTP 서버 생성
+
+```java
+public void start() throws IOException {
+    ServerSocket serverSocket = new ServerSocket(port);
+    log("서버 시작 port: " + port);
+
+    while (true) {
+        Socket socket = serverSocket.accept();
+        es.submit(new HttpRequestHandlerV2(socket));
+    }
+}
+```
+
+-   서버소켓 accept를 통해 클라이언트 요청에 대한 연결을 맺고 응답을 전송할 수 있다.
+
+:::tip 퍼센트(%) 인코딩
+
+-   한글을 UTF-8 인코딩으로 표현하면 **한 글자당 3바이트 데이터를** 사용한다.
+-   URL은 아스키 코드만 입력하도록 표준이 정해져있다.
+-   위와같은 이유로 한글 각 바이트를 16진수로 표현하고 앞에 %를 붙이는 것으로 방식이 정해졌다.
+    -   퍼센티지 뒤의 두글자는 반드시 16진수라는 것이 약속이다.
+    -   만약 뒤 두글자가 16진수 형식에 맞지 않으면 스펙 위반에 해당한다.
+
+:::
+
+:::tip WAS
+
+-   WAS는 Web Application Server의 준말로, 웹서버의 역할을 하면서 프로그램 코드도 수행할 수 있는 서버이다.
+-   웹(HTTP)을 기반으로 작동하는 서버인데 해당 서버를 통해 프로그램 코드도 실행할 수 있는 서버를 말한다.
+
+:::
+
+:::tip 서블릿(Servlet)
+
+-   HTTP와 웹 등장 이후 초창기에는 각 회사마다 자체적인 HTTP 서버 구현체를 작성했다.
+    -   A사의 서버를 이용하다가 B사의 서버를 활용하게 되는 경우 인터페이스의 차이로 인해 사용 코드를 변경해야 하는 한계가 존재했다.
+-   이러한 문제 해결을 위해 자바 진영에서 **서블릿이라는 표준을 만들게 된다.**
+-   **서블릿은 서버 사이드에서 돌아가는 작은 자바 프로그램을 의미한다.**
+-   서블릿은 `Servlet`, `HttpServlet`, `ServletRequest`, `ServletResponse`를 포함하여 많은 표준을 제공하고 있다.
+-   서블릿을 제공하는 주요 자바 WAS는 다음과 같다.
+    -   오픈소스
+        -   Apache Tomcat
+        -   Jetty
+        -   GlassFish
+        -   Undertow
+    -   상용
+        -   IBM WebSphere
+        -   Oracle WebLogic
+-   이들은 `jakarta.servlet`의 구현체이며, 서블릿 표준은 자바 자체적으로 제공하고 있다.
+
+:::
+
+## 리플렉션
+
+-   커맨드 패턴은 인터페이스 내에 기능이 하나 뿐이다.
+    -   이를 구현한 구현체 내에서 동적으로 처리 방식이 분기된다.
+    -   분기가 많아질수록 구현체가 복잡해진다는 한계가 존재한다.
+-   **클래스가 제공하는 다양한 정보를 동적으로 분석하고 사용하는 기능을 리플렉션이라고 한다.**
+    -   리플렉션을 통해 프로그램 실행 중 클래스, 메서드, 필드 등에 대한 정보를 얻을 수 있다.
+    -   새로운 객체를 생성하고 메서드를 호출하며, 필드 값을 읽고 쓸수있다.
+-   리플렉션을 통해 얻을 수 있는 정보는 다음과 같다.
+    1. 클래스의 메타데이터: 클래스 이름, 접근 제어자 등
+    2. 필드 정보: 필드 이름, 타입, 접근제어자, 해당 값 읽기 등
+    3. 메서드 정보: 메서드 이름, 반환 타입, 매개변수 정보 확인 등
+    4. 생성자 정보: 생성자의 매개변수 타입과 갯수 확인, 동적으로 객체 생성도 가능
+-   클래스 메타데이터는 `Class`라는 클래스로 표현된다.
+-   클래스 메타데이터는 아래 방법들로 얻을 수 있다.
+    -   `ClassName.class` 멤버
+    -   `Instance.getClass()` 메서드
+    -   `String className = "directory.package.ClassName"`
+        -   `Class.forName(className);` 메서드
+-   `getMethod`혹은 `getDelcaredMethod`메서드를 통해 Method 객체를 얻을 수 있다.
+    -   해당 객체의 `invoke(instnace, 인자)` 메서드를 호출하면 직접 호출도 가능하다.
+
+## 애노테이션
+
+-   프로그램 실행 중에 읽어서 사용할 수 있는 주석을 애노테이션이라 한다.
+-   애노테이션은 `@interface`키워드를 사용하여 만든다.
+
+```java
+// 애노테이션 정의 코드
+@Retention(RetentionPolicy.RUNTIME)
+public @interface SimpleMapping {
+    String value();
+}
+
+// 애노테이션 사용 코드
+public class TestController {
+
+    @SimpleMapping(value = "/")
+    public void home() {
+        System.out.println("TestController.Home");
+    }
+}
+```
+
+-   애노테이션은 프로그램에 아무런 영향을 주지 않는다.
+-   마치 주석과 같은 역할을 하지만 일반적인 주석 역할이 아닌, 리플렉션과 같은 기술로 실행 시점에 읽어 활용 가능한 주석이다.
+-   `Method` 객체의 `getAnnotation(AnnotationClassName.class)` 메서드를 호출하여 읽어들일 수 있다.
+    -   파라미터에 애노테이션 정의 클래스명을 전달하면 된다.
+-   데이터 타입은 클래스 외에도 다양한 타입 기반으로도 정의 가능하다.
+    -   int, float, boolean
+    -   String
+    -   Class
+    -   enum
+    -   다른 애노테이션 타입
+    -   위 타입들의 컬렉션
+-   커스텀 클래스로는 애노테이션 정의가 불가능하다.
+-   아래 코드와 같이 여러 요소들을 동시에 정의하는 것도 가능하다.
+    -   tags 파라미터에 작성된 `{}` 코드는 배열을 의미한다.
+
+```java
+// 여러 파라미터 정의
+@AnnoElement(value = "data", count = 10, tags = {"t1", "t2"})
+public class ElementData1 { }
+
+// 사용
+Class<ElementData1> annoClass = ElementData1.class;
+AnnoElement annotation = annoClass.getAnnotation(AnnoElement.class);
+
+String value = annotation.value(); // "data"
+```
+
+-   애노테이션을 정의하는 데에 사용하는 특별한 애노테이션을 메타 애노테이션이라 한다.
+-   아래와 같은 종류가 있다.
+    -   애노테이션 생존기간 정의: `@Retention`
+        -   `RetentionPolicy.SOURCE`: 소스 코드에만 남고, 컴파일 시점에 제거
+        -   `RetentionPolicy.CLASS`: `.class`파일까지 남지만 런타임에 제거 (디폴트 값)
+        -   `RetentionPolicy.RUNTIME`: 자바 런타임에도 남아있음
+    -   애노테이션 적용 위치 지정: `@Target`
+        -   `TYPE`, `FIELD`, `METHOD` 등 애노테이션이 적용되는 위치를 지정한다.
+        -   주로 위 세개를 많이 사용한다.
+    -   `@Documented`
+        -   javadoc 기반 API 문서 출력 시 작성한 현재 애노테이션이 포함되어 출력될지를 지정
+        -   보통 함께 사용함
+    -   `@Inherited`
+        -   클래스 상속 시 자식도 애노테이션 적용
+        -   **인터페이스 구현에서의 상속 개념은 애노테이션에 적용 불가능하다.**
+-   모든 애노테이션은 `java.lang.annotation.Annotation`인터페이스를 묵시적으로 상속받는다.
+    -   개발자가 명시적으로 해당 인터페이스를 상속하거나 구현할 필요는 없다.
+    -   `@interface`키워드를 통해 정의하면 자바 컴파일러가 자동으로 해당 인터페이스를 확장하도록 처리한다.
+-   `@Override`, `@Deprecated`와 같은 애노테이션들은 자바에서 기본으로 제공하며, 코드에 직접 유용하게 사용하고 있다.
