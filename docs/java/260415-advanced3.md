@@ -225,3 +225,76 @@ List<String> result = mapPersonToString(personList, Person::introduce);
 ```
 
 -   매개변수가 여러개인 경우 순서대로 함수 호출 시 매개변수에 전달하면 된다.
+
+## 스트림 API
+
+-   스트림은 자바 8부터 추가된 기능으로, **데이터의 흐름을 추상화하여 다루는 도구이다.**
+    -   스트림은 컬렉션 또는 배열 등의 요소들을 연산 파이프라인을 통해 연속적인 형태로 처리할 수 있게 해준다.
+-   람다 기반으로 내부 동작을 정의하면 된다.
+
+:::tip 파이프라인
+
+-   데이터가 흘러가는 처리 단계들의 연결
+
+:::
+
+```java
+List<String> result = stream
+    .filter(name -> name.startsWith("B"))
+    .map(s -> s.toUpperCase())
+    .toList()
+```
+
+-   스트림은 여러 특징이 있다.
+    1. 데이터 소스를 변경하지 않는다. 결과만 새로 생성한다.
+    2. 일회성 (1회 소비)
+        - 한번 사용된 스트림은 재사용이 불가능하다.
+    3. 파이프라인 구성
+        - 중간연산이 이어지다가 최종 연산을 만나면 연산 수행 후 종료된다.
+    4. 지연 연산
+        - 중간 연산은 필요시까지 실제로 동작하지 않으며 최종연산이 실행될때 한번에 처리된다.
+        - `map`, `filter`등은 중간연산으로 최종연산을 만나기 전까지 실행되지 않고 대기하게 된다.
+    5. 병렬처리 용이
+        - 스트림으로부터 병렬 스트림을 쉽게 만들 수 있어서 멀티코어 환경에서 병렬연산을 단순한 코드로 작성 가능하다.
+
+```java
+Stream<Integer> stream = Stream.of(1,2,3);
+stream.forEach(System.out::println); // 스트림 1회 실행
+stream.forEach(System.out::println); // 런타임 예외 발생
+```
+
+-   자바 스트림 API는 최종 연산을 만났을때 조건을 만족하는 **요소를 찾은 순간 연산을 멈추고 곧바로 결과를 반환한다.**
+    -   이를 단축평가(short-circuit)라고 한다.
+    -   최종연산을 만나기 전까지 lazy 형태로 대기하기 때문에 가능한 최적화이다.
+
+:::tip Collectors
+
+-   collect 메서드와 Collectors를 사용하면 최종 반환값을 원하는 형태로 만들어낼 수 있다.
+
+```java
+list.stream()
+    .map(...)
+    .collect(Collectors.toList());  // 여기서 Collectors 등장
+```
+
+-   위와 같은 구조로 사용하며, Collectors에서 자체적으로 제공하는 변환 전략을 그대로 사용하면 된다.
+-   reducing, joining과 같은 전략도 포함된다.
+-   groupingBy를 쓰면 Map객체로 만들어 Key-Value쌍의 자료구조를 반환해준다.
+-   이때 다운스트림 컬렉터를 쓰면 다음과같은 형태가 된다.
+    -   **각 그룹 내부 요소들을 다시 한번 어떻게 처리할지 정의하는 역할을 한다.**
+
+```java
+orders.stream()
+    .collect(Collectors.groupingBy(Order::getStatus, Collectors.counting()));
+
+// {
+//   "PENDING" -> 2,
+//   "DONE"    -> 1
+// }
+```
+
+-   Order별로 value에 객체들이 들어가는게 기존 구조였다면, 다운스트림 컬렉터에 추가 연산을 전달하여 카운팅을 한 결과가 들어가도록 만들 수 있다.
+
+:::
+
+## Optional
