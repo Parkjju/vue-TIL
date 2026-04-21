@@ -298,3 +298,323 @@ orders.stream()
 :::
 
 ## Optional
+
+-   자바 null은 값이 없음을 표현하는 기본적 방법이다.
+-   null 참조 및 오용시 `NullPointerException`이 발생한다.
+-   메서드에서 `null`을 반환하거나 직접 사용하게 되면 코드 가독성이 떨어진다.
+    -   메서드 시그니처 `String findNameById(Long id)` 이 구문만으로는 리턴값에 널이 포함되는지 알 수 없다.
+
+```java
+static void findAndPrint(Long id) {
+    Optional<String> optName = findNameById(id);
+    String name = optName.orElse("UNKNOWN");
+    System.out.println(id + ": " + name.toUpperCase());
+}
+```
+
+-   위와 같이 간단한 코드로 표현이 가능해진다.
+-   다음은 옵셔널 관련 메서드들이다.
+    -   `Optional.of(T value)`: 내부 값이 확실히 null이 아닐때 사용
+    -   `Optional.ofNullable(T value)`: 내부 값이 null일 수도 있을때 사용
+        -   출력시 `Optional[value]`형태로 감싸져 보인다.
+    -   `Optional.empty()`: 값이 없음을 표현할때 사용
+        -   Optional.empty로 표현된다.
+-   아래는 옵셔널 값을 조회하거나 획득하는 메서드이다.
+    1. `isPresent()`, `isEmpty()`
+        - 값이 있으면 true, 없으면 false
+        - 단순 조회용이다.
+    2. `get()`
+        - 값이 있는 경우 해당 값을 반환한다.
+        - 값이 없으면 `NosuchElementException`이 발생한다.
+        - 권장되지는 않는다.
+    3. `orElse(T other)`
+        - 값이 있으면 해당 값을 반환한다.
+        - 값이 없으면 other를 반환한다.
+    4. `orElseGet(Supplier<? extends T> supplier)`
+        - 값이 있으면 반환
+        - 값이 없으면 supplier를 호출하여 생성된 값 반환
+    5. `orElseThrow(예외)`
+        - 값이 있으면 해당 값 반환
+        - 값이 없으면 지정한 예외 전달
+    6. `or(Supplier<? extends Optional<? extends T>> supplier)`
+        - 값이 있으면 해당 값의 옵셔널을 그대로 반환
+        - 값이 없으면 supplier가 제공하는 다른 옵셔널 반환
+        - 옵셔널로 래핑된 값을 반환한다는 특징 존재
+
+:::tip orElse vs orElseGet
+
+-   값이 있으면 반환하고 없으면 supplier를 통해 값을 생성하여 반환하거나 other를 즉시 반환한다는 점에 차이가 있다.
+-   실제 내부 동작의 차이는 즉시 평가, 지연 평가 여부에 차이에 있다.
+-   자바 `+`와 같은 연산은 기본적으로 즉시 평가이다.
+    -   해당 연산값을 사용하지 않는 경우, 연산 리소스만 사용하고 결과는 사용하지 않는 비효율이 발생한다.
+    -   **이를 해결하기 위해 연산 정의 시점과 해당 연산을 실행하는 시점을 분리해야 한다.**
+-   orElse를 사용하면 other 인자값 연산이 수행되지만 값이 있는 경우 버려지게 된다.
+-   suppler를 사용하면 옵셔널 값이 없으면 람다 수행 후 연산결과를 리턴한다.
+
+```java
+// 값이 있어도 createData 호출 후 버려짐
+Integer empty1 = optEmpty.orElse(createData());
+
+// 값이 있으면 해당 값 리턴, 없으면 람다 수행
+Integer empty2 = optEmpty.orElseGet(() -> createData());
+```
+
+-   orElse에 넘기는 객체 생성 비용이 크지 않는 경우 사용해도 좋다.
+-   orElse에 넘기는 객체 생성비용이 큰 경우 orElseGet을 사용한다.
+    -   String과 같이 객체 생성 비용보다 람다 생성 비용이 더 크면 orElse를 쓰면 된다.
+
+:::
+
+:::tip Supplier
+
+-   Supplier는 함수형 인터페이스로, 옵셔널에서 사용하게 되면 람다에서 리턴하는 값을 사용하겠다는 의미이다.
+
+```java
+@FunctionalInterface
+public interface Supplier<T> {
+    T get();
+}
+```
+
+-   다음은 람다를 실행하여 옵셔널 값을 받는 실제 코드이다.
+
+```java
+Optional<String> optValue = Optional.of("Hello");
+String value = optValue.orElseGet(() -> {
+    return "new value";
+})
+
+```
+
+:::
+
+-   아래는 Optional 값이 존재할때, 존재하지 않을때 구분하여 처리하는 메서드들이다.
+    1. `ifPresent(Consumer<? super T> action)`
+        - 값이 없으면 action 실행
+        - Consumer는 별도의 리턴값 없이 void로 사이드 이펙트 처리만 한다.
+        - `<? super T>`는 T의 상위 타입들로 제한하는 제네릭 문법이다.
+        - `<? extends T>`는 T의 하위 타입들로 제한하는 제네릭 문법이다.
+    2. `ifPresentOrElse(Consumer<? super T> action, Runnable emptyAction)`
+        - 값이 존재하면 action을, 존재하지 않으면 emptyAction을 실행한다.
+        - 컨슈머는 입력을 받지만 Runnable은 입력도 받지 않는 함수형 인터페이스이다.
+    3. `map(Function<? super T, ? extends U> mapper)`
+        - Function은 T 입력을 U로 출력하는 인터페이스이다.
+        - 값이 있으면 mapper를 적용한 결과로 `Optional<U>`를 반환한다.
+        - 값이 없으면 Optional.empty를 반환한다.
+    4. `flatMap`
+        - 값이 존재했다면 Optional을 반환할때 중첩되지 않고 옵셔널을 벗겨 반환한다.
+    5. `filter(Predicate<? super T> predicate)`
+        - 값이 있고 조건을 만족하면 그대로 반환한다.
+        - 조건 불만족 또는 비어있으면 empty를 반환한다.
+    6. `stream()`
+        - List같은 컬렉션은 기본적으로 for문 등으로 값 처리를 해야한다.
+        - 값 처리의 용이성을 위해 스트림으로 타입 변경이 필요하다.
+        - `List<Optional<String>>` 타입을 `Stream<Optional<String>>`으로 변경해주는 역할을 한다.
+
+```java
+/// map
+Optional<Integer> length = optValue.map(String::length);
+
+/// flatMap
+Optional<String> userId = Optional.of("123");
+Optional<String> email = userId
+    .flatMap(id -> findUser(id))      // Optional<User> 반환
+    .flatMap(user -> findEmail(user)); // Optional<String> 반환
+
+// stream
+List<Optional<String>> list = List.of(
+    Optional.of("apple"),
+    Optional.empty(),
+    Optional.of("banana")
+);
+
+List<String> result = list.stream()
+    .flatMap(Optional::stream) // empty는 버리고, 값 있는 것만 꺼냄
+    .collect(Collectors.toList());
+
+// ["apple", "banana"]
+```
+
+-   옵셔널 Best Practice는 다음과 같다.
+    1. 함수 반환 타입으로만 사용하고 필드에는 가급적 사용 말것
+    2. 메서드 매개변수로 Optional을 사용 말것
+    3. 컬렉션이나 배열 타입을 Optional로 감싸지 말것
+    4. `isPresent()`, `get()` 조합을 직접 사용하지 말것
+        - 강제 언래핑으로 인한 예외 발생 가능성이 높다.
+    5. `orElseGet()`, `orElse()` 차이에 대한 이해
+    6. `Optional이 무조건 좋은 것은 아니다.
+        - 값이 있음이 보장되거나 대다수의 경우 값이 있는 케이스
+        - 값이 없으면 예외를 던져 처리하는 것이 자연스러운 케이스
+        - 성능이 극도로 중요한 로우레벨 코드
+
+## 디폴트 메서드
+
+-   자바 디폴트 메서드는 인터페이스에서 메서드 본문을 가질 수 있도록 허용하여 기존 코드를 깨뜨리지 않고 새 기능을 추가할 수 있게 해준다.
+    -   인터페이스에 메서드 시그니처를 하나 추가했을때 이를 구현하지 않은 대상이 있는 경우 컴파일 에러가 발생한다.
+-   `default` 키워드를 붙이면 인터페이스 내에 메서드를 기본 구현으로 제공할 수 있다.
+
+```java
+public interface Notifier {
+    void notify(String message);
+
+    default void scheduleNotification(String message, LocalDateTime scheduleTime) {
+        // ..기본구현 작성
+    }
+}
+
+// 기본구현 사용
+public class SMSNotifier implements Notifier {
+    @Override
+    public void notify(String message) {
+        System.out.println("...");
+    }
+
+    // scheduleNotification은 기본구현 사용
+}
+
+// 재정의
+public class EmailNotifier implements Notifier {
+    @Override
+    public void notify(String message) {
+        System.out.println("...");
+
+    @Override
+    public void scheduleNotification(String message, LocalDateTime scheduleTime) {
+        // 함수 구현
+    }
+}
+```
+
+-   인터페이스의 필요성을 넘어 디폴트 메서드가 필요하게 된 배경은 자바 자체적으로 제공하는 `Collection`, `List`와 같은 인터페이스들의 기능 추가에 있다.
+    -   기능이 추가된 경우 전 세계 자바 개발자들의 코드에서 에러가 발생할 것이다.
+    -   자바 인터페이스 하위호환성이 떨어지게 된다.
+-   디폴트 메서드 사용시 주의점은 다음과 같다.
+    1.  반드시 하위호환성을 위해 최소한으로 사용해야 한다.
+    2.  인터페이스는 추상화의 역할로 계속 사용해야 한다.
+    3.  서로 다른 인터페이스에서 같은 시그니처의 디폴트 메서드가 구현되어 있는 경우, 이를 구현하는 클래스에서는 반드시 오버라이딩을 해야 한다.
+        -   그렇지 않으면 충돌이 발생한다.
+    4.  디폴트 메서드는 단순 구현을 제공할뿐 특정 state값을 관리하면 안된다.
+
+## 병렬 스트림
+
+-   단일 스트림에서 무거운 작업들을 연속적으로 처리한다고 가정해보자.
+    -   각 작업이 1초 소요된다면, 작업이 8개인 경우 총 8초가 소요된다.
+-   이번에는 8개의 작업을 4개씩 분할하여 독립 스레드에서 실행 후 join을 한다고 가정해보자.
+    -   총 4초의 소요시간으로 단축시킬 수 있다.
+    -   스데르 수가 늘어나면 코드 복잡성이 커지고, 예외처리, 스레드 풀 관리 등에 문제가 발생한다.
+-   ExecutorService를 사용하여 병렬 처리를 해보자.
+    -   총 소요 시간은 4초로 동일하다.
+    -   Future 기반으로 get으로 값을 받아오는 것은 편해졌지만, 작업 분할 및 병합 로직은 직접 짜야한다. 스레드 풀 관리도 직접 해야한다.
+-   위와 같이 큰 작업을 여러 스레드가 처리할 수 있는 작은 단위 작업으로 분할(Fork)하고, 이 작업을 각 스레드가 처리한다. (Execute) 작업이 모두 마무리 되면 분할된 결과를 하나로 모아야 한다.(Join)
+    -   이러한 패턴을 Fork -> Execute -> Join 패턴이라고 한다.
+-   자바는 이러한 구조의 작업 처리를 쉽게 할 수 있도록 `java.util.concurrent` 패키지 내에 `Fork/Join`프레임워크를 제공한다.
+    -   Divide and Conquer 전략을 채택한다.
+    -   작업 훔치기(Work stealing) 알고리즘을 사용한다.
+        -   각 스레드는 자신의 작업 큐를 가진다.
+        -   작업이 없는 스레드가 바쁜 스레드의 큐에서 작업을 훔쳐와 대신 처리한다.
+        -   **부하 균형을 자동으로 조절하여 효율성이 향상된다.**
+-   주요 클래스는 다음과 같다.
+    -   `ForkJoinPool`
+        -   Fork/Join 착업을 처리하는 특수한 ExecutorService 스레드 풀
+        -   작업 스케줄링 및 스레드 관리를 담당한다.
+        -   분할 정복 및 작업 훔치기에 특화된 스레드 풀이다.
+    -   `ForkJoinTask`: Fork/Join 작업의 기본 추상 클래스이다. Future를 구현한다. 아래 하위 클래스를 구현하여 사용한다.
+        -   `RecursiveTask<V>`: 결과를 반환하는 작업
+        -   `RecursiveAction`: 결과를 반환하지 않는 작업 (void)
+        -   위의 두 하위 클래스는 `compute()`메서드를 재정의하여 작업 로직을 작성한다.
+        -   작업 범위가 작으면 직접 처리하고, 크면 작업을 둘로 분할하여 병렬로 처리하도록 구현한다.
+    -   fork(): 현재 스레드에서 다른 스레드로 작업을 분할하여 보내는 동작
+    -   join(): 분할된 작업이 끝날때까지 기다린 뒤 결과를 가져오는 동작
+-   fork / join 프레임워크를 실무에서 다룰 일은 드물다.
+
+```java
+public class SumTask extends RecursiveTask<Integer> {
+    //private static final int THRESHOLD = 4; // 임계값
+    private static final int THRESHOLD = 2; // 임계값 변경
+
+    private final List<Integer> list;
+
+    public SumTask(List<Integer> list) {
+        this.list = list;
+    }
+
+    @Override
+    protected Integer compute() {
+        // 작업 범위가 작으면 직접 계산
+        if (list.size() <= THRESHOLD) {
+            log("[처리 시작] " + list);
+            int sum = list.stream()
+                    .mapToInt(HeavyJob::heavyTask)
+                    .sum();
+            log("[처리 완료] " + list + " -> sum: " + sum);
+            return sum;
+        } else {
+            // 작업 범위가 크면 반으로 나누어 병렬 처리
+            int mid = list.size() / 2;
+            List<Integer> leftList = list.subList(0, mid);
+            List<Integer> rightList = list.subList(mid, list.size());
+            log("[분할] " + list + " -> LEFT" + leftList + ", RIGHT" + rightList);
+
+            SumTask leftTask = new SumTask(leftList);
+            SumTask rightTask = new SumTask(rightList);
+
+            // 왼쪽 작업은 다른 스레드에서 처리
+            leftTask.fork();
+            // 오른쪽 작업은 현재 스레드에서 처리
+            Integer rightResult = rightTask.compute();//[5 ~ 8] -> 260
+
+            // 왼쪽 작업 결과를 기다림
+            Integer leftResult = leftTask.join();
+            int joinSum = leftResult + rightResult;
+            log("LEFT[ + " + leftResult + "] + RIGHT[" + rightResult + "] -> sum:" + joinSum);
+            return joinSum;
+        }
+    }
+}
+
+/// 호출부
+ForkJoinPool pool = new ForkJoinPool(10);
+SumTask task = new SumTask(data); // [1 ~ 8]
+
+// 병렬로 합을 구한 후 결과 출력
+Integer result = pool.invoke(task);
+pool.close();
+```
+
+-   `ForkJoinPool(활용할 스레드 갯수)`
+    -   기본값은 시스템 프로레서 수
+-   `invoke(태스크)`: 태스크를 스레드 풀에 전달
+-   `pool.close()` 더 이상 작업이 없을때 풀 종료
+
+:::tip Fork/Join 공용 풀
+
+-   자바 8에서는 Fork / Join용으로 기본 스레드 풀 개념이 도입되었다.
+-   별도의 스레드 풀 인스턴스 생성 없이 `ForkJoinPool.commonPool()`을 통해 접근 가능하다.
+-   자바8 병렬 스트림은 내부적으로 이 공융풀을 사용한다.
+-   별도 풀 생성 대신 공용 풀을 사용하여 시스템 자원 관리가 효율적이다.
+-   명시적으로 close를 해줄 필요가 없다.
+-   기본 설정은 시스템 설정을 따라가므로 변경할 필요가 없다.
+-   parallelism 수준은 프로세서 수 -1만큼으로 설정된다.
+    -   parallelism 수준은 스레드 수를 의미한다.
+    -   메인 스레드의 참여를 위한 목적이다.
+
+:::
+
+-   병렬 스트림 처리를 위해서는 `parallel` 함수만 호출해주면 된다.
+
+```java
+Instream.rangeClosed(1, 8)
+    .parallel() // 병렬 스트림화
+    .map(HeavyJob::heavyTask)
+    .reduce(0, (a,b) -> a+b);
+```
+
+:::warning 병렬 스트림 사용 시 주의점
+
+-   병렬 스트림은 I/O바운드 작업이 아닌 CPU 바운드 작업에만 사용해야 한다. (계산 집약적 작업)
+    -   스레드가 대기하는 I/O 작업에는 사용하면 안된다.
+    -   외부 API 호출 / 데이터베이스 조회 등
+-   위 경우에는 ExecutorService를 통해 별도의 스레드풀을 사용해야 한다.
+-   여러 스레드가 공용풀에 요청을 하려는 경우 제한된 스레드 환경으로 인해 요청 응답이 밀리게 된다.
+
+:::
