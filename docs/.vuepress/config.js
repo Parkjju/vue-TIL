@@ -167,11 +167,33 @@ module.exports = {
                         'trash/240416-45',
                         'trash/230918-31',
                         'trash/250521-mcp',
+                        'trash/260420-db',
                     ],
                     sidebarDepth: 2,
                 },
             ],
             '/': [
+                {
+                    title: 'Java',
+                    collapsable: true,
+                    children: [
+                        'java/260212-basic',
+                        'java/260212-basic2',
+                        'java/260223-intermediate',
+                        'java/260303-intermediate2',
+                        'java/260310-advanced1',
+                        'java/260325-advanced2',
+                    ],
+                    sidebarDepth: 2,
+                },
+                {
+                    title: 'Database',
+                    collapsable: true,
+                    children: [
+                        'database/260420-db1',
+                    ],
+                    sidebarDepth: 2,
+                },
                 {
                     title: 'Swift',
                     collapsable: true,
@@ -292,19 +314,6 @@ module.exports = {
                         'swiftuiOpen/240101-3',
                         'swiftuiOpen/240201-4',
                         'swiftuiOpen/240205-5',
-                    ],
-                    sidebarDepth: 2,
-                },
-                {
-                    title: 'Java',
-                    collapsable: true,
-                    children: [
-                        'java/260212-basic',
-                        'java/260212-basic2',
-                        'java/260223-intermediate',
-                        'java/260303-intermediate2',
-                        'java/260310-advanced1',
-                        'java/260325-advanced2',
                     ],
                     sidebarDepth: 2,
                 },
