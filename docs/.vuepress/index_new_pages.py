@@ -37,13 +37,9 @@ def get_current_commit():
 
 
 def get_new_md_files(since_commit):
-    if since_commit:
-        range_arg = f"{since_commit}..HEAD"
-    else:
-        range_arg = "HEAD~1..HEAD"
-
+    range_arg = f"{since_commit}..HEAD" if since_commit else "HEAD~1..HEAD"
     result = subprocess.run(
-        ["git", "diff", "--name-only", "--diff-filter=A", range_arg],
+        ["git", "diff", "--name-only", "--diff-filter=AR", range_arg],
         capture_output=True, text=True, cwd=REPO_DIR
     )
     return [

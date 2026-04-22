@@ -101,7 +101,7 @@ INDEXING_API = "https://indexing.googleapis.com/v3/urlNotifications:publish"
 def get_new_md_files(since_commit):
     range_arg = f"{since_commit}..HEAD" if since_commit else "HEAD~1..HEAD"
     result = subprocess.run(
-        ["git", "diff", "--name-only", "--diff-filter=A", range_arg],
+        ["git", "diff", "--name-only", "--diff-filter=AR", range_arg],
         capture_output=True, text=True, cwd=REPO_DIR
     )
     return [
