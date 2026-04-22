@@ -172,17 +172,23 @@ if __name__ == "__main__":
 
 ## git hook 설정
 
-`.git/hooks/post-push` 파일을 생성하고 실행 권한을 부여한다.
+`.git/hooks/pre-push` 파일을 생성하고 실행 권한을 부여한다.
 
 ```sh
-# .git/hooks/post-push
+# .git/hooks/pre-push
 #!/bin/sh
 python3 /path/to/your/repo/docs/.vuepress/index_new_pages.py
 ```
 
 ```sh
-chmod +x .git/hooks/post-push
+chmod +x .git/hooks/pre-push
 ```
+
+:::tip pre-push vs post-push
+
+git 클라이언트 훅에는 `post-push`가 존재하지 않는다. push 전에 실행되는 `pre-push`를 사용한다. 커밋은 이미 로컬에 존재하므로 색인 스크립트가 새 파일을 정상적으로 감지할 수 있다.
+
+:::
 
 :::warning .git/hooks는 git으로 관리되지 않음
 
