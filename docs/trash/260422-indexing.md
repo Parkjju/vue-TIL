@@ -5,19 +5,19 @@ tags: ['Git', 'Google Search Console']
 
 ## 개요
 
-새로운 문서를 추가하고 `git push`하면 git의 `post-push` 훅이 자동으로 Google Indexing API에 색인 등록 요청을 보내도록 자동화한 과정이다.
+새로운 문서를 추가하고 `git push`하면 git의 `pre-push` 훅이 자동으로 Google Indexing API에 색인 등록 요청을 보내도록 자동화한 과정이다.
 
 **흐름 요약:**
 
 ```
 git push origin main
-    → .git/hooks/post-push 실행 (git 자체 훅)
+    → .git/hooks/pre-push 실행 (git 자체 훅)
     → index_new_pages.py: 새 .md 파일 감지 → Indexing API 호출
 ```
 
 :::tip Claude Code 훅과의 차이
 
-Claude Code PostToolUse 훅은 Claude가 Bash 도구로 실행한 명령에만 반응한다. 터미널에서 직접 `git push`해도 동작하게 하려면 git 자체 훅(`.git/hooks/post-push`)을 사용해야 한다.
+Claude Code PostToolUse 훅은 Claude가 Bash 도구로 실행한 명령에만 반응한다. 터미널에서 직접 `git push`해도 동작하게 하려면 git 자체 훅(`.git/hooks/pre-push`)을 사용해야 한다.
 
 :::
 
@@ -177,12 +177,25 @@ if __name__ == "__main__":
 ```sh
 # .git/hooks/pre-push
 #!/bin/sh
-python3 /path/to/your/repo/docs/.vuepress/index_new_pages.py
+/path/to/python3 /path/to/your/repo/docs/.vuepress/index_new_pages.py
 ```
 
 ```sh
 chmod +x .git/hooks/pre-push
 ```
+
+python3 경로는 `which python3`으로 확인한다.
+
+```sh
+which python3
+# 예: /opt/homebrew/bin/python3
+```
+
+:::warning git 훅 환경의 PATH 제한
+
+git 훅은 셸 환경보다 PATH가 좁아 `python3`만 쓰면 패키지가 설치된 Python을 못 찾을 수 있다. 반드시 `which python3`로 확인한 **전체 경로**를 사용해야 한다.
+
+:::
 
 :::tip pre-push vs post-push
 
