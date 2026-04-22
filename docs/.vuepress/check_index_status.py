@@ -119,6 +119,16 @@ def main():
         for url, err in errors:
             print(f"  {url}  ({err})")
 
+    if not_indexed:
+        msg = f"미등록 {len(not_indexed)}개 발견 (전체 {len(urls)}개)"
+    else:
+        msg = f"전체 {len(urls)}개 모두 색인 등록됨"
+
+    subprocess.run([
+        "osascript", "-e",
+        f'display notification "{msg}" with title "색인 상태 검사 완료"'
+    ])
+
 
 if __name__ == "__main__":
     main()
