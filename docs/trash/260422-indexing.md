@@ -324,25 +324,53 @@ if __name__ == "__main__":
     main()
 ```
 
-### crontab 등록
+### launchd 등록 (macOS)
 
-매일 오전 9시에 자동 실행되도록 crontab에 등록한다.
+crontab은 잠자기 상태에서 스케줄을 스킵하지만, `launchd`는 잠자기 중 놓친 작업을 **깨어난 직후 실행**한다.
+
+`~/Library/LaunchAgents/com.<name>.index-check.plist` 파일을 생성한다.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.<name>.index-check</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/path/to/python3</string>
+        <string>/path/to/your/repo/docs/.vuepress/check_index_status.py</string>
+    </array>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>9</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>/path/to/your/repo/docs/.vuepress/index_check.log</string>
+    <key>StandardErrorPath</key>
+    <string>/path/to/your/repo/docs/.vuepress/index_check.log</string>
+</dict>
+</plist>
+```
+
+등록 및 확인:
 
 ```sh
-crontab -e
+launchctl load ~/Library/LaunchAgents/com.<name>.index-check.plist
+launchctl list | grep index-check
 ```
 
-아래 내용 추가 (`python3` 경로는 `which python3`로 확인):
+출력에 `com.<name>.index-check`가 보이면 등록 완료다.
 
-```
-0 9 * * * /path/to/python3 /path/to/your/repo/docs/.vuepress/check_index_status.py >> /path/to/your/repo/docs/.vuepress/index_check.log 2>&1
-```
+:::tip launchd vs crontab
 
-등록 확인:
+`StartCalendarInterval`을 사용하는 launchd는 Mac이 잠자기 상태여서 스케줄을 놓쳤더라도 다음 부팅/깨어남 시 즉시 실행된다. crontab은 해당 시각을 그냥 스킵한다.
 
-```sh
-crontab -l
-```
+:::
 
 ### 결과 확인
 
