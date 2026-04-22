@@ -214,11 +214,11 @@ git 클라이언트 훅에는 `post-push`가 존재하지 않는다. push 전에
 
 :::
 
-## 매일 색인 상태 검사 크론잡
+## 매일 색인 상태 검사
 
 ### check_index_status.py
 
-전체 문서의 색인 상태를 URL Inspection API로 조회하고 결과를 출력한다. 검사 완료 후 macOS 알림 센터로 결과를 알려준다.
+최근 2주 내 추가/변경된 문서를 URL Inspection API로 조회하고 결과를 출력한다. 검사 완료 후 macOS 알림 센터로 결과를 알려준다.
 
 ```python
 # docs/.vuepress/check_index_status.py
@@ -233,8 +233,7 @@ TOKEN_FILE = os.path.join(SCRIPT_DIR, "indexing_token.json")
 SITE_URL = "https://<username>.github.io/<repo>/"
 BASE_URL = "https://<username>.github.io/<repo>"
 INSPECTION_API = "https://searchconsole.googleapis.com/v1/urlInspection/index:inspect"
-SKIP_FILES = {"README.md", "index.md", "archive.md"}
-SKIP_DIRS = {".vuepress", "dist", "public"}
+SINCE = "2 weeks ago"
 
 
 def get_access_token():
@@ -253,18 +252,16 @@ def get_access_token():
     return creds.token
 
 
-def get_all_urls():
-    docs_dir = os.path.join(REPO_DIR, "docs")
-    urls = []
-    for root, dirs, files in os.walk(docs_dir):
-        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
-        for file in files:
-            if not file.endswith(".md") or file in SKIP_FILES:
-                continue
-            rel_path = os.path.relpath(os.path.join(root, file), REPO_DIR).replace("\\", "/")
-            url_path = rel_path.removeprefix("docs/").replace(".md", ".html")
-            urls.append(f"{BASE_URL}/{url_path}")
-    return sorted(urls)
+def get_recent_urls():
+    result = subprocess.run(
+        ["git", "log", f"--since={SINCE}", "--name-only", "--diff-filter=AR", "--format="],
+        capture_output=True, text=True, cwd=REPO_DIR
+    )
+    files = sorted(set(
+        f.strip() for f in result.stdout.strip().split("\n")
+        if f.strip().endswith(".md") and f.strip().startswith("docs/")
+    ))
+    return [f"{BASE_URL}/{f.removeprefix('docs/').replace('.md', '.html')}" for f in files]
 
 
 def check_url(url, token):
@@ -288,9 +285,17 @@ def main():
     sep = "=" * 60
     print(f"\n{sep}\n[{now}] 색인 상태 검사 시작\n{sep}")
 
-    token = get_access_token()
-    urls = get_all_urls()
-    print(f"총 {len(urls)}개 URL 검사\n")
+    try:
+        token = get_access_token()
+    except Exception as e:
+        print(f"토큰 발급 실패: {e}"); return
+
+    urls = get_recent_urls()
+    if not urls:
+        print("최근 2주 내 추가/변경된 문서 없음")
+        subprocess.run(["osascript", "-e", 'display notification "최근 2주 내 변경 문서 없음" with title "색인 상태 검사 완료"'])
+        return
+    print(f"최근 2주 내 변경 문서 {len(urls)}개 검사\n")
 
     not_indexed, errors = [], []
 
@@ -316,6 +321,11 @@ def main():
         for url, state in not_indexed:
             print(f"  {url}  ({state})")
 
+    if errors:
+        print("\n[오류 목록]")
+        for url, err in errors:
+            print(f"  {url}  ({err})")
+
     msg = f"미등록 {len(not_indexed)}개 발견 (전체 {len(urls)}개)" if not_indexed else f"전체 {len(urls)}개 모두 색인 등록됨"
     subprocess.run(["osascript", "-e", f'display notification "{msg}" with title "색인 상태 검사 완료"'])
 
@@ -340,8 +350,14 @@ crontab은 잠자기 상태에서 스케줄을 스킵하지만, `launchd`는 잠
     <key>ProgramArguments</key>
     <array>
         <string>/path/to/python3</string>
+        <string>-u</string>
         <string>/path/to/your/repo/docs/.vuepress/check_index_status.py</string>
     </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+    </dict>
     <key>StartCalendarInterval</key>
     <dict>
         <key>Hour</key>
@@ -364,7 +380,13 @@ launchctl load ~/Library/LaunchAgents/com.<name>.index-check.plist
 launchctl list | grep index-check
 ```
 
-출력에 `com.<name>.index-check`가 보이면 등록 완료다.
+출력에 `-  0  com.<name>.index-check`가 보이면 등록 완료다. (앞의 `-`는 현재 실행 중이 아님을 의미)
+
+:::warning Python 출력 버퍼링
+
+launchd는 터미널이 없는 환경에서 실행되므로 Python이 출력을 버퍼링한다. `-u` 플래그와 `PYTHONUNBUFFERED=1`을 설정해야 로그 파일에 실시간으로 기록된다.
+
+:::
 
 :::tip launchd vs crontab
 
@@ -382,6 +404,7 @@ tail -100 docs/.vuepress/index_check.log
 
 검사 완료 시 macOS 알림 센터로 결과가 전달된다.
 
+- 최근 변경 문서 없을 때: `최근 2주 내 변경 문서 없음`
 - 미등록 있을 때: `미등록 N개 발견 (전체 N개)`
 - 전부 등록됐을 때: `전체 N개 모두 색인 등록됨`
 
