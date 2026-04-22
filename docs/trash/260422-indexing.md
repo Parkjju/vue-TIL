@@ -1,20 +1,25 @@
 ---
-title: Snack - [Claude Code] git push 시 Google 색인 자동 등록
-tags: ['Claude Code', 'Google Search Console']
+title: Snack - [Git Hook] git push 시 Google 색인 자동 등록
+tags: ['Git', 'Google Search Console']
 ---
 
 ## 개요
 
-새로운 문서를 추가하고 `git push`하면 Claude Code 훅이 자동으로 Google Indexing API에 색인 등록 요청을 보내도록 자동화한 과정이다.
+새로운 문서를 추가하고 `git push`하면 git의 `post-push` 훅이 자동으로 Google Indexing API에 색인 등록 요청을 보내도록 자동화한 과정이다.
 
 **흐름 요약:**
 
 ```
 git push origin main
-    → PostToolUse 훅 발동
-    → hook_trigger.py: 명령어 확인
+    → .git/hooks/post-push 실행 (git 자체 훅)
     → index_new_pages.py: 새 .md 파일 감지 → Indexing API 호출
 ```
+
+:::tip Claude Code 훅과의 차이
+
+Claude Code PostToolUse 훅은 Claude가 Bash 도구로 실행한 명령에만 반응한다. 터미널에서 직접 `git push`해도 동작하게 하려면 git 자체 훅(`.git/hooks/post-push`)을 사용해야 한다.
+
+:::
 
 ## 사전 준비
 
@@ -135,7 +140,9 @@ def request_indexing(url, token):
 
 def main():
     last_commit = open(LAST_COMMIT_FILE).read().strip() if os.path.exists(LAST_COMMIT_FILE) else None
-    current_commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, cwd=REPO_DIR).stdout.strip()
+    current_commit = subprocess.run(
+        ["git", "rev-parse", "HEAD"], capture_output=True, text=True, cwd=REPO_DIR
+    ).stdout.strip()
 
     if last_commit == current_commit:
         print("[색인] 변경사항 없음"); return
@@ -163,47 +170,25 @@ if __name__ == "__main__":
     main()
 ```
 
-### hook_trigger.py
+## git hook 설정
 
-Claude Code PostToolUse 훅에서 호출되는 진입점. stdin에서 훅 JSON을 읽어 `git push` 명령어인지 확인한다.
+`.git/hooks/post-push` 파일을 생성하고 실행 권한을 부여한다.
 
-```python
-# docs/.vuepress/hook_trigger.py
-import json, subprocess, sys, os
-
-data = json.loads(sys.stdin.read())
-cmd = data.get("tool_input", {}).get("command", "")
-
-if "git push" not in cmd or "gh-pages" in cmd:
-    sys.exit(0)
-
-repo_dir = "/path/to/your/repo"
-script = os.path.join(repo_dir, "docs/.vuepress/index_new_pages.py")
-result = subprocess.run(["python3", script], cwd=repo_dir)
-sys.exit(result.returncode)
+```sh
+# .git/hooks/post-push
+#!/bin/sh
+python3 /path/to/your/repo/docs/.vuepress/index_new_pages.py
 ```
 
-## Claude Code 훅 설정
-
-`.claude/settings.local.json`에 PostToolUse 훅을 등록한다.
-
-```json
-{
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 /path/to/your/repo/docs/.vuepress/hook_trigger.py"
-          }
-        ]
-      }
-    ]
-  }
-}
+```sh
+chmod +x .git/hooks/post-push
 ```
+
+:::warning .git/hooks는 git으로 관리되지 않음
+
+`.git/` 디렉토리는 git 추적 대상이 아니므로 저장소를 새로 클론하면 훅이 사라진다. 팀 프로젝트라면 `scripts/` 등에 훅 파일을 두고 설치 스크립트로 복사하는 방식을 권장한다.
+
+:::
 
 ## .gitignore 설정
 
