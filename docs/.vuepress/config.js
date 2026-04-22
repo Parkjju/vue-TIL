@@ -168,6 +168,7 @@ module.exports = {
                         'trash/230918-31',
                         'trash/250521-mcp',
                         'trash/260420-db',
+                        'trash/260422-indexing',
                     ],
                     sidebarDepth: 2,
                 },
