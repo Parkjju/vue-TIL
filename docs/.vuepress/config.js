@@ -192,6 +192,7 @@ module.exports = {
                     collapsable: true,
                     children: [
                         'database/260420-db1',
+                        'database/260422-db2',
                     ],
                     sidebarDepth: 2,
                 },
