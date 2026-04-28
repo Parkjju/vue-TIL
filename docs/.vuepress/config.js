@@ -193,6 +193,7 @@ module.exports = {
                     children: [
                         'database/260420-db1',
                         'database/260422-db2',
+                        'database/260427-db3',
                     ],
                     sidebarDepth: 2,
                 },
