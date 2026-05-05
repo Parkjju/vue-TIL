@@ -194,6 +194,7 @@ module.exports = {
                         'database/260420-db1',
                         'database/260422-db2',
                         'database/260427-db3',
+                        'database/260504-db4',
                     ],
                     sidebarDepth: 2,
                 },
