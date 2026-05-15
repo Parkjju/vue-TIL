@@ -175,6 +175,14 @@ module.exports = {
             ],
             '/': [
                 {
+                    title: 'Java Spring',
+                    collapsable: true,
+                    children: [
+                        'spring/260514-spring1',
+                    ],
+                    sidebarDepth: 2,
+                },
+                {
                     title: 'Java',
                     collapsable: true,
                     children: [
