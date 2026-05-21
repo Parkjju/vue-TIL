@@ -202,6 +202,8 @@ module.exports = {
                     collapsable: true,
                     children: [
                         'http/260519-http1',
+                        'http/260520-http2',
+                        'http/260520-http3',
                     ],
                     sidebarDepth: 2,
                 },
