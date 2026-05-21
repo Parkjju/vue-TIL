@@ -179,6 +179,8 @@ module.exports = {
                     collapsable: true,
                     children: [
                         'spring/260514-spring1',
+                        'spring/260515-spring2',
+                        'spring/260521-spring3',
                     ],
                     sidebarDepth: 2,
                 },
@@ -192,6 +194,14 @@ module.exports = {
                         'java/260303-intermediate2',
                         'java/260310-advanced1',
                         'java/260325-advanced2',
+                    ],
+                    sidebarDepth: 2,
+                },
+                {
+                    title: 'HTTP',
+                    collapsable: true,
+                    children: [
+                        'http/260519-http1',
                     ],
                     sidebarDepth: 2,
                 },
