@@ -183,6 +183,7 @@ module.exports = {
                         'spring/260521-spring3',
                         'spring/260526-spring4',
                         'spring/260529-spring5',
+                        'spring/260601-spring6',
                     ],
                     sidebarDepth: 2,
                 },
