@@ -155,6 +155,7 @@ module.exports = {
                     title: 'Snack',
                     collapsable: false,
                     children: [
+                        'trash/260603-spring-initializer',
                         'trash/240614-47',
                         'trash/231019-33',
                         'trash/230319-19',
