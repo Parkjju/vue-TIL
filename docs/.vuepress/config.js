@@ -171,6 +171,7 @@ module.exports = {
                         'trash/260420-db',
                         'trash/260422-indexing',
                         'trash/260610-enum',
+                        'trash/260611-record',
                     ],
                     sidebarDepth: 2,
                 },
