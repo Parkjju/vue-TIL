@@ -172,6 +172,7 @@ module.exports = {
                         'trash/260422-indexing',
                         'trash/260610-enum',
                         'trash/260611-record',
+                        'trash/260611-apple-signin',
                     ],
                     sidebarDepth: 2,
                 },
