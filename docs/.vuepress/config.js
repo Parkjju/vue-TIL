@@ -170,6 +170,7 @@ module.exports = {
                         'trash/250521-mcp',
                         'trash/260420-db',
                         'trash/260422-indexing',
+                        'trash/260610-enum',
                     ],
                     sidebarDepth: 2,
                 },
