@@ -155,6 +155,7 @@ module.exports = {
                     title: 'Snack',
                     collapsable: false,
                     children: [
+                        'trash/260616-mockito-static',
                         'trash/260616-integration-test',
                         'trash/260615-unit-test',
                         'trash/260612-jwk-source',
