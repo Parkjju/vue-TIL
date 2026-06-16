@@ -129,6 +129,38 @@ spring.jpa.hibernate.ddl-auto=create-drop
 runtimeOnly 'com.h2database:h2'
 ```
 
+## 통합 테스트 트랜잭션 주의사항
+
+### @Transactional 없으면 dirty checking 안 됨
+
+테스트 클래스에 `@Transactional`이 없으면 `userRepository.findAll()` 같은 Repository 호출이 내부적으로 트랜잭션을 열고 조회 후 즉시 닫는다. 트랜잭션이 닫히는 순간 엔티티가 **detached 상태**가 되어 이후 필드를 변경해도 더티체킹이 동작하지 않고 `flush()`도 효과가 없다.
+
+```java
+// @Transactional 없을 때
+User user = userRepository.findAll().getFirst(); // 조회 후 트랜잭션 종료 → detached
+user.deleteUser();            // 필드 변경
+userRepository.flush();       // 아무 효과 없음 — 영속성 컨텍스트 없음
+```
+
+테스트 클래스에 `@Transactional`을 추가하면 테스트 전체가 하나의 트랜잭션 안에서 실행되어 엔티티가 managed 상태로 유지된다.
+
+```java
+@SpringBootTest
+@Transactional  // 테스트 전체를 하나의 트랜잭션으로
+class AuthServiceIntegrationTest {
+    ...
+    User user = userRepository.findAll().getFirst(); // managed 상태 유지
+    user.deleteUser();         // 더티체킹 동작
+    userRepository.flush();    // UPDATE 쿼리 발생
+}
+```
+
+### 서비스 계층과 트랜잭션 공유
+
+테스트에 `@Transactional`이 있으면 서비스 메서드(`@Transactional(propagation = REQUIRED)`)가 기존 트랜잭션에 참여한다. 테스트 → 서비스 → Repository가 모두 하나의 트랜잭션을 공유하므로 같은 영속성 컨텍스트를 사용한다.
+
+테스트 종료 시 트랜잭션이 롤백되어 DB가 자동으로 원상복구된다. 테스트 간 데이터 격리가 보장된다.
+
 ## Repository는 given()으로 제어하지 않는다
 
 단위 테스트와 통합 테스트의 Repository 다루는 방식이 다르다.
