@@ -199,12 +199,112 @@ void getGenreList_throwsWhenEmpty() {
 | `hasMessageContaining("장르")` | 예외 메시지에 특정 문자열 포함 여부 검증 |
 | `hasMessage("정확한 메시지")` | 예외 메시지 완전 일치 검증 |
 
+## `@Mock` vs `@MockitoBean`
+
+| | `@Mock` | `@MockitoBean` |
+|---|---|---|
+| 환경 | Mockito 단위 테스트 | Spring 컨텍스트 (`@SpringBootTest`) |
+| 동작 | Mockito가 껍데기 객체 생성 | Spring 컨텍스트 안의 빈을 Mock으로 교체 |
+| Spring | Spring 모름 | Spring이 인식하고 주입 |
+
+`@SpringBootTest`에서 `@Mock`을 써봤자 Spring은 그 존재를 모른다. Spring은 이미 자기가 만든 진짜 빈을 서비스에 주입한 상태라 `@Mock`으로 만든 껍데기는 아무 효과가 없다.
+
+```java
+@SpringBootTest
+class AuthServiceIntegrationTest {
+    @Autowired
+    private AuthService authService; // Spring이 진짜 AppleAuthClient 주입한 상태
+
+    @Mock
+    private AppleAuthClient appleAuthClient; // Mockito가 만든 껍데기, 아무도 안 씀 (무효)
+}
+```
+
+`@MockitoBean`을 쓰면 Spring에게 "이 빈은 Mock으로 교체해서 컨텍스트에 등록해라"고 지시한다.
+
+:::tip @MockBean deprecated
+Spring Boot 3.4부터 `@MockBean` → `@MockitoBean`으로 교체됐다.
+
+```java
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+```
+:::
+
+## 단위 테스트 vs 통합 테스트
+
+기준은 **Spring 컨텍스트가 필요한가**다.
+
+| | 단위 테스트 | 통합 테스트 |
+|---|---|---|
+| 애노테이션 | `@ExtendWith(MockitoExtension.class)` | `@SpringBootTest` |
+| DB | Mock으로 대체 | H2 인메모리 실제 동작 |
+| 속도 | 빠름 | 느림 |
+| 검증 대상 | 서비스 로직 분기, 예외 | DB 적재 후 재조회, 트랜잭션 |
+
+테스트 클래스는 목적별로 분리한다.
+
+```
+AuthServiceTest.java            ← 단위 테스트, 비즈니스 로직 분기/예외
+AuthServiceIntegrationTest.java ← 통합 테스트, DB 적재 시나리오
+```
+
+하나로 통일하면 전부 `@SpringBootTest`가 되어 컨텍스트 로드 시간 때문에 전체 테스트가 느려진다.
+
+### 통합 테스트 기본 틀
+
+```java
+@SpringBootTest
+@Transactional
+class AuthServiceIntegrationTest {
+
+    @Autowired
+    private AuthService authService;
+
+    @MockitoBean  // @PostConstruct에서 외부 네트워크 요청 → Mock으로 대체
+    private AppleAuthClient appleAuthClient;
+
+    @MockitoBean  // 환경변수(JWT_SECRET) 없으면 빈 생성 실패 → Mock으로 대체
+    private JwtProvider jwtProvider;
+
+    @Test
+    @DisplayName("동일 Apple 계정 두 번 로그인 - 두 번째는 기존 유저 반환")
+    void signInWithApple_기존유저() {
+        given(appleAuthClient.verifyIdentityToken(any()))
+            .willReturn(new AppleIdentity("test@gmail.com", "test-apple-id"));
+        given(jwtProvider.generateAccessToken(any())).willReturn("access-token");
+        given(jwtProvider.generateRefreshToken(any())).willReturn("refresh-token");
+        given(jwtProvider.getAccessTokenExpiration()).willReturn(3600000L);
+        given(jwtProvider.getRefreshTokenExpiration()).willReturn(2592000000L);
+
+        authService.signInWithApple("test token"); // 신규가입 → DB 저장
+        authService.signInWithApple("test token"); // 기존유저 조회 → 로그인
+    }
+}
+```
+
+`@Transactional`은 테스트 종료 후 자동 롤백해서 테스트 간 DB 상태가 격리된다.
+
+`@MockitoBean`을 쓰는 이유는 두 가지다.
+- `AppleAuthClient`: `@PostConstruct`에서 Apple JWKS 엔드포인트에 네트워크 요청 발생 → 테스트 환경에서 불필요
+- `JwtProvider`: `@PostConstruct`에서 `JWT_SECRET` 환경변수로 `SecretKey` 초기화 → 테스트 환경에 환경변수 없으면 빈 생성 자체가 실패
+
+나머지 Repository는 실제 H2 DB로 동작시켜야 DB 적재 시나리오가 검증되므로 Mock으로 대체하지 않는다.
+
+`src/test/resources/application.properties`에 H2 설정을 추가한다.
+
+```properties
+spring.datasource.url=jdbc:h2:mem:testdb;MODE=PostgreSQL
+spring.datasource.driver-class-name=org.h2.Driver
+spring.jpa.hibernate.ddl-auto=create-drop
+```
+
 ## 테스트 계층별 선택 기준
 
 | 계층 | 애노테이션 | 사용 시점 |
 |---|---|---|
-| Service | `@ExtendWith(MockitoExtension.class)` | 비즈니스 로직 검증 (지금) |
-| Repository | `@DataJpaTest` | 커스텀 JPQL/쿼리 메서드 생길 때 |
+| Service 단위 | `@ExtendWith(MockitoExtension.class)` | 비즈니스 로직 분기, 예외 케이스 |
+| Service 통합 | `@SpringBootTest` | DB 적재 후 재조회, 트랜잭션 동작 |
+| Repository | `@DataJpaTest` | 커스텀 JPQL/`@Query` 메서드 생길 때 |
 | Controller | `@WebMvcTest` + `MockMvc` | Security 필터체인 붙인 후 |
 
-Repository 단위 테스트(`@DataJpaTest`)는 H2 인메모리 DB를 띄워 JPA 쿼리를 검증한다. `findAll()`처럼 Spring Data JPA가 이미 검증한 메서드는 테스트할 필요 없고, 직접 작성한 JPQL이나 `@Query` 메서드가 생길 때 작성한다.
+`@DataJpaTest`는 DB를 쓰지만 통합 테스트라고 부르지 않는다. H2를 띄워 JPA 쿼리만 검증하는 용도로, `findAll()`처럼 Spring Data JPA가 이미 검증한 메서드는 테스트할 필요 없고 직접 작성한 쿼리가 생길 때 작성한다.
