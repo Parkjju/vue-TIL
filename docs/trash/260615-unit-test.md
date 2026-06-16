@@ -149,6 +149,28 @@ ReflectionTestUtils.setField(genre, "genreNameEn", "Pop");
 ReflectionTestUtils.setField(genre, "genreNameKo", "팝");
 ```
 
+## Argument Matcher — `any()`
+
+`given()` 안에서 특정 인자값을 지정하면 그 값이 정확히 넘어올 때만 매칭된다.
+
+```java
+given(jwtProvider.generateAccessToken("abc")).willReturn("token");
+// "abc"가 넘어올 때만 매칭
+```
+
+테스트에서 실제로 어떤 값이 넘어올지 모르거나 신경 쓰지 않을 때는 `any()`를 쓴다.
+
+```java
+given(jwtProvider.generateAccessToken(any())).willReturn("access-token");
+// userId가 null이든 1L이든 뭐든 → "access-token" 반환
+```
+
+서비스 내부에서 생성된 객체(`User`)의 필드값(`id`)이 `null`이어도 Mock이 가로채서 지정한 값을 반환하므로, 인자에 의존하지 않는 케이스에서 유용하다.
+
+```java
+import static org.mockito.ArgumentMatchers.any;
+```
+
 ## 예외 테스트
 
 예외가 던져지는 케이스는 `assertThatThrownBy`를 사용한다.
