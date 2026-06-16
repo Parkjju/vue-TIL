@@ -72,6 +72,42 @@ JUnit 5에 Mockito를 붙여주는 선언이다. 이게 있어야 `@Mock`, `@Inj
 
 `given()`은 BDDMockito의 메서드다. Mockito의 `when()`과 동일한 역할이지만 given/when/then 단계 구분이 명확해진다.
 
+### `given()` 동작 원리
+
+```java
+given(genreRepository.findAll()).willReturn(List.of(genre));
+```
+
+`given()` 안의 `findAll()` 호출은 실제로 실행되는 게 아니다. **"이 mock에서 `findAll()`이 호출되면"** 이라는 조건을 Mockito에 등록하는 행위다. `given()`은 `BDDOngoingStubbing` 객체를 반환하고, `.willReturn()`은 그 객체의 메서드라 체이닝이 된다.
+
+```
+given(genreRepository.findAll())  // BDDOngoingStubbing<List<Genre>> 반환
+    .willReturn(List.of(genre));  // BDDOngoingStubbing의 메서드
+```
+
+이후 서비스 메서드를 실행하면, 내부에서 `findAll()`이 호출될 때 Mockito가 가로채서 `List.of(genre)`를 반환한다. 서비스가 `findById(1L)`을 쓴다면 `given(genreRepository.findById(1L)).willReturn(...)` 처럼 호출 형태에 맞게 등록해야 한다.
+
+```
+실제 코드:  genreRepository.findAll() → DB 조회
+테스트:     genreRepository.findAll() → willReturn(List.of(genre)) 로 가로챔
+```
+
+### static import
+
+`given`과 `assertThat`은 각각 다른 라이브러리의 정적 메서드라 static import가 필요하다.
+
+```java
+import static org.mockito.BDDMockito.given;
+import static org.assertj.core.api.Assertions.assertThat;
+```
+
+`given()`을 static import하면 `willReturn`은 `given()`이 반환하는 객체의 메서드라 별도 import가 필요 없다.
+
+IntelliJ에서 자동 추천이 안 될 때는 Settings → Editor → General → Auto Import → `Include auto-import of static members in completion` 목록에 아래 두 개를 추가하면 된다.
+
+- `org.assertj.core.api.Assertions`
+- `org.mockito.BDDMockito`
+
 ### `assertThat`
 
 AssertJ 라이브러리의 검증 메서드로, `spring-boot-starter-test`에 기본 포함된다. 체이닝으로 검증 조건을 붙일 수 있다.
