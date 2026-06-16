@@ -78,6 +78,24 @@ class AuthServiceIntegrationTest {
 
 Repository는 선언하지 않으면 Spring이 H2를 바라보는 실제 빈을 주입한다. `@Transactional`은 테스트 종료 후 자동 롤백해서 테스트 간 DB 상태를 격리한다.
 
+### Mock 고정값으로 인한 unique 제약 위반
+
+같은 서비스 메서드를 한 테스트 안에서 여러 번 호출할 때 주의할 점이 있다. Mock이 항상 같은 고정값을 반환하면 unique 제약이 걸린 컬럼에 동일한 값이 중복 INSERT되어 에러가 발생한다.
+
+```
+Unique index or primary key violation: REFRESH_TOKEN_HASH
+```
+
+`jwtProvider.generateRefreshToken()`이 항상 `"test-refresh-token"`을 반환하면, 두 번째 호출에서 같은 해시값을 INSERT하려다 unique 제약에 걸린다.
+
+`willReturn`을 체이닝하면 호출 순서마다 다른 값을 반환시킬 수 있다.
+
+```java
+given(jwtProvider.generateRefreshToken(any()))
+    .willReturn("test-refresh-token-1")  // 첫 번째 호출
+    .willReturn("test-refresh-token-2"); // 두 번째 호출
+```
+
 ### @MockitoBean을 쓰는 이유
 
 - `AppleAuthClient`: `@PostConstruct`에서 Apple JWKS 엔드포인트 네트워크 요청 발생 → 테스트 환경에서 불필요
