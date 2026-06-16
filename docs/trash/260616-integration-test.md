@@ -111,6 +111,36 @@ spring.jpa.hibernate.ddl-auto=create-drop
 runtimeOnly 'com.h2database:h2'
 ```
 
+## Repository는 given()으로 제어하지 않는다
+
+단위 테스트와 통합 테스트의 Repository 다루는 방식이 다르다.
+
+| | 단위 테스트 | 통합 테스트 |
+|---|---|---|
+| Repository | `@Mock` 선언 | 선언 없음 |
+| 동작 | `given()`으로 반환값 지정 | H2에 실제 저장/조회 |
+| 이유 | 실제 DB 없음 | 실제 DB처럼 동작해야 함 |
+
+통합 테스트에서 Repository를 `@MockitoBean`으로 막으면 `save()`가 아무것도 저장하지 않아 단위 테스트와 동일한 상황이 된다. Repository 필드 선언을 아예 하지 않으면 Spring이 H2 기반 실제 빈을 `AuthService`에 주입한다.
+
+테스트 코드에서 Repository를 직접 호출할 일이 없기 때문에 필드 선언 자체가 필요 없다. `authService.signInWithApple()`을 호출하면 서비스 내부에서 알아서 Repository를 쓴다.
+
+## 초기 데이터 세팅 — @BeforeEach
+
+특정 데이터가 미리 DB에 있어야 하는 시나리오는 `@BeforeEach`로 넣어준다.
+
+```java
+@Autowired
+private UserRepository userRepository;
+
+@BeforeEach
+void setUp() {
+    userRepository.save(User.create("test@gmail.com", "digger_test"));
+}
+```
+
+이때는 테스트 클래스에서 Repository를 직접 사용하므로 `@Autowired`로 필드 선언이 필요하다. `@Transactional`이 있으면 각 테스트 종료 후 롤백되어 테스트 간 데이터가 격리된다.
+
 ## 두 테스트 클래스의 의존성 중복
 
 같은 서비스에 대해 단위 테스트와 통합 테스트를 분리하면 의존성 선언이 중복된다.
