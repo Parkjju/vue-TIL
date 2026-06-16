@@ -149,6 +149,34 @@ ReflectionTestUtils.setField(genre, "genreNameEn", "Pop");
 ReflectionTestUtils.setField(genre, "genreNameKo", "팝");
 ```
 
+## 예외 테스트
+
+예외가 던져지는 케이스는 `assertThatThrownBy`를 사용한다.
+
+```java
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+```
+
+```java
+@Test
+@DisplayName("장르 없을 때 예외 발생")
+void getGenreList_throwsWhenEmpty() {
+    given(genreRepository.findAll()).willReturn(List.of());
+
+    assertThatThrownBy(() -> genreService.getGenreList())
+        .isInstanceOf(BusinessException.class)
+        .hasMessageContaining("장르");
+}
+```
+
+람다로 실행할 코드를 넘기면, 그 안에서 던져진 예외를 잡아서 타입/메시지 등을 체이닝으로 검증한다.
+
+| 메서드 | 역할 |
+|---|---|
+| `isInstanceOf(BusinessException.class)` | 예외 타입 검증 |
+| `hasMessageContaining("장르")` | 예외 메시지에 특정 문자열 포함 여부 검증 |
+| `hasMessage("정확한 메시지")` | 예외 메시지 완전 일치 검증 |
+
 ## 테스트 계층별 선택 기준
 
 | 계층 | 애노테이션 | 사용 시점 |
