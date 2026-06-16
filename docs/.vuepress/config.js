@@ -155,6 +155,7 @@ module.exports = {
                     title: 'Snack',
                     collapsable: false,
                     children: [
+                        'trash/260616-integration-test',
                         'trash/260615-unit-test',
                         'trash/260612-jwk-source',
                         'trash/260611-apple-signin',
