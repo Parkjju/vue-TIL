@@ -38,6 +38,23 @@ Clock fixedClock = Clock.fixed(Instant.parse("2026-06-17T00:00:00Z"), ZoneOffset
 
 이렇게 고정해두면 `issuedAt`/`expiration`이 정확히 예측 가능한 값이 되어, 더 이상 tolerance 없이 "정확히 이 값"으로 검증할 수 있다.
 
+:::tip 그래도 완전히 똑같진 않을 수 있다 — JWT는 초 단위까지만 저장한다
+`Clock`으로 시간을 완전히 고정했는데도 `isEqualTo` 비교가 실패하는 경우가 있다. JWT 스펙(RFC 7519)의 `iat`/`exp`(NumericDate)는 **초 단위**로 정의되어 있어서, JJWT가 토큰을 인코딩할 때 밀리초를 truncate한다. 그래서 디코딩한 `claims.getIssuedAt()`은 밀리초가 항상 `0`인 `Date`인데, 비교 대상으로 만든 `Date.from(clock.instant())`는 (seed `Instant`에 밀리초가 남아있다면) 그대로 밀리초를 갖고 있어서 둘이 어긋난다.
+
+해결책 1 — AssertJ의 `isCloseTo`로 허용 오차를 두기:
+```java
+assertThat(claims.getIssuedAt()).isCloseTo(Date.from(clock.instant()), 1000); // 1초 이내 허용
+```
+
+해결책 2 — 비교 대상도 JWT와 동일하게 초 단위로 truncate해서 정확히 맞추기:
+```java
+Date expected = Date.from(clock.instant().truncatedTo(ChronoUnit.SECONDS));
+assertThat(claims.getIssuedAt()).isEqualTo(expected);
+```
+
+`isCloseTo`가 "JWT는 초 단위까지만 보장한다"는 의도를 코드에 더 명확히 드러내기 때문에 보통 더 선호된다.
+:::
+
 ### 처음 시도: secretKey와 같은 패턴 (필드 + @PostConstruct)
 
 `JwtProvider`엔 이미 비슷한 패턴이 있었다 — `secretKey`를 `@PostConstruct`에서 초기화하는 코드. 그래서 처음엔 `Clock`도 똑같이 따라갔다.
