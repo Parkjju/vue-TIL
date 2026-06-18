@@ -155,6 +155,7 @@ module.exports = {
                     title: 'Snack',
                     collapsable: false,
                     children: [
+                        'trash/260618-jwt-security-implementation',
                         'trash/260617-spring-security-filter-chain',
                         'trash/260617-clock-injection',
                         'trash/260616-mockito-static',
