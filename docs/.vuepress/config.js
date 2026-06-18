@@ -155,6 +155,7 @@ module.exports = {
                     title: 'Snack',
                     collapsable: false,
                     children: [
+                        'trash/260618-webmvctest-nested-controller',
                         'trash/260618-spring-bean-method-mechanics',
                         'trash/260618-jwt-security-implementation',
                         'trash/260617-spring-security-filter-chain',
