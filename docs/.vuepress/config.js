@@ -155,6 +155,7 @@ module.exports = {
                     title: 'Snack',
                     collapsable: false,
                     children: [
+                        'trash/260623-jpa-empty-in-clause',
                         'trash/260622-datajpatest-jpa-auditing',
                         'trash/260622-feed-cursor-pagination',
                         'trash/260618-webmvctest-nested-controller',
