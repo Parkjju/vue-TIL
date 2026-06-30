@@ -175,6 +175,29 @@ Cloud Run에서 Cloud SQL에 접속하는 방식은 두 가지다.
 | 유닉스 소켓 (socket factory) | 공인 IP 불필요, VPC 내부 통신 | 의존성 추가 + URL 변경 필요 |
 | TCP + 공인 IP | 공인 IP 필요 | 단순하지만 덜 안전 |
 
+#### TCP vs 유닉스 소켓
+
+**TCP**는 앱이 DB에 연결할 때 네트워크를 통해 `IP:PORT`로 찾아가는 방식이다. 로컬에서 `localhost:5432`로 접속하는 것도 TCP다.
+
+```
+앱 → 네트워크 → IP:PORT → DB 서버
+```
+
+**유닉스 소켓**은 같은 머신(또는 같은 컨테이너 환경) 안에서 파일을 통해 통신하는 방식이다. `/var/run/postgresql/.s.PGSQL.5432` 같은 특수 파일이 소켓 역할을 한다. 네트워크를 거치지 않아 TCP보다 빠르고, 공인 IP가 없어 외부에서 직접 접근할 수 없다.
+
+```
+앱 → 파일 경로 → DB 서버
+```
+
+**Cloud Run에서 소켓 방식을 쓰는 이유**: `--add-cloudsql-instances`를 붙이면 GCP가 컨테이너 안에 소켓 파일을 직접 마운트해준다.
+
+```
+Cloud Run 컨테이너 내부
+  /cloudsql/PROJECT:REGION:INSTANCE  ← 소켓 파일이 이 경로에 마운트됨
+```
+
+그래서 DB_URL에서 호스트:포트 대신 이 소켓 파일 경로로 연결한다. `jdbc:postgresql:///DB_NAME`에서 호스트를 비워두는 게 "소켓 파일 경로로 연결하겠다"는 의미다. `socketFactory` 파라미터가 `cloudSqlInstance` 값을 보고 위 경로를 자동으로 찾아 연결한다.
+
 소켓 방식을 사용하려면 `build.gradle`에 의존성을 추가하고, JDBC URL을 소켓 팩토리 형식으로 작성해야 한다.
 
 ```gradle
