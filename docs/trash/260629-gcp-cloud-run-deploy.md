@@ -113,12 +113,23 @@ docker push $IMAGE
 
 ## 6. Cloud Run 배포
 
+### 인스턴스 연결 이름(connectionName) 조회
+
 ```bash
-# Cloud SQL 인스턴스 연결 이름 조회
 INSTANCE_CONNECTION_NAME=$(gcloud sql instances describe INSTANCE_NAME \
   --format='value(connectionName)')
 
-# Cloud Run 배포
+echo $INSTANCE_CONNECTION_NAME
+# 출력 예: dignify-501004:us-central1:dignify
+```
+
+`connectionName`은 `PROJECT_ID:REGION:INSTANCE_NAME` 형태의 문자열이다. Cloud Run이 Cloud SQL 소켓을 마운트할 때 이 값으로 인스턴스를 식별한다.
+
+- `--format='value(connectionName)'`: gcloud describe 결과에서 `connectionName` 필드만 추출하는 옵션. 전체 JSON 출력 대신 값만 꺼내서 셸 변수에 바로 담는다.
+
+### Cloud Run 서비스 배포
+
+```bash
 gcloud run deploy APP_NAME \
   --image=REGION-docker.pkg.dev/PROJECT_ID/REPO_NAME/APP_NAME \
   --region=REGION \
@@ -133,9 +144,26 @@ JWT_SECRET=JWT_SECRET_VALUE,\
 CRON_SECRET=CRON_SECRET_VALUE"
 ```
 
+**배포 옵션:**
+
 - `--platform=managed`: GCP가 인프라를 완전 관리하는 모드. 서버 관리 불필요.
 - `--allow-unauthenticated`: iOS 클라이언트 등 외부에서 API를 인증 없이 호출할 수 있도록 공개 접근 허용.
-- `--add-cloudsql-instances`: Cloud Run ↔ Cloud SQL 간 유닉스 소켓 연결을 활성화한다. 이 옵션이 없으면 소켓 경로가 마운트되지 않아 DB 연결이 안 된다.
+- `--add-cloudsql-instances=$INSTANCE_CONNECTION_NAME`: Cloud Run 컨테이너 안에 Cloud SQL 유닉스 소켓 경로를 마운트한다. 이 옵션이 없으면 소켓 경로 자체가 존재하지 않아 DB 연결 불가.
+
+**환경변수(`--set-env-vars`):**
+
+| 변수 | 값 | 설명 |
+|---|---|---|
+| `DB_URL` | `jdbc:postgresql:///DB_NAME?cloudSqlInstance=...&socketFactory=...` | 소켓 팩토리 방식 JDBC URL. `application.properties`에서 이 값이 있으면 TCP fallback을 무시하고 이 URL을 사용한다. |
+| `DB_USERNAME` | Cloud SQL 유저명 | `gcloud sql users create`로 만든 유저 |
+| `DB_PASSWORD` | Cloud SQL 비밀번호 | 유저 생성 시 설정한 비밀번호 |
+| `JWT_SECRET` | 임의의 시크릿 문자열 | access/refresh token 서명용 HS256 키 |
+| `CRON_SECRET` | 임의의 시크릿 문자열 | `/internal/cron/collect` 엔드포인트 인증 헤더 값 |
+
+:::tip DB_URL의 `///` (슬래시 3개)
+`jdbc:postgresql:///DB_NAME` — 호스트 부분이 비어있다(`//` 다음 바로 `/DB_NAME`). TCP 방식이라면 `//localhost:5432/DB_NAME`처럼 호스트를 명시하지만, 유닉스 소켓 방식은 호스트 대신 소켓 파일 경로를 사용하므로 호스트를 생략한다. `socketFactory` 파라미터가 있으면 소켓 팩토리가 `cloudSqlInstance` 값을 보고 마운트된 소켓 경로를 자동으로 찾아서 연결한다.
+:::
+
 - 비용: 요청이 없으면 과금 없음. 요청 수 + CPU 사용 시간 기준 과금. 트래픽이 거의 없는 수준이면 **$0~1/월**.
 
 ### Cloud SQL 소켓 연결 방식
