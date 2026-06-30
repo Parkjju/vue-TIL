@@ -155,6 +155,7 @@ module.exports = {
                     title: 'Snack',
                     collapsable: false,
                     children: [
+                        'trash/260629-docker-commands',
                         'trash/260629-docker-basics',
                         'trash/260629-spring-batch-transaction',
                         'trash/260623-jpa-empty-in-clause',
