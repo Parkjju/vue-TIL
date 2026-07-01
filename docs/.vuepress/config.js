@@ -155,6 +155,7 @@ module.exports = {
                     title: 'Snack',
                     collapsable: false,
                     children: [
+                        'trash/260701-swiftui-draggesture-swipe-card',
                         'trash/260630-swiftui-state-environment',
                         'trash/260630-swiftui-flow-layout',
                         'trash/260629-cloud-sql-proxy',
