@@ -155,6 +155,7 @@ module.exports = {
                     title: 'Snack',
                     collapsable: false,
                     children: [
+                        'trash/260630-swiftui-flow-layout',
                         'trash/260629-cloud-sql-proxy',
                         'trash/260629-gcp-cloud-run-deploy',
                         'trash/260629-spring-async-cron',
