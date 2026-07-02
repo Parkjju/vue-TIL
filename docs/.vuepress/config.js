@@ -155,6 +155,7 @@ module.exports = {
                     title: 'Snack',
                     collapsable: false,
                     children: [
+                        'trash/260702-datajpatest-h2-replace',
                         'trash/260701-swiftui-interaction-frozen-attributegraph',
                         'trash/260701-swiftui-draggesture-swipe-card',
                         'trash/260630-swiftui-state-environment',
