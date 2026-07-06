@@ -52,6 +52,14 @@ GitHub Actions에서 GCP에 접근하려면 인증이 필요하다. 전통적인
 
 **Workload Identity Federation(WIF)** 은 키를 아예 만들지 않는다. GitHub Actions가 실행될 때 발급하는 **단기 OIDC 토큰**을 GCP가 신뢰하도록 설정해두고, 그 토큰을 서비스 계정으로 **교환(impersonation)** 하는 방식이다.
 
+:::tip 용어 정의 — OIDC 토큰 / WIF
+**OIDC(OpenID Connect)** 는 OAuth 2.0 위에 얹은 **인증(authentication)** 표준이다. "이 요청 주체가 누구인지"를 신뢰할 수 있는 발급자(issuer)가 서명해서 증명하는 규격이다.
+
+**OIDC 토큰**은 그 증명서로 발급되는 **서명된 JWT**다. GitHub Actions의 경우 워크플로가 돌 때 GitHub의 OIDC 발급자(`https://token.actions.githubusercontent.com`)가 이 토큰을 만들어주며, 안에는 `iss`(발급자), `sub`(주체), `aud`(대상), `exp`(만료), 그리고 `repository`·`ref`·`workflow` 같은 GitHub 고유 클레임(claim)이 담긴다. 유효시간이 짧고(수 분) 매 실행마다 새로 발급된다.
+
+**WIF(Workload Identity Federation)** 는 이 외부 발급 OIDC 토큰을 GCP가 **자기 서비스 계정 권한으로 교환**해주는 GCP 기능이다. "외부 신원(GitHub) → 내부 신원(GCP 서비스 계정)"을 연합(federation)하는 다리 역할이라, 저장된 키 없이도 GCP 리소스에 접근할 수 있다.
+:::
+
 ```
 [GitHub Actions] 실행 시 OIDC 토큰 발급 (assertion.repository = "Parkjju/dignify-backend")
         │
