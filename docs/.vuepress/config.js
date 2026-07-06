@@ -155,6 +155,7 @@ module.exports = {
                     title: 'Snack',
                     collapsable: false,
                     children: [
+                        'trash/260706-transaction-external-api',
                         'trash/260706-github-actions-skip-ci',
                         'trash/260706-github-actions-cicd-cloud-run',
                         'trash/260702-datajpatest-h2-replace',
