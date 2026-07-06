@@ -147,6 +147,50 @@ gcloud iam workload-identity-pools providers create-oidc github-provider \
 이게 없으면 **GitHub의 아무 레포나** 이 프로바이더를 통해 인증을 시도할 수 있다. `attribute-condition`으로 "우리 레포에서 온 토큰만"으로 좁혀야 한다. 여기에 브랜치 조건(`assertion.ref=='refs/heads/main'`)까지 추가로 걸 수도 있다.
 :::
 
+#### `--attribute-mapping`을 더 자세히
+
+이 플래그가 헷갈리는 이유는 `assertion.*`과 `attribute.*`이 **서로 다른 세계의 이름**이기 때문이다.
+
+- **`assertion.*` = 들어오는 GitHub OIDC 토큰(JWT) 안의 클레임(claim).** GitHub이 토큰에 넣어주는 값들이다. 예를 들어 워크플로가 돌면 GitHub은 대략 이런 payload의 토큰을 발급한다:
+
+  ```json
+  {
+    "iss": "https://token.actions.githubusercontent.com",
+    "sub": "repo:Parkjju/dignify-backend:ref:refs/heads/main",
+    "aud": "...",
+    "repository": "Parkjju/dignify-backend",
+    "ref": "refs/heads/main",
+    "actor": "Parkjju"
+  }
+  ```
+
+  즉 `assertion.sub`는 위 토큰의 `sub` 필드값, `assertion.repository`는 `repository` 필드값을 가리킨다. `assertion`은 "GitHub이 주장(assert)하는 내용"이라는 뜻이다.
+
+- **`attribute.*` = GCP가 그 신원을 내부적으로 식별할 때 쓰는 속성.** GCP는 외부 토큰을 그대로 쓰지 않고, 자기 방식의 속성으로 **번역해서** 저장한다.
+
+`--attribute-mapping`은 바로 이 **번역 규칙**이다. "들어온 토큰의 이 클레임값을 → GCP의 이 속성으로 담아라"를 지정한다.
+
+```
+--attribute-mapping="google.subject=assertion.sub,attribute.repository=assertion.repository"
+```
+
+| 매핑 | 읽는 법 |
+|---|---|
+| `google.subject=assertion.sub` | 토큰의 `sub` 값을 GCP의 **주체 식별자**(`google.subject`)로 삼는다. `google.subject`는 **필수** — GCP가 "이 신원은 누구"를 가리는 기본 키다. |
+| `attribute.repository=assertion.repository` | 토큰의 `repository` 값을 **커스텀 속성** `attribute.repository`에 담는다. 이렇게 담아둬야 나중에 `--attribute-condition`이나 IAM 바인딩의 `.../attribute.repository/${REPO}` 경로에서 이 값으로 필터링할 수 있다. |
+
+정리하면 흐름은 이렇다: **GitHub이 `repository: "Parkjju/dignify-backend"` 클레임을 토큰에 담아 보냄 → GCP가 매핑 규칙대로 그 값을 `attribute.repository`에 저장 → `attribute-condition`과 임퍼소네이션 바인딩이 이 `attribute.repository`값으로 "우리 레포가 맞는지" 검사.** 매핑을 안 해두면 GCP는 `attribute.repository`라는 속성 자체를 모르므로 조건/바인딩에서 참조할 수 없다.
+
+#### `issuer-uri`로 이 URL을 쓰는 이유
+
+```
+--issuer-uri="https://token.actions.githubusercontent.com"
+```
+
+이 주소는 내가 정한 값이 아니라 **GitHub Actions의 공식·고정 OIDC 발급자(issuer) URL**이다. 모든 GitHub 레포·워크플로가 이 동일한 발급자에서 토큰을 받는다(레포마다 다른 URL이 아니다). 앞의 토큰 payload에서 `iss` 값이 정확히 이 URL인 것과 같다.
+
+GCP는 이 URL을 받으면 뒤에 `/.well-known/openid-configuration`을 붙여 **OIDC 디스커버리 문서**를 읽고, 거기 명시된 **JWKS(공개키 목록)** 를 가져와서 들어온 토큰의 서명을 검증한다. 즉 "이 발급자가 서명한 토큰만 진짜"라고 신뢰의 뿌리를 박아두는 것이라, GitHub이 공개한 정확한 발급자 URL이어야만 서명 검증이 성립한다. 오타가 나거나 다른 URL을 쓰면 GCP가 공개키를 못 찾아 모든 토큰 검증이 실패한다.
+
 ### ⑤ 레포 → 서비스 계정 임퍼소네이션 바인딩
 
 ```bash
@@ -156,7 +200,14 @@ gcloud iam service-accounts add-iam-policy-binding $SA \
   --member="principalSet://iam.googleapis.com/projects/${PROJECT_NUMBER}/locations/global/workloadIdentityPools/github-pool/attribute.repository/${REPO}"
 ```
 
-"WIF 풀을 통해 들어온 **이 레포의 신원**이 `github-deployer` 서비스 계정을 빌려쓸 수 있다"를 명시하는 바인딩이다. `principalSet://`은 "특정 속성을 만족하는 신원들의 집합"을 가리킨다.
+**임퍼소네이션(impersonation)** 은 "한 신원이 다른 신원을 잠깐 빌려 쓰는 것"이다. WIF를 통해 들어온 GitHub 신원은 그 자체로는 GCP에서 아무 권한도 없다 — Cloud Run을 배포할 수도, 이미지를 push할 수도 없다. 권한은 전부 `github-deployer` **서비스 계정**이 갖고 있다. 그래서 GitHub 신원이 배포를 하려면 이 서비스 계정을 **잠시 흉내 내서(impersonate)** 그 계정의 권한을 물려받아야 한다.
+
+이 바인딩은 바로 그 "빌려쓰기"를 허가하는 문장이다. 풀어 읽으면:
+
+> **누가**(`--member`): WIF 풀을 통해 들어왔고 `attribute.repository`가 `Parkjju/dignify-backend`인 신원이
+> **무엇을**(`--role="roles/iam.workloadIdentityUser"`): 이 서비스 계정을 임퍼소네이션(빌려쓰기) 할 수 있다
+
+`roles/iam.workloadIdentityUser`가 바로 "이 서비스 계정을 빌려 쓸 수 있는 권한" 역할이다. `principalSet://`은 "특정 속성(여기선 `attribute.repository`)을 만족하는 신원들의 **집합**"을 가리키는데, 개별 사용자 한 명이 아니라 "이 레포에서 온 모든 워크플로 실행"이라는 조건부 집합을 대상으로 걸기 때문이다.
 
 :::warning `attribute` vs `attributes` — 실제로 겪은 함정
 `principalSet` 경로에서 속성 부분은 **단수 `attribute.repository`** 다. `attributes.repository`(복수)로 쓰면 `INVALID_ARGUMENT: Invalid principalSet member` 에러가 난다. `--attribute-mapping`에서 쓴 `attribute.repository`와 동일한 단수형이다.
@@ -259,6 +310,22 @@ jobs:
 
 :::tip `id-token: write`를 빼먹으면
 WIF 인증이 `Unable to get ACTIONS_ID_TOKEN_REQUEST_URL` 류 에러로 실패한다. GitHub이 OIDC 토큰을 발급하는 것 자체가 이 권한에 달려 있어서, WIF를 쓸 때 반드시 명시해야 한다.
+:::
+
+### `workload_identity_provider` 같은 이름은 내가 정하는 게 아니다
+
+`deploy.yml`에 나오는 키들은 **두 종류**로 나뉜다 — 내가 자유롭게 짓는 이름과, 스펙에 정해져 있어 반드시 그 철자로 써야 하는 이름.
+
+| 키 | 종류 | 누가 정의하나 |
+|---|---|---|
+| `REGION`, `SERVICE`, `IMAGE` (`env` 아래) | **내가 정함** | 임의의 환경변수명. 아무 이름이나 가능 |
+| `workload_identity_provider`, `service_account` | **정해져 있음** | `google-github-actions/auth` 액션이 정의한 **입력(input) 이름**. 이 액션의 `action.yml`에 선언된 그대로 써야 하며, 오타나 다른 이름을 쓰면 무시되거나 인증 실패 |
+| `permissions`, `id-token`, `contents`, `needs`, `runs-on`, `steps`, `uses`, `with` | **정해져 있음** | GitHub Actions 워크플로 문법에 예약된 키워드 |
+
+즉 `with:` 아래의 `workload_identity_provider` / `service_account`는 **`google-github-actions/auth@v2` 액션이 받기로 약속한 입력 파라미터 이름**이다. 어떤 액션이 어떤 입력을 받는지는 그 액션 저장소의 `action.yml`(inputs 섹션)에 문서화돼 있고, 우리는 그 이름에 값만 채워 넣는 것이다. `permissions: id-token: write`도 마찬가지로 GitHub이 정한 권한 스코프 이름이라 임의로 바꿀 수 없다. 반면 `env` 아래 `REGION` 같은 건 순수히 내 편의를 위한 변수라 이름을 뭘로 짓든 상관없다.
+
+:::tip 값 채우기 vs 이름 짓기
+헷갈릴 땐 "이 키를 **내가** 발명했나, 아니면 **액션/GitHub이** 요구하나?"를 생각하면 된다. `with:` 아래 이름들은 거의 항상 **해당 액션이 요구하는 고정 이름**이고, 나는 `${{ secrets.WIF_PROVIDER }}` 같은 **값**만 채운다.
 :::
 
 ---
