@@ -148,7 +148,7 @@ CRON_SECRET=CRON_SECRET_VALUE"
 
 - `--platform=managed`: GCP가 인프라를 완전 관리하는 모드. 서버 관리 불필요.
 - `--allow-unauthenticated`: iOS 클라이언트 등 외부에서 API를 인증 없이 호출할 수 있도록 공개 접근 허용.
-- `--add-cloudsql-instances=$INSTANCE_CONNECTION_NAME`: Cloud Run 컨테이너 안에 Cloud SQL 유닉스 소켓 경로를 마운트한다. 이 옵션이 없으면 소켓 경로 자체가 존재하지 않아 DB 연결 불가.
+- `--add-cloudsql-instances=$INSTANCE_CONNECTION_NAME`: Cloud Run 컨테이너 안에 `/cloudsql/...` 유닉스 소켓을 마운트하고 빌트인 프록시를 띄운다. 단, 이 문서는 아래처럼 소켓 팩토리 라이브러리(`socketFactory=`)로 붙기 때문에 마운트된 이 소켓은 실제로 쓰이지 않는다 — 플래그가 있어도 무해하지만 이 구성에선 중복이다. (자세한 관계는 아래 '설정' 절 참고)
 
 **환경변수(`--set-env-vars`):**
 
@@ -161,44 +161,62 @@ CRON_SECRET=CRON_SECRET_VALUE"
 | `CRON_SECRET` | 임의의 시크릿 문자열 | `/internal/cron/collect` 엔드포인트 인증 헤더 값 |
 
 :::tip DB_URL의 `///` (슬래시 3개)
-`jdbc:postgresql:///DB_NAME` — 호스트 부분이 비어있다(`//` 다음 바로 `/DB_NAME`). TCP 방식이라면 `//localhost:5432/DB_NAME`처럼 호스트를 명시하지만, 유닉스 소켓 방식은 호스트 대신 소켓 파일 경로를 사용하므로 호스트를 생략한다. `socketFactory` 파라미터가 있으면 소켓 팩토리가 `cloudSqlInstance` 값을 보고 마운트된 소켓 경로를 자동으로 찾아서 연결한다.
+`jdbc:postgresql:///DB_NAME` — 호스트 부분이 비어있다(`//` 다음 바로 `/DB_NAME`). TCP 방식이라면 `//localhost:5432/DB_NAME`처럼 호스트를 명시하지만, 소켓 팩토리 방식은 접속 대상을 호스트:포트가 아니라 `socketFactory`·`cloudSqlInstance` 파라미터가 정하므로 호스트를 생략한다. 소켓 팩토리가 `cloudSqlInstance` 값으로 인스턴스를 식별해 직접 mTLS 연결을 연다(마운트된 `/cloudsql` 소켓을 쓰는 게 아니다).
 :::
 
 - 비용: 요청이 없으면 과금 없음. 요청 수 + CPU 사용 시간 기준 과금. 트래픽이 거의 없는 수준이면 **$0~1/월**.
 
-### Cloud SQL 소켓 연결 방식
+### Cloud SQL 접속 방식
 
-Cloud Run에서 Cloud SQL에 접속하는 방식은 두 가지다.
+Cloud Run에서 Cloud SQL에 붙는 방식은 **두 개의 독립된 축**으로 갈린다. 헷갈리기 쉬운데, 이 둘은 서로 별개이며 조합해서 쓴다.
 
-| 방식 | 보안 | 설정 복잡도 |
+- **① 인터페이스** — 앱이 무엇에 대고 붙느냐
+- **② 경로** — 트래픽이 어느 IP로 나가느냐
+
+#### ① 인터페이스
+
+| 방식 | 실제 동작 | 설정 |
 |---|---|---|
-| 유닉스 소켓 (socket factory) | 공인 IP 불필요, VPC 내부 통신 | 의존성 추가 + URL 변경 필요 |
-| TCP + 공인 IP | 공인 IP 필요 | 단순하지만 덜 안전 |
+| 소켓 팩토리 라이브러리 (이 문서) | 자바 라이브러리가 Admin API로 인증서를 받아 **자체 mTLS 연결**을 연다. OS 유닉스 소켓이 아니다. | 의존성 추가 + JDBC URL 변경 |
+| 유닉스 소켓 (`/cloudsql/...`) | `--add-cloudsql-instances`가 마운트한 소켓 파일에 붙는다. 빌트인 프록시가 뒤에서 중계. | URL에 `host=/cloudsql/...` |
+| TCP 직결 | 인스턴스 IP:5432로 직접 TCP 접속 | IP·인증 직접 관리 |
 
-#### TCP vs 유닉스 소켓
+:::warning "socket factory"는 유닉스 소켓이 아니다
+이름 때문에 오해하기 쉽다. 여기서 `SocketFactory`는 자바에서 `Socket`(TCP 연결) 객체를 만드는 표준 인터페이스 `javax.net.SocketFactory`의 이름일 뿐, OS의 유닉스 도메인 소켓과 무관하다. `com.google.cloud.sql.postgres.SocketFactory`는 마운트된 `/cloudsql/...` 소켓을 **쓰지 않고**, Cloud SQL Admin API로 인스턴스 주소·임시 인증서를 받아 **직접 mTLS/TCP 연결**을 연다.
+:::
 
-**TCP**는 앱이 DB에 연결할 때 네트워크를 통해 `IP:PORT`로 찾아가는 방식이다. 로컬에서 `localhost:5432`로 접속하는 것도 TCP다.
+#### ② 경로
+
+| | 기본값 | 조건 |
+|---|---|---|
+| 공인 IP | ✅ 소켓 팩토리 기본값 | 별도 설정 없음 |
+| 사설 IP (VPC) | 옵션 | `ipTypes=PRIVATE` + 인스턴스 사설 IP + VPC 연결 |
+
+이 문서 구성은 **소켓 팩토리 + 공인 IP**다. VPC는 켜지 않았다.
+
+#### 실제 통신 흐름 — 로컬 유닉스 소켓과 헷갈리지 말 것
+
+로컬 개발의 유닉스 소켓과 Cloud Run의 소켓 팩토리는 겉보기만 비슷하고 실체가 다르다.
+
+**로컬 Postgres (진짜 유닉스 소켓)** — 같은 머신, 네트워크 안 탐:
 
 ```
-앱 → 네트워크 → IP:PORT → DB 서버
+앱 → /var/run/postgresql/.s.PGSQL.5432 → postgres (DB 본체)
 ```
 
-**유닉스 소켓**은 같은 머신(또는 같은 컨테이너 환경) 안에서 파일을 통해 통신하는 방식이다. `/var/run/postgresql/.s.PGSQL.5432` 같은 특수 파일이 소켓 역할을 한다. 네트워크를 거치지 않아 TCP보다 빠르고, 공인 IP가 없어 외부에서 직접 접근할 수 없다.
+소켓 파일 반대편에 DB 본체가 직접 있어 네트워크를 거치지 않는다. TCP보다 빠르고 파일 권한으로 접근을 통제한다. **이 설명은 로컬에서만 참이다.**
+
+**Cloud Run 소켓 팩토리** — Cloud SQL은 원격 머신이라 네트워크를 반드시 건넌다:
 
 ```
-앱 → 파일 경로 → DB 서버
+앱 → 소켓 팩토리(라이브러리) → mTLS/TCP → Cloud SQL (원격, 기본 공인 IP)
 ```
 
-**Cloud Run에서 소켓 방식을 쓰는 이유**: `--add-cloudsql-instances`를 붙이면 GCP가 컨테이너 안에 소켓 파일을 직접 마운트해준다.
+Cloud Run에서는 "네트워크를 안 탄다"가 성립하지 않는다. 보안 이점은 *공인 IP가 없어서*가 아니라, 라이브러리가 **mTLS 암호화 + IAM 인증**을 걸어주기 때문이다. 공인 IP로 나가더라도 인증된 클라이언트만 붙을 수 있다. 공인 IP 노출 자체를 없애려면 위 ②에서 사설 IP + VPC로 경로를 바꾼다.
 
-```
-Cloud Run 컨테이너 내부
-  /cloudsql/PROJECT:REGION:INSTANCE  ← 소켓 파일이 이 경로에 마운트됨
-```
+#### 설정
 
-그래서 DB_URL에서 호스트:포트 대신 이 소켓 파일 경로로 연결한다. `jdbc:postgresql:///DB_NAME`에서 호스트를 비워두는 게 "소켓 파일 경로로 연결하겠다"는 의미다. `socketFactory` 파라미터가 `cloudSqlInstance` 값을 보고 위 경로를 자동으로 찾아 연결한다.
-
-소켓 방식을 사용하려면 `build.gradle`에 의존성을 추가하고, JDBC URL을 소켓 팩토리 형식으로 작성해야 한다.
+소켓 팩토리를 쓰려면 `build.gradle`에 의존성을 추가하고, JDBC URL을 소켓 팩토리 형식으로 작성한다.
 
 ```gradle
 implementation 'com.google.cloud.sql:postgres-socket-factory:1.14.0'
@@ -209,13 +227,19 @@ implementation 'com.google.cloud.sql:postgres-socket-factory:1.14.0'
 jdbc:postgresql:///DB_NAME?cloudSqlInstance=PROJECT:REGION:INSTANCE&socketFactory=com.google.cloud.sql.postgres.SocketFactory
 ```
 
-로컬에서는 기존 TCP URL을 그대로 쓰고, Cloud Run에서만 이 URL을 환경변수로 주입하면 된다.
+`jdbc:postgresql:///DB_NAME`에서 호스트가 비어 있는 이유는, 접속 대상을 호스트:포트가 아니라 `socketFactory`·`cloudSqlInstance` 파라미터가 정하기 때문이다. 소켓 팩토리가 `cloudSqlInstance` 값으로 인스턴스를 식별해 mTLS 연결을 연다.
+
+로컬에서는 기존 TCP URL을 그대로 쓰고, Cloud Run에서만 이 URL을 환경변수로 주입한다.
 
 ```properties
 # application.properties
 # DB_URL이 있으면 그 값 사용, 없으면 TCP fallback
 spring.datasource.url=${DB_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:dignify}}
 ```
+
+:::tip `--add-cloudsql-instances`와의 관계
+이 플래그는 `/cloudsql/...` 유닉스 소켓을 마운트하는 **별개 방식**이다. 위처럼 URL에 `socketFactory=`를 쓰면 라이브러리가 자체 연결을 열기 때문에 마운트된 소켓은 사용되지 않는다(플래그가 있어도 무해하지만 이 구성에선 중복). 반대로 소켓 팩토리 라이브러리 없이 붙으려면, 이 플래그로 마운트한 뒤 URL에 `host=/cloudsql/PROJECT:REGION:INSTANCE`를 지정하면 된다.
+:::
 
 ---
 
