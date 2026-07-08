@@ -14,3 +14,4 @@ docs/.vuepress/*.json
 docs/.vuepress/get_token.py
 docs/.vuepress/.last_indexed_commit
 docs/.vuepress/index_check.log
+*.pdf
