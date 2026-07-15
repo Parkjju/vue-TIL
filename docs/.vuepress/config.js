@@ -253,6 +253,7 @@ module.exports = {
                         'database/260504-db4',
                         'database/260707-real-mysql-02',
                         'database/260708-real-mysql-03',
+                        'database/260715-real-mysql-04',
                     ],
                     sidebarDepth: 2,
                 },
