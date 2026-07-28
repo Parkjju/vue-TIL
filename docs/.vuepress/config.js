@@ -255,6 +255,7 @@ module.exports = {
                         'database/260707-real-mysql-02',
                         'database/260708-real-mysql-03',
                         'database/260715-real-mysql-04',
+                        'database/260728-real-mysql-05',
                     ],
                     sidebarDepth: 2,
                 },
