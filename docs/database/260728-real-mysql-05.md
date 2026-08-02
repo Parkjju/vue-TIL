@@ -1,11 +1,9 @@
 ---
-title: 'Real MySQL 8.0 - 5장. 트랜잭션과 잠금 · 6장. 데이터 압축'
+title: 'Real MySQL 8.0 - 5장. 트랜잭션과 잠금'
 tags: ['Database']
 ---
 
 5장을 한 문장으로 줄이면 **"동시에 여러 명이 같은 데이터를 만질 때, 어디까지 서로 침범하게 둘 것인가"**의 문제다. 트랜잭션은 "작업 하나가 통째로 되든가 통째로 안 되든가"를 보장하고(원자성), 잠금은 "그동안 남이 못 건드리게" 막고, 격리 수준은 "그럼 남한테는 어디까지 보여줄까"를 정한다. 이 셋은 따로 노는 게 아니라 같은 문제의 세 얼굴이다.
-
-6장 데이터 압축은 분량이 짧고 성격도 다르다. 디스크 파일 크기를 줄이는 두 가지 방법(페이지 압축·테이블 압축)인데, **결론부터 말하면 하나는 실무에서 거의 안 쓰고 하나만 쓸 만하다.**
 
 ## 5.1 트랜잭션 — MyISAM엔 없고 InnoDB엔 있다
 
@@ -190,65 +188,9 @@ UPDATE employees SET hire_date=NOW()
 
 > 🐘 **PostgreSQL 비교** — 기본 격리 수준이 다르다. **MySQL(InnoDB)은 REPEATABLE READ, PostgreSQL은 READ COMMITTED**가 기본이다. 그리고 팬텀을 막는 방식이 다르다 — InnoDB는 갭 락(비관적, 미리 잠금)으로 막고, PG는 SERIALIZABLE에서 **SSI(Serializable Snapshot Isolation, 낙관적)**로 커밋 시점에 충돌을 감지해 롤백시킨다. 그래서 PG의 REPEATABLE READ에서는 팬텀이 이론대로 생길 수 있다(InnoDB와 다른 지점).
 
----
-
-## 6장 데이터 압축
-
-디스크 데이터 파일이 크면 쿼리 처리(더 많은 페이지를 버퍼 풀에 읽어야 함)도, 백업·복구 시간도 다 나빠진다. 그래서 파일 크기를 줄이는 압축을 제공하는데, MySQL엔 **페이지 압축**과 **테이블 압축** 두 가지가 있고 성격이 완전히 다르다.
-
-### 6.1 페이지 압축 — 좋아 보이지만 실무에선 안 쓴다
-
-페이지 압축(Transparent Page Compression)은 **디스크에 쓸 때만 압축하고, 버퍼 풀에 읽어올 때 해제**한다. 버퍼 풀에는 항상 압축이 풀린 상태로 있으니 InnoDB 코드 입장에선 "투명(Transparent)"하다.
-
-문제는 구현 방식이다. 16KB 페이지를 압축하면 결과 크기가 얼마일지 미리 알 수 없는데, 디스크의 페이지 크기는 정해져 있다. 그래서 **펀치 홀(Punch Hole)**이라는 파일 시스템 기능을 쓴다. 16KB를 7KB로 압축했다면, 페이지 앞 7KB만 쓰고 **뒤의 9KB 구간에 펀치 홀을 뚫어** 그 공간을 운영체제에 반납한다.
-
-여기에 **치명적인 한계**가 있다. 펀치 홀은 운영체제·파일 시스템뿐 아니라 **하드웨어까지 지원해야** 하고, 지원하는 환경도 제한적이다. 게다가 `cp` 같은 일반 복사 명령이나 `Xtrabackup`으로 파일을 복사하면 **펀치 홀이 다시 채워져서**, 원본이 10GB였던 파일이 복사하면 다시 커져버린다. 이런 이유로 **실무에서는 페이지 압축을 거의 안 쓴다.** 책도 "자세한 설명은 생략한다"고 넘어간다.
-
-### 6.2 테이블 압축 — 이걸 쓴다
-
-테이블 압축은 운영체제·하드웨어 제약 없이 쓸 수 있어서 활용도가 높다. 다만 단점 세 가지가 있다.
-
--   버퍼 풀 공간 활용률이 낮아진다 (압축본·원본 둘 다 들고 있어야 해서)
--   쿼리 처리 성능이 낮아진다 (압축 해제 CPU 비용)
--   변경이 잦으면 압축 실패율이 올라간다
-
-사용법은 테이블 생성 시 `ROW_FORMAT=COMPRESSED`를 명시하고, 압축될 페이지의 목표 크기를 `KEY_BLOCK_SIZE`로 지정한다(4KB·8KB 등, 2의 제곱).
-
-```sql
-SET GLOBAL innodb_file_per_table=ON;
-CREATE TABLE compressed_table (
-  c1 INT PRIMARY KEY
-) ROW_FORMAT=COMPRESSED KEY_BLOCK_SIZE=8;
-```
-
-**핵심은 `KEY_BLOCK_SIZE`를 잘 정하는 것**이다. 16KB 원본 페이지를 압축했는데 결과가 `KEY_BLOCK_SIZE`(예: 8KB)를 초과하면, InnoDB는 페이지를 **쪼개서(split) 다시 압축을 시도**한다. 이게 **압축 실패(compression failure)**이고, 실패가 잦으면 그만큼 CPU를 태우고 성능이 급락한다.
-
-그래서 `KEY_BLOCK_SIZE`는 **찍지 말고 실측**해야 한다. `innodb_cmp_per_index_enabled=ON`으로 켜고 샘플 데이터를 넣은 뒤 `information_schema.INNODB_CMP_PER_INDEX`에서 **인덱스별 압축 성공/실패 횟수**를 본다.
-
-```sql
-SET GLOBAL innodb_cmp_per_index_enabled=ON;
-INSERT INTO employees_comp4k SELECT * FROM employees;
-
-SELECT table_name, index_name, compress_ops, compress_ops_ok,
-       (compress_ops-compress_ops_ok)/compress_ops * 100 as compression_failure_pct
-  FROM information_schema.INNODB_CMP_PER_INDEX;
-```
-
-책의 실측 결과가 교훈적이다. 같은 데이터를 `KEY_BLOCK_SIZE=4`와 `=8`로 각각 압축해봤더니:
-
--   **4KB**: PRIMARY 키 압축 실패율 **27.67%** — 너무 높다. InnoDB 버퍼 풀에서 디스크로 내려갈 때마다 재압축하느라 시간을 태운다.
--   **8KB**: PRIMARY 키 압축 실패율 **18.52%** — 여전히 꽤 높다.
--   **디스크 파일 크기**: 원본 30MB → 4KB 압축 20MB, 8KB 압축도 **거의 같은 20MB.**
-
-**흥미로운 결론** — 4KB와 8KB의 최종 파일 크기가 거의 같다. 그렇다면 **압축 실패율이 낮은 8KB를 고르는 게 훨씬 효율적**이다. 압축률은 그대로 챙기면서 CPU 낭비만 줄이는 것. 일반적으로 **압축 실패율은 3~5% 미만**으로 유지되게 `KEY_BLOCK_SIZE`를 잡는 게 좋다.
-
-압축된 페이지가 버퍼 풀에 어떻게 적재되냐면 — InnoDB는 압축본과 압축 해제본 **2개 버전을 동시에** 들고 있다가(`Unzip_LRU` 리스트로 압축 해제본을 따로 관리), 서버의 부하 패턴에 따라 적응적(Adaptive)으로 조절한다. CPU가 바쁘면 압축 해제본을 더 들고 있어 재압축을 줄이고, 디스크 I/O가 바쁘면 압축 해제본을 버려 버퍼 풀 공간을 확보하는 식이다.
-
-> 🐘 **PostgreSQL 비교** — PG에는 이런 "테이블 통째 압축" 옵션이 없다. 대신 큰 값(> 2KB)을 자동으로 압축·분리 저장하는 **TOAST(The Oversized-Attribute Storage Technique)**가 컬럼 단위로 늘 돌아간다. 페이지 전체를 목표 크기에 맞춰 재압축하는 InnoDB식 `KEY_BLOCK_SIZE` 튜닝 개념은 PG엔 없다.
-
 ## 정리
 
-5·6장에서 실무로 들고 갈 것만 추리면 이렇다.
+5장에서 실무로 들고 갈 것만 추리면 이렇다.
 
 -   **트랜잭션 범위는 최소화하라.** 특히 메일 발송·FTP 같은 **외부 통신을 트랜잭션 안에 넣지 마라.** 그 대기 시간만큼 커넥션과 잠금을 붙잡아 서버를 위험에 빠뜨린다.
 -   **글로벌 락(`FLUSH TABLES WITH READ LOCK`)은 서버를 세운다.** 8.0에선 백업 락(`LOCK INSTANCE FOR BACKUP`)이 DML은 허용하고 DDL만 막는 가벼운 대안이니 이걸 써라.
@@ -257,6 +199,7 @@ SELECT table_name, index_name, compress_ops, compress_ops_ok,
 -   **이름·구조를 바꾸는 `RENAME`은 한 문장에 몰아라.** 두 문장으로 나누면 그 틈에 `Table not found`가 터진다.
 -   **InnoDB 기본 격리 수준은 REPEATABLE READ이고, 갭 락 덕에 이 수준에서 이미 팬텀이 없다.** 그래서 SERIALIZABLE 쓸 일이 거의 없다. PG는 기본이 READ COMMITTED라는 것도 같이 기억.
 -   **최소 READ COMMITTED 이상**을 써라. READ UNCOMMITTED(더티 리드)는 격리 수준 취급도 안 한다.
--   **테이블 압축을 쓸 거면 `KEY_BLOCK_SIZE`를 찍지 말고 실측하라.** 압축 실패율을 `INNODB_CMP_PER_INDEX`로 보고 **3~5% 미만**으로 유지되는 값을 골라라. 파일 크기가 비슷하면 실패율 낮은 큰 값이 낫다.
 
-반대로 **지금 깊이 안 파도 되는 것** — 페이지 압축은 펀치 홀 제약 때문에 실무에서 거의 안 쓰니 "이런 게 있다"만 알면 되고, 자동 증가 락의 `innodb_autoinc_lock_mode` 세부 모드(0/1/2)와 넥스트 키 락의 바이너리 로그 복제 관련 동작은 STATEMENT 포맷을 쓸 때만 신경 쓰면 된다(8.0 기본 ROW 포맷이면 대부분 알아서 처리된다).
+반대로 **지금 깊이 안 파도 되는 것** — 자동 증가 락의 `innodb_autoinc_lock_mode` 세부 모드(0/1/2)와 넥스트 키 락의 바이너리 로그 복제 관련 동작은 STATEMENT 포맷을 쓸 때만 신경 쓰면 된다(8.0 기본 ROW 포맷이면 대부분 알아서 처리된다).
+
+> 6장 데이터 압축은 [별도 글](./260731-real-mysql-06.md)로 분리했다.
