@@ -155,6 +155,7 @@ module.exports = {
                     title: 'Snack',
                     collapsable: false,
                     children: [
+                        'trash/260810-cloud-run-latency-measurement',
                         'trash/260727-apostrophe-search-normalization',
                         'trash/260706-transaction-external-api',
                         'trash/260706-github-actions-skip-ci',
