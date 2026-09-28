@@ -5,12 +5,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@master
+      uses: actions/checkout@v4
 
-    - name: vuepress-deploy
-      uses: jenkey2011/vuepress-deploy@master
+    # ponytail: jenkey2011/vuepress-deploy는 Debian 11 이미지를 매번 빌드하다 apt 404로 깨져서 직접 빌드·푸시
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: yarn
+
+    - name: Build
+      run: yarn install --frozen-lockfile && yarn docs:build
+
+    - name: Deploy to gh-pages
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        TARGET_BRANCH: gh-pages
-        BUILD_SCRIPT: yarn && yarn docs:build
-        BUILD_DIR: docs/.vuepress/dist
+      run: |
+        cd docs/.vuepress/dist
+        git init -q -b gh-pages
+        git config user.name "${GITHUB_ACTOR}"
+        git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+        git add -A
+        git commit -q -m "Auto deploy from Github Actions"
+        git push -f "https://${ACCESS_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
