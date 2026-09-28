@@ -260,6 +260,8 @@ module.exports = {
                         'database/260731-real-mysql-06',
                         'database/260731-real-mysql-07',
                         'database/260731-real-mysql-08',
+                        'database/260928-real-mysql-09',
+                        'database/260928-real-mysql-10',
                     ],
                     sidebarDepth: 2,
                 },
